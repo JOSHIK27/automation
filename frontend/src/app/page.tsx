@@ -3,6 +3,8 @@ import DotPattern from "@/components/ui/dot-pattern";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+
 export default function Home() {
   return (
     <div className="relative overflow-hidden border bg-background p-40">
@@ -13,8 +15,16 @@ export default function Home() {
         Create content that converts & drives sales
       </h3>
       <div className="flex justify-center gap-[16px] mt-[32px] z-20">
-        <RainbowButton className="z-20">Get Started</RainbowButton>
-        <RainbowButton className="z-20">Sign In</RainbowButton>
+        <RainbowButton className="z-20 px-12 py-4">Get Started</RainbowButton>
+        <RainbowButton
+          className={`${cn(
+            buttonVariants({
+              variant: "rainbow-outline",
+            })
+          )} z-20 px-16 py-4`}
+        >
+          Sign In
+        </RainbowButton>
       </div>
       <DotPattern
         className={cn(
