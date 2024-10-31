@@ -22,7 +22,7 @@ const initialNodes = [
   },
   {
     id: "2",
-    position: { x: 400, y: 300 },
+    position: { x: 400, y: 350 },
     data: { label: "Select the action that you want to perform" },
     type: "custom",
     draggable: false,
@@ -30,7 +30,12 @@ const initialNodes = [
 ];
 
 const initialEdges = [
-  { id: "1->2", source: "1", target: "2", type: "custom-edge" },
+  {
+    id: "1->2",
+    source: "1",
+    target: "2",
+    type: "custom-edge",
+  },
 ];
 
 export default function Flow() {
@@ -60,9 +65,9 @@ export default function Flow() {
           id: String(Number(node.id) + 1),
           position: {
             x: nodes[nodes.length - 1].position.x,
-            y: nodes[nodes.length - 1].position.y + 200,
+            y: nodes[nodes.length - 1].position.y + 250,
           },
-          data: { label: "" },
+          data: { label: "Select the action that you want to perform" },
           type: "custom",
           draggable: false,
         },
@@ -84,7 +89,7 @@ export default function Flow() {
           return {
             ...n,
             id: String(Number(n.id) + 1),
-            position: { x: n.position.x, y: n.position.y + 200 },
+            position: { x: n.position.x, y: n.position.y + 250 },
           };
         }
         return n;
@@ -93,9 +98,9 @@ export default function Flow() {
         id: String(Number(node.id) + 1),
         position: {
           x: nodes[nodes.length - 1].position.x,
-          y: nodes[Number(node.id) - 1].position.y + 200,
+          y: nodes[Number(node.id) - 1].position.y + 250,
         },
-        data: { label: "Node with id " + String(Number(node.id) + 1) },
+        data: { label: "Select the action that you want to perform" },
         type: "custom",
         draggable: false,
       };

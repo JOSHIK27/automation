@@ -71,11 +71,10 @@ export default function HowItWorks() {
           <div className="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center mb-4">
             <span className="text-neutral-800 text-2xl">3</span>
           </div>
-          <h3 className="text-xl font-semibold mb-2">
-            Auto-Generate Thumbnails
-          </h3>
+          <h3 className="text-xl font-semibold mb-2">Auto-Generate Metadata</h3>
           <p className="text-gray-600">
-            Our AI automatically creates engaging thumbnails from your video.
+            Our AI automatically generates all the metadata you need to publish
+            your content.
           </p>
         </div>
       </div>

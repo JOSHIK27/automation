@@ -59,7 +59,7 @@ export default function Hero() {
       </div>
 
       <h3 className="text-[20px] z-20 font-[400] mt-[16px] leading-[32px] text-center bg-gradient-to-b from-black/80 to-black/40 bg-clip-text text-transparent">
-        Create content that converts & drives sales
+        Focus on creating content, not managing uploads
       </h3>
       <div className="flex justify-center gap-[16px] mt-[32px] z-20">
         <RainbowButton
