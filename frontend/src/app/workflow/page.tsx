@@ -36,6 +36,7 @@ const initialEdges = [
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  console.log(nodes, edges);
   const onConnect = useCallback(
     (connection: any) => {
       const edge = { ...connection, type: "custom-edge" };
@@ -51,11 +52,12 @@ export default function Flow() {
         flag = true;
       }
     });
+    console.log(flag);
     if (!flag) {
       setNodes((nds) => [
         ...nds,
         {
-          id: node.id + 1,
+          id: String(Number(node.id) + 1),
           position: {
             x: nodes[nodes.length - 1].position.x,
             y: nodes[nodes.length - 1].position.y + 200,
@@ -68,9 +70,9 @@ export default function Flow() {
       setEdges((eds) => [
         ...eds,
         {
-          id: node.id + "->" + (node.id + 1),
+          id: node.id + "->" + String(Number(node.id) + 1),
           source: node.id,
-          target: node.id + 1,
+          target: String(Number(node.id) + 1),
           type: "custom-edge",
         },
       ]);
@@ -87,18 +89,32 @@ export default function Flow() {
         }
         return n;
       });
-      let newNode = {
+      const newNode = {
         id: String(Number(node.id) + 1),
         position: {
           x: nodes[nodes.length - 1].position.x,
           y: nodes[Number(node.id) - 1].position.y + 200,
         },
-        data: { label: "" },
+        data: { label: "Node with id " + String(Number(node.id) + 1) },
         type: "custom",
         draggable: false,
       };
       updatedNodes.push(newNode);
-      const newEdges: any[] = [];
+      updatedNodes.sort((a, b) => Number(a.id) - Number(b.id));
+      const newEdges: any[] = currentEdges.map((edge) => {
+        if (Number(edge.source) > Number(node.id)) {
+          return {
+            ...edge,
+            id:
+              String(Number(edge.source) + 1) +
+              "->" +
+              String(Number(edge.target) + 1),
+            source: String(Number(edge.source) + 1),
+            target: String(Number(edge.target) + 1),
+          };
+        }
+        return edge;
+      });
 
       newEdges.push({
         id: String(Number(node.id) + 1) + "->" + String(Number(node.id) + 2),
@@ -106,8 +122,9 @@ export default function Flow() {
         target: String(Number(node.id) + 2),
         type: "custom-edge",
       });
+      console.log(updatedNodes, newEdges);
       setNodes(updatedNodes);
-      setEdges((eds) => [...eds, ...newEdges]);
+      setEdges(newEdges);
     }
   };
 
