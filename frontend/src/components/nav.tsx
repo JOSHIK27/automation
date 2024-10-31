@@ -4,7 +4,7 @@ import { auth } from "../../auth";
 
 export async function Nav() {
   const session = await auth();
-  console.log(session);
+
   return (
     <nav className="bg-white shadow-sm border">
       <div className="container mx-auto px-4 py-3">

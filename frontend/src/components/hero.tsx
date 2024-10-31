@@ -9,7 +9,7 @@ import { signOut } from "next-auth/react";
 import AnimatedShinyText from "./ui/animated-shiny-text";
 import { BsLightningChargeFill } from "react-icons/bs";
 import { FadeText } from "./ui/fade-text";
-
+import { useRouter } from "next/navigation";
 export function AnimatedShinyTextDemo() {
   return (
     <div className="z-10 flex items-center justify-center mb-4">
@@ -31,8 +31,9 @@ export function AnimatedShinyTextDemo() {
 
 export default function Hero() {
   const { data: session } = useSession();
+  const router = useRouter();
   // if (!session) return null;
-  console.log(session);
+
   return (
     <section className="relative overflow-hidden bg-background p-40">
       <AnimatedShinyTextDemo />
@@ -61,7 +62,12 @@ export default function Hero() {
         Create content that converts & drives sales
       </h3>
       <div className="flex justify-center gap-[16px] mt-[32px] z-20">
-        <RainbowButton className="z-20 px-12 py-4">Get Started</RainbowButton>
+        <RainbowButton
+          className="z-20 px-12 py-4"
+          onClick={() => router.push("/workflow")}
+        >
+          Get Started
+        </RainbowButton>
         {session ? (
           <RainbowButton
             className={`${cn(
