@@ -9,8 +9,26 @@ import "@xyflow/react/dist/style.css";
 import { Background } from "@xyflow/react";
 import CustomEdge from "@/components/customedge";
 import { BackgroundVariant } from "@xyflow/react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CustomNode from "@/components/customnode";
+import { IoClose } from "react-icons/io5";
+import { FaYoutube } from "react-icons/fa";
+import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const initialNodes = [
   {
@@ -41,7 +59,22 @@ const initialEdges = [
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  console.log(nodes, edges);
+  const [trigger, setTrigger] = useState("");
+  const [showCard, setShowCard] = useState(false);
+  const [submitTrigger, setSubmitTrigger] = useState(false);
+
+  useEffect(() => {
+    if (!submitTrigger) return;
+    const currentNodes = nodes;
+    const updatedNodes = currentNodes.map((node) => {
+      if (node.id === "1") {
+        return { ...node, data: { label: trigger } };
+      }
+      return node;
+    });
+    setNodes(updatedNodes);
+  }, [trigger, submitTrigger]);
+
   const onConnect = useCallback(
     (connection: any) => {
       const edge = { ...connection, type: "custom-edge" };
@@ -51,6 +84,13 @@ export default function Flow() {
   );
 
   const onNodeClick = (event: any, node: any) => {
+    if (event.target.tagName === "SPAN") {
+      setShowCard(true);
+      return;
+    }
+    if (event.target.tagName !== "BUTTON") {
+      return;
+    }
     let flag = false;
     edges.forEach((edge) => {
       if (edge.source === node.id) {
@@ -142,7 +182,49 @@ export default function Flow() {
   };
 
   return (
-    <div style={{ height: "100dvh" }}>
+    <div className="relative" style={{ height: "100dvh" }}>
+      <Card
+        className={`${
+          showCard ? "absolute top-20 right-4 w-[400px] z-10" : "hidden"
+        }`}
+      >
+        <CardHeader className="relative">
+          <button
+            className="absolute right-2 top-2 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            onClick={() => setShowCard(false)}
+          >
+            <IoClose className="w-5 h-5 text-gray-500" />
+          </button>
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent">
+            <div className="flex items-center gap-2">
+              <FaYoutube className="w-6 h-6 text-red-600" />
+              YouTube
+            </div>
+          </CardTitle>
+          <Separator className="my-4" />
+        </CardHeader>
+        <CardContent>
+          <Select onValueChange={(value) => setTrigger(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select Event" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="When a new video is uploaded">
+                When a new video is uploaded
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </CardContent>
+        <CardFooter>
+          <button
+            onClick={() => setSubmitTrigger(true)}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+          >
+            Submit
+          </button>
+        </CardFooter>
+      </Card>
+
       <ReactFlow
         nodes={nodes}
         edges={edges}

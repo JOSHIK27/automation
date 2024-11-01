@@ -17,9 +17,9 @@ export default function CustomNode({
         className="w-3 h-3 bg-gray-400 border-2 border-white"
       />
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 bg-gray-100 rounded-md px-3 py-1.5 border border-gray-200">
+        <div className="flex items-center gap-2 bg-gray-100 rounded-md px-3 py-1.5 border border-gray-200 hover:bg-gray-200 transition-colors duration-200">
           <BsFillPlusCircleFill className="text-gray-500" />
-          <span className="text-[12px] font-semibold text-gray-700">
+          <span className="text-[12px] font-semibold text-gray-700 hover:text-gray-800 transition-colors duration-200">
             Trigger
           </span>
         </div>
