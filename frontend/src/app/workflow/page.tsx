@@ -14,6 +14,7 @@ import CustomNode from "@/components/customnode";
 import { IoClose } from "react-icons/io5";
 import { FaYoutube } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
+import { AnimatedSubscribeButtonDemo } from "@/components/ui/animated-button";
 import {
   Select,
   SelectContent,
@@ -24,7 +25,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -34,14 +34,20 @@ const initialNodes = [
   {
     id: "1",
     position: { x: 400, y: 100 },
-    data: { label: "Select the event that you want to trigger" },
+    data: {
+      label: "Select the event that you want to trigger",
+      type: "Trigger",
+    },
     type: "custom",
     draggable: false,
   },
   {
     id: "2",
     position: { x: 400, y: 350 },
-    data: { label: "Select the action that you want to perform" },
+    data: {
+      label: "Select the action that you want to perform",
+      type: "Action",
+    },
     type: "custom",
     draggable: false,
   },
@@ -61,19 +67,15 @@ export default function Flow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [trigger, setTrigger] = useState("");
   const [showCard, setShowCard] = useState(false);
-  const [submitTrigger, setSubmitTrigger] = useState(false);
+  const [cardId, setCardId] = useState<string>("");
+  const [actions, setActions] = useState<any[]>([]);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [selectValue, setSelectValue] = useState("");
 
   useEffect(() => {
-    if (!submitTrigger) return;
-    const currentNodes = nodes;
-    const updatedNodes = currentNodes.map((node) => {
-      if (node.id === "1") {
-        return { ...node, data: { label: trigger } };
-      }
-      return node;
-    });
-    setNodes(updatedNodes);
-  }, [trigger, submitTrigger]);
+    setIsSubscribed(false);
+    setSelectValue("");
+  }, [cardId]);
 
   const onConnect = useCallback(
     (connection: any) => {
@@ -86,6 +88,7 @@ export default function Flow() {
   const onNodeClick = (event: any, node: any) => {
     if (event.target.tagName === "SPAN") {
       setShowCard(true);
+      setCardId(node.id);
       return;
     }
     if (event.target.tagName !== "BUTTON") {
@@ -97,7 +100,7 @@ export default function Flow() {
         flag = true;
       }
     });
-    console.log(flag);
+
     if (!flag) {
       setNodes((nds) => [
         ...nds,
@@ -107,7 +110,10 @@ export default function Flow() {
             x: nodes[nodes.length - 1].position.x,
             y: nodes[nodes.length - 1].position.y + 250,
           },
-          data: { label: "Select the action that you want to perform" },
+          data: {
+            label: "Select the action that you want to perform",
+            type: "Action",
+          },
           type: "custom",
           draggable: false,
         },
@@ -140,7 +146,10 @@ export default function Flow() {
           x: nodes[nodes.length - 1].position.x,
           y: nodes[Number(node.id) - 1].position.y + 250,
         },
-        data: { label: "Select the action that you want to perform" },
+        data: {
+          label: "Select the action that you want to perform",
+          type: "Action",
+        },
         type: "custom",
         draggable: false,
       };
@@ -204,24 +213,61 @@ export default function Flow() {
           <Separator className="my-4" />
         </CardHeader>
         <CardContent>
-          <Select onValueChange={(value) => setTrigger(value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Event" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="When a new video is uploaded">
-                When a new video is uploaded
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          {cardId === "1" ? (
+            <Select
+              value={selectValue}
+              onValueChange={(value) => {
+                setSelectValue(value);
+                setTrigger(value);
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Event" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="When a new video is uploaded">
+                  When a new video is uploaded to my channel
+                </SelectItem>
+                <SelectItem value="When a new video is uploaded to a specific channel">
+                  When a new video is uploaded to a specific channel
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          ) : (
+            <Select
+              value={selectValue}
+              onValueChange={(value) => {
+                setSelectValue(value);
+                setActions((a) => [...a, { cardId: cardId, action: value }]);
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Action" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Generate a thumbnail">
+                  Generate a thumbnail
+                </SelectItem>
+                <SelectItem value="Generate Captions">
+                  Generate Captions
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          )}
         </CardContent>
         <CardFooter>
-          <button
-            onClick={() => setSubmitTrigger(true)}
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-          >
-            Submit
-          </button>
+          <AnimatedSubscribeButtonDemo
+            isSubscribed={isSubscribed}
+            setIsSubscribed={setIsSubscribed}
+            nodes={nodes as any}
+            setNodes={setNodes as any}
+            trigger={trigger}
+            cardId={cardId}
+            t1="Submit"
+            t2="Submitted"
+            actions={actions}
+            setActions={setActions}
+          />
         </CardFooter>
       </Card>
 
