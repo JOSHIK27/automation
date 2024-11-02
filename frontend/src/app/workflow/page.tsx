@@ -11,56 +11,9 @@ import CustomEdge from "@/components/customedge";
 import { BackgroundVariant } from "@xyflow/react";
 import { useCallback, useEffect, useState } from "react";
 import CustomNode from "@/components/customnode";
-import { IoClose } from "react-icons/io5";
-import { FaYoutube } from "react-icons/fa";
-import { Separator } from "@/components/ui/separator";
-import { AnimatedSubscribeButtonDemo } from "@/components/ui/animated-button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
-const initialNodes = [
-  {
-    id: "1",
-    position: { x: 400, y: 100 },
-    data: {
-      label: "Select the event that you want to trigger",
-      type: "Trigger",
-    },
-    type: "custom",
-    draggable: false,
-  },
-  {
-    id: "2",
-    position: { x: 400, y: 350 },
-    data: {
-      label: "Select the action that you want to perform",
-      type: "Action",
-    },
-    type: "custom",
-    draggable: false,
-  },
-];
-
-const initialEdges = [
-  {
-    id: "1->2",
-    source: "1",
-    target: "2",
-    type: "custom-edge",
-  },
-];
+import { initialEdges, initialNodes } from "@/lib/constants/workflow";
+import TriggerCard from "@/components/triggercard";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -192,84 +145,21 @@ export default function Flow() {
 
   return (
     <div className="relative" style={{ height: "100dvh" }}>
-      <Card
-        className={`${
-          showCard ? "absolute top-20 right-4 w-[400px] z-10" : "hidden"
-        }`}
-      >
-        <CardHeader className="relative">
-          <button
-            className="absolute right-2 top-2 p-2 hover:bg-gray-100 rounded-full transition-colors"
-            onClick={() => setShowCard(false)}
-          >
-            <IoClose className="w-5 h-5 text-gray-500" />
-          </button>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent">
-            <div className="flex items-center gap-2">
-              <FaYoutube className="w-6 h-6 text-red-600" />
-              YouTube
-            </div>
-          </CardTitle>
-          <Separator className="my-4" />
-        </CardHeader>
-        <CardContent>
-          {cardId === "1" ? (
-            <Select
-              value={selectValue}
-              onValueChange={(value) => {
-                setSelectValue(value);
-                setTrigger(value);
-              }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Event" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="When a new video is uploaded">
-                  When a new video is uploaded to my channel
-                </SelectItem>
-                <SelectItem value="When a new video is uploaded to a specific channel">
-                  When a new video is uploaded to a specific channel
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          ) : (
-            <Select
-              value={selectValue}
-              onValueChange={(value) => {
-                setSelectValue(value);
-                setActions((a) => [...a, { cardId: cardId, action: value }]);
-              }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Action" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Generate a thumbnail">
-                  Generate a thumbnail
-                </SelectItem>
-                <SelectItem value="Generate Captions">
-                  Generate Captions
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        </CardContent>
-        <CardFooter>
-          <AnimatedSubscribeButtonDemo
-            isSubscribed={isSubscribed}
-            setIsSubscribed={setIsSubscribed}
-            nodes={nodes as any}
-            setNodes={setNodes as any}
-            trigger={trigger}
-            cardId={cardId}
-            t1="Submit"
-            t2="Submitted"
-            actions={actions}
-            setActions={setActions}
-          />
-        </CardFooter>
-      </Card>
+      <TriggerCard
+        showCard={showCard}
+        setShowCard={setShowCard}
+        cardId={cardId}
+        setTrigger={setTrigger}
+        trigger={trigger}
+        selectValue={selectValue}
+        setSelectValue={setSelectValue}
+        isSubscribed={isSubscribed}
+        setIsSubscribed={setIsSubscribed}
+        nodes={nodes}
+        setNodes={setNodes}
+        actions={actions}
+        setActions={setActions}
+      />
 
       <ReactFlow
         nodes={nodes}

@@ -8,32 +8,32 @@ export default function CustomNode({
   data: { label: string; type: string };
 }) {
   return (
-    <div className="bg-[#FFFDF8] rounded-lg w-[400px] py-4 px-4 relative shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+    <div className="bg-[#FFFDF8] rounded-lg w-[400px] py-5 px-6 relative shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] border border-gray-200 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
       <Handle
         onConnect={(params) => console.log("handle onConnect", params)}
         type="target"
         isConnectableStart
         position={Position.Top}
-        className="w-3 h-3 bg-gray-400 border-2 border-white"
+        className="w-4 h-4 bg-gray-400 border-2 border-white hover:scale-110 transition-transform duration-200"
       />
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 bg-gray-100 rounded-md px-3 py-1.5 border border-gray-200 hover:bg-gray-200 transition-colors duration-200">
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-2.5 bg-gray-100 rounded-md px-4 py-2 border border-gray-200 hover:bg-gray-200 transition-all duration-200 hover:translate-y-[-1px]">
           <BsFillPlusCircleFill className="text-gray-500" />
-          <span className="text-[12px] font-semibold text-gray-700 hover:text-gray-800 transition-colors duration-200">
+          <span className="text-[13px] font-semibold text-gray-700 hover:text-gray-800">
             {data.type}
           </span>
         </div>
-        <button className="p-1.5 hover:bg-gray-200 rounded-full transition-colors duration-200">
+        <button className="p-2 hover:bg-gray-200 rounded-full transition-all duration-200 hover:rotate-12">
           <RiDeleteBin6Line
-            size={18}
+            size={20}
             className="text-gray-500 hover:text-red-500"
           />
         </button>
       </div>
-      <span className="text-[15px] font-semibold text-gray-800 block mb-4">
+      <span className="text-[16px] font-semibold text-gray-800 block mb-5 leading-snug">
         {data.label}
       </span>
-      <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-md text-sm transition-all duration-200 flex items-center justify-center gap-2 border border-gray-200 hover:border-gray-300">
+      <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-5 rounded-md text-sm transition-all duration-200 flex items-center justify-center gap-3 border border-gray-200 hover:border-gray-300 hover:translate-y-[-1px] active:translate-y-[1px]">
         <BsFillPlusCircleFill className="text-gray-500" />
         Append Node
       </button>
@@ -42,7 +42,7 @@ export default function CustomNode({
         type="source"
         isConnectableEnd
         position={Position.Bottom}
-        className="w-3 h-3 bg-gray-400 border-2 border-white"
+        className="w-4 h-4 bg-gray-400 border-2 border-white hover:scale-110 transition-transform duration-200"
       />
     </div>
   );
