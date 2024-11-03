@@ -5,7 +5,7 @@ import { FaGithub } from "react-icons/fa6";
 
 export default function Footer() {
   return (
-    <footer className="mt-20 sm:px-60">
+    <footer className="mt-20 px-4 sm:px-60">
       <Separator className="w-full mt-4 mb-6" />
       <span className="text-sm text-muted-foreground pb-8">Follow Us</span>
       <div className="flex items-center gap-4 mt-2 mb-4">

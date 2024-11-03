@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -12,7 +13,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 
 export default function Pricing() {
   return (
-    <section className="">
+    <section>
       <h2 className="text-center text-4xl font-bold mb-8">Pricing</h2>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mx-4 sm:mx-60">
         <Card className="p-8">
@@ -43,7 +44,12 @@ export default function Pricing() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full rounded-full bg-white text-black border border-gray-300 hover:bg-gray-100 py-4">
+            <Button
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="w-full rounded-full bg-white text-black border border-gray-300 hover:bg-gray-100 py-4"
+            >
               Get Started
             </Button>
           </CardFooter>
