@@ -27,7 +27,7 @@ export default function Flow() {
   const [actions, setActions] = useState<any[]>([]);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [selectValue, setSelectValue] = useState("");
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   useEffect(() => {
     setIsSubscribed(false);
@@ -54,6 +54,9 @@ export default function Flow() {
         <HashLoader color="#000000" />
       </div>
     );
+  }
+  if (!session) {
+    return null;
   }
 
   const onNodeClick = (event: any, node: any) => {
