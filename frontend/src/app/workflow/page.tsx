@@ -28,7 +28,8 @@ export default function Flow() {
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
-  }, [cardId]);
+  }, [cardId, nodes.length]);
+  console.log(isSubscribed);
 
   const onConnect = useCallback(
     (connection: any) => {
@@ -61,7 +62,7 @@ export default function Flow() {
           id: String(Number(node.id) + 1),
           position: {
             x: nodes[nodes.length - 1].position.x,
-            y: nodes[nodes.length - 1].position.y + 250,
+            y: nodes[nodes.length - 1].position.y + 400,
           },
           data: {
             label: "Select the action that you want to perform",
@@ -88,7 +89,7 @@ export default function Flow() {
           return {
             ...n,
             id: String(Number(n.id) + 1),
-            position: { x: n.position.x, y: n.position.y + 250 },
+            position: { x: n.position.x, y: n.position.y + 400 },
           };
         }
         return n;
@@ -97,7 +98,7 @@ export default function Flow() {
         id: String(Number(node.id) + 1),
         position: {
           x: nodes[nodes.length - 1].position.x,
-          y: nodes[Number(node.id) - 1].position.y + 250,
+          y: nodes[Number(node.id) - 1].position.y + 400,
         },
         data: {
           label: "Select the action that you want to perform",

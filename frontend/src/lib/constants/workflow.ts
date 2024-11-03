@@ -11,7 +11,7 @@ export const initialNodes = [
   },
   {
     id: "2",
-    position: { x: 400, y: 350 },
+    position: { x: 400, y: 500 },
     data: {
       label: "Select the action that you want to perform",
       type: "Action",

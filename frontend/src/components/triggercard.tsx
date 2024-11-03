@@ -48,7 +48,6 @@ export default function TriggerCard({
   setActions: any;
 }) {
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors },
@@ -61,18 +60,18 @@ export default function TriggerCard({
     <Card
       className={`${
         showCard ? "absolute top-20 right-4 w-[400px] z-10" : "hidden"
-      } border-gray-200 shadow-lg`}
+      } border-gray-200 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_50px_-10px_rgba(0,0,0,0.2)] transition-all duration-300`}
     >
       <CardHeader className="relative">
         <button
-          className="absolute right-2 top-2 p-2 hover:bg-gray-100 rounded-full transition-colors"
+          className="absolute right-2 top-2 p-2 hover:bg-gray-50 rounded-full transition-all duration-200"
           onClick={() => setShowCard(false)}
         >
-          <IoClose className="w-5 h-5 text-gray-500" />
+          <IoClose className="w-5 h-5 text-gray-400 hover:text-gray-600" />
         </button>
         <CardTitle className="text-2xl font-bold text-gray-900">
           <div className="flex items-center gap-2">
-            <FaYoutube className="w-6 h-6 text-gray-900" />
+            <FaYoutube className="w-6 h-6 text-gray-600" />
             YouTube
           </div>
         </CardTitle>
@@ -93,7 +92,7 @@ export default function TriggerCard({
               name="trigger"
               render={({ field }) => (
                 <Select
-                  value={field.value}
+                  //   value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
                     setSelectValue(value);
@@ -101,14 +100,20 @@ export default function TriggerCard({
                     setIsSubscribed(false);
                   }}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full border-gray-200 bg-white hover:bg-gray-50 transition-all duration-200">
                     <SelectValue placeholder="Select Event" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="When a new video is uploaded">
+                  <SelectContent className="bg-white border-gray-200">
+                    <SelectItem
+                      value="When a new video is uploaded"
+                      className="hover:bg-gray-50"
+                    >
                       When a new video is uploaded to my channel
                     </SelectItem>
-                    <SelectItem value="When a new video is uploaded to a specific channel">
+                    <SelectItem
+                      value="When a new video is uploaded to a specific channel"
+                      className="hover:bg-gray-50"
+                    >
                       When a new video is uploaded to a specific channel
                     </SelectItem>
                   </SelectContent>
@@ -148,7 +153,7 @@ export default function TriggerCard({
               name="action"
               render={({ field }) => (
                 <Select
-                  value={field.value}
+                  //   value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
                     setSelectValue(value);
