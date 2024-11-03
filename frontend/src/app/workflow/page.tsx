@@ -11,9 +11,12 @@ import CustomEdge from "@/components/customedge";
 import { BackgroundVariant } from "@xyflow/react";
 import { useCallback, useEffect, useState } from "react";
 import CustomNode from "@/components/customnode";
+import { useSession } from "next-auth/react";
 
 import { initialEdges, initialNodes } from "@/lib/constants/workflow";
 import TriggerCard from "@/components/triggercard";
+import { useRouter } from "next/navigation";
+import HashLoader from "react-spinners/HashLoader";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -24,12 +27,12 @@ export default function Flow() {
   const [actions, setActions] = useState<any[]>([]);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [selectValue, setSelectValue] = useState("");
-
+  const { status } = useSession();
+  const router = useRouter();
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
   }, [cardId, nodes.length]);
-  console.log(isSubscribed);
 
   const onConnect = useCallback(
     (connection: any) => {
@@ -38,6 +41,20 @@ export default function Flow() {
     },
     [setEdges]
   );
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/");
+    }
+  }, [status]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <HashLoader color="#000000" />
+      </div>
+    );
+  }
 
   const onNodeClick = (event: any, node: any) => {
     if (event.target.tagName === "SPAN") {
