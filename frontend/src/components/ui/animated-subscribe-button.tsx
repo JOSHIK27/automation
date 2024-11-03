@@ -48,6 +48,15 @@ export const AnimatedSubscribeButton: React.FC<
       });
       setNodes(updatedNodes);
     } else {
+      let currentAction = "";
+      actions.forEach((action) => {
+        if (action.cardId === cardId) {
+          currentAction = action.action;
+        }
+      });
+      if (currentAction === "") {
+        return;
+      }
       const currentNodes = nodes;
       let label = "";
       actions.forEach((action) => {
@@ -75,6 +84,7 @@ export const AnimatedSubscribeButton: React.FC<
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          type="submit"
         >
           <motion.span
             key="action"
@@ -94,6 +104,7 @@ export const AnimatedSubscribeButton: React.FC<
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          type="submit"
         >
           <motion.span
             key="reaction"

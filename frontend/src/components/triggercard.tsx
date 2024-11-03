@@ -50,10 +50,9 @@ export default function TriggerCard({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm();
-
   const onSubmit = (data: any) => {
     console.log(data);
   };
@@ -82,87 +81,125 @@ export default function TriggerCard({
       <CardContent>
         {cardId === "1" ? (
           <form onSubmit={handleSubmit(onSubmit)}>
+            <label
+              className="text-sm text-gray-500 font-medium mb-2 block"
+              htmlFor="trigger"
+            >
+              Trigger
+            </label>
             <Controller
+              control={control}
+              rules={{ required: "This field is required" }}
               name="trigger"
-              render={({
-                field: { onChange, onBlur, value, name, ref },
-                fieldState: { invalid, isTouched, isDirty, error },
-                formState,
-              }) => (
+              render={({ field }) => (
                 <Select
-                  value={selectValue}
+                  value={field.value}
                   onValueChange={(value) => {
+                    field.onChange(value);
                     setSelectValue(value);
                     setTrigger(value);
+                    setIsSubscribed(false);
                   }}
                 >
-                  <SelectTrigger className="w-full border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Event" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
-                    <SelectItem
-                      value="When a new video is uploaded"
-                      className="hover:bg-gray-50"
-                    >
+                  <SelectContent>
+                    <SelectItem value="When a new video is uploaded">
                       When a new video is uploaded to my channel
                     </SelectItem>
-                    <SelectItem
-                      value="When a new video is uploaded to a specific channel"
-                      className="hover:bg-gray-50"
-                    >
+                    <SelectItem value="When a new video is uploaded to a specific channel">
                       When a new video is uploaded to a specific channel
                     </SelectItem>
                   </SelectContent>
                 </Select>
               )}
             />
-
             {errors.trigger?.type === "required" && (
-              <p role="alert">Trigger is required</p>
+              <p role="alert" className="text-red-500 text-sm mt-2">
+                You must select an event
+              </p>
             )}
+            <br />
+            <AnimatedSubscribeButtonDemo
+              isSubscribed={isSubscribed}
+              setIsSubscribed={setIsSubscribed}
+              nodes={nodes as any}
+              setNodes={setNodes as any}
+              trigger={trigger}
+              cardId={cardId}
+              t1="Submit"
+              t2="Submitted"
+              actions={actions}
+              setActions={setActions}
+            />
           </form>
         ) : (
-          <Select
-            value={selectValue}
-            onValueChange={(value) => {
-              setSelectValue(value);
-              setActions((a: any) => [...a, { cardId: cardId, action: value }]);
-            }}
-          >
-            <SelectTrigger className="w-full border-gray-200 bg-white hover:bg-gray-50 transition-colors">
-              <SelectValue placeholder="Select Action" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200">
-              <SelectItem
-                value="Generate a thumbnail"
-                className="hover:bg-gray-50"
-              >
-                Generate a thumbnail
-              </SelectItem>
-              <SelectItem
-                value="Generate Captions"
-                className="hover:bg-gray-50"
-              >
-                Generate Captions
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <label
+              className="text-sm text-gray-500 font-medium mb-2 block"
+              htmlFor="action"
+            >
+              Action
+            </label>
+            <Controller
+              control={control}
+              rules={{ required: "This field is required" }}
+              name="action"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setSelectValue(value);
+                    setIsSubscribed(false);
+                    setActions((a: any) => [
+                      ...a,
+                      { cardId: cardId, action: value },
+                    ]);
+                  }}
+                >
+                  <SelectTrigger className="w-full border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                    <SelectValue placeholder="Select Action" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-gray-200">
+                    <SelectItem
+                      value="Generate a thumbnail"
+                      className="hover:bg-gray-50"
+                    >
+                      Generate a thumbnail
+                    </SelectItem>
+                    <SelectItem
+                      value="Generate Captions"
+                      className="hover:bg-gray-50"
+                    >
+                      Generate Captions
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.action?.type === "required" && (
+              <p role="alert" className="text-red-500 text-sm mt-2">
+                You must select an action
+              </p>
+            )}
+            <br />
+            <AnimatedSubscribeButtonDemo
+              isSubscribed={isSubscribed}
+              setIsSubscribed={setIsSubscribed}
+              nodes={nodes as any}
+              setNodes={setNodes as any}
+              trigger={trigger}
+              cardId={cardId}
+              t1="Submit"
+              t2="Submitted"
+              actions={actions}
+              setActions={setActions}
+            />
+          </form>
         )}
       </CardContent>
-      <CardFooter className="border-t border-gray-100 pt-4">
-        <AnimatedSubscribeButtonDemo
-          isSubscribed={isSubscribed}
-          setIsSubscribed={setIsSubscribed}
-          nodes={nodes as any}
-          setNodes={setNodes as any}
-          trigger={trigger}
-          cardId={cardId}
-          t1="Submit"
-          t2="Submitted"
-          actions={actions}
-          setActions={setActions}
-        />
-      </CardFooter>
     </Card>
   );
 }
