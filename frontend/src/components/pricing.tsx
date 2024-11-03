@@ -13,7 +13,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 
 export default function Pricing() {
   return (
-    <section>
+    <section className="mb-20">
       <h2 className="text-center text-4xl font-bold mb-8">Pricing</h2>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mx-4 sm:mx-60">
         <Card className="p-8">
