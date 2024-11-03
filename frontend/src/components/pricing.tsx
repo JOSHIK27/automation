@@ -10,8 +10,10 @@ import {
 } from "./ui/card";
 import { Separator } from "./ui/separator";
 import { FaCircleCheck } from "react-icons/fa6";
+import CheckoutBtn from "./checkoutbtn";
+import { Session } from "next-auth";
 
-export default function Pricing() {
+export default function Pricing({ session }: { session: Session | null }) {
   return (
     <section className="mb-20">
       <h2 className="text-center text-4xl font-bold mb-8">Pricing</h2>
@@ -84,7 +86,22 @@ export default function Pricing() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full rounded-full py-4">Purchase</Button>
+            {session ? (
+              <CheckoutBtn
+                price={2000}
+                quantity={1}
+                productName="Automation.ai"
+              />
+            ) : (
+              <Button
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="w-full rounded-full py-4"
+              >
+                Login to Checkout
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </div>
