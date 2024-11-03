@@ -22,8 +22,8 @@ export async function POST(request: Request) {
         },
       ],
       mode: "payment",
-      success_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/cancel",
+      success_url: process.env.NEXT_PUBLIC_URL + "/success",
+      cancel_url: process.env.NEXT_PUBLIC_URL + "/cancel",
     });
     return NextResponse.json({ sessionId: session.id });
   } catch (error) {
