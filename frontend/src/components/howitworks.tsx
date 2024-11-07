@@ -6,8 +6,8 @@ export default function HowItWorks() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4 relative">
         {/* Step 1 */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center mb-4">
-            <span className="text-neutral-800 text-2xl">1</span>
+          <div className="w-16 h-16 bg-teal rounded-full flex items-center justify-center mb-4">
+            <span className="text-white text-2xl">1</span>
           </div>
           <h3 className="text-xl font-semibold mb-2">Create Content</h3>
           <p className="text-gray-600">
@@ -37,8 +37,8 @@ export default function HowItWorks() {
 
         {/* Step 2 */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center mb-4">
-            <span className="text-neutral-800 text-2xl">2</span>
+          <div className="w-16 h-16 bg-teal rounded-full flex items-center justify-center mb-4">
+            <span className="text-white text-2xl">2</span>
           </div>
           <h3 className="text-xl font-semibold mb-2">Upload Video</h3>
           <p className="text-gray-600">
@@ -68,8 +68,8 @@ export default function HowItWorks() {
 
         {/* Step 3 */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center mb-4">
-            <span className="text-neutral-800 text-2xl">3</span>
+          <div className="w-16 h-16 bg-teal rounded-full flex items-center justify-center mb-4">
+            <span className="text-white text-2xl">3</span>
           </div>
           <h3 className="text-xl font-semibold mb-2">Auto-Generate Metadata</h3>
           <p className="text-gray-600">

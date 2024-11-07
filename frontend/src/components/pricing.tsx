@@ -21,7 +21,7 @@ export default function Pricing({ session }: { session: Session | null }) {
         <Card className="p-8">
           <CardHeader>
             <div className="mb-4">
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              <span className="bg-gray-100 text-black text-xs font-medium px-2.5 py-0.5 rounded">
                 Starter
               </span>
             </div>
@@ -59,7 +59,7 @@ export default function Pricing({ session }: { session: Session | null }) {
         <Card className="p-8">
           <CardHeader>
             <div className="mb-4">
-              <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              <span className="bg-teal-100 text-teal text-xs font-medium px-2.5 py-0.5 rounded">
                 Premium
               </span>
             </div>
@@ -73,15 +73,15 @@ export default function Pricing({ session }: { session: Session | null }) {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 mb-4">
-              <FaCircleCheck className="text-black" />
+              <FaCircleCheck className="text-teal" />
               <p>Feature 1</p>
             </div>
             <div className="flex items-center gap-2 mb-4">
-              <FaCircleCheck className="text-black" />
+              <FaCircleCheck className="text-teal" />
               <p>Feature 2</p>
             </div>
             <div className="flex items-center gap-2 mb-4">
-              <FaCircleCheck className="text-black" />
+              <FaCircleCheck className="text-teal" />
               <p>Feature 3</p>
             </div>
           </CardContent>
@@ -97,7 +97,7 @@ export default function Pricing({ session }: { session: Session | null }) {
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="w-full rounded-full py-4"
+                className="w-full rounded-full py-4 bg-teal text-white hover:bg-teal/80"
               >
                 Login to Checkout
               </Button>

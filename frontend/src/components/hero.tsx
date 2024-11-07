@@ -3,7 +3,7 @@
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { signIn, useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import AnimatedShinyText from "./ui/animated-shiny-text";
@@ -15,11 +15,11 @@ export function AnimatedShinyTextDemo() {
     <div className="z-10 flex items-center justify-center mb-4">
       <div
         className={cn(
-          "group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+          "group rounded-full border border-black/5 bg-teal-50 text-base text-white transition-all ease-in hover:cursor-pointer dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
         )}
       >
         <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
-          <span>
+          <span className="">
             <BsLightningChargeFill className="inline mr-2" />
             Supercharge Your Workflow
           </span>
@@ -49,7 +49,7 @@ export default function Hero() {
       </div>
       <div className="flex items-center justify-center">
         <FadeText
-          className="text-[72px] z-20 font-[600] leading-[72px] text-center bg-gradient-to-b from-black to-black/50 bg-clip-text text-transparent"
+          className="text-[72px] z-20 font-[600] leading-[72px] text-center text-teal"
           direction="up"
           framerProps={{
             show: { transition: { delay: 0.3 } },
@@ -62,12 +62,18 @@ export default function Hero() {
         Focus on creating content, not managing uploads
       </h3>
       <div className="flex justify-center gap-[16px] mt-[32px] z-20">
-        <RainbowButton
-          className="z-20 px-12 py-4"
+        {/* <RainbowButton
+          className="z-20 px-12 py-4 bg-teal"
           onClick={() => router.push("/workflow")}
         >
           Get Started
-        </RainbowButton>
+        </RainbowButton> */}
+        <Button
+          className="z-20 px-12 py-4 bg-teal text-white hover:bg-teal/80"
+          onClick={() => router.push("/workflow")}
+        >
+          Get Started
+        </Button>
         {session ? (
           <RainbowButton
             className={`${cn(

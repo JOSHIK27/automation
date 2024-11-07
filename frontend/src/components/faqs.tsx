@@ -9,7 +9,11 @@ export default function Faqs() {
   return (
     <section>
       <h2 className="text-center text-4xl font-bold mb-8">Questions ?</h2>
-      <Accordion className="mx-4 sm:mx-60" type="single" collapsible>
+      <Accordion
+        className="mx-4 sm:mx-80 bg-gray-100 p-8 rounded-lg border-gray-200 border-[1px]"
+        type="single"
+        collapsible
+      >
         <AccordionItem value="item-1">
           <AccordionTrigger className="text-lg font-semibold">
             Question 1

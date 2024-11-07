@@ -32,7 +32,10 @@ export default function CheckoutBtn({
     }
   };
   return (
-    <Button className="w-full rounded-full py-4" onClick={handleCheckout}>
+    <Button
+      className="w-full rounded-full py-4 bg-teal text-white hover:bg-teal/80"
+      onClick={handleCheckout}
+    >
       Purchase
     </Button>
   );

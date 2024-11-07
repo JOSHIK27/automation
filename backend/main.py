@@ -1,10 +1,17 @@
 from fastapi import FastAPI
 from routers import users, webhooks
+from db.db import engine
+from models.user import User
+from sqlmodel import SQLModel
 
 app = FastAPI()
 
 app.include_router(users.router)
 app.include_router(webhooks.router)
+
+
+SQLModel.metadata.create_all(engine)
+
 
 
 

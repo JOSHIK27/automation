@@ -5,6 +5,7 @@ import Pricing from "@/components/pricing";
 import Benifits from "@/components/benifits";
 import Faqs from "@/components/faqs";
 import { auth } from "../../auth";
+import CTA from "@/components/cta";
 export default async function Home() {
   const session = await auth();
 
@@ -15,6 +16,7 @@ export default async function Home() {
       <Benifits />
       <Pricing session={session} />
       <Faqs />
+      <CTA />
       <Footer />
     </>
   );

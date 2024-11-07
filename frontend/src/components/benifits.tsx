@@ -6,9 +6,9 @@ export default function Benifits() {
   return (
     <section className="mb-20">
       <h2 className="text-center text-4xl font-bold mb-8">Benefits</h2>
-      <div className="mx-8 bg-gray-100 p-12 rounded-lg">
+      <div className="mx-8 bg-gray-100 p-12 rounded-lg border-gray-200 border-[1px]">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-          <div className="flex flex-col items-center gap-4 p-6 rounded-lg">
+          <div className="flex flex-col items-center gap-4 p-6 rounded-lg bg-white">
             <AiOutlineClockCircle className="text-3xl text-black mr-2" />
             <h3 className="text-xl font-semibold">Time Saver</h3>
 
@@ -18,7 +18,7 @@ export default function Benifits() {
               most.
             </p>
           </div>
-          <div className="flex flex-col items-center gap-4 p-6 rounded-lg">
+          <div className="flex flex-col items-center gap-4 p-6 rounded-lg bg-white">
             <BsPiggyBank className="text-3xl text-black mr-2" />
             <h3 className="text-xl font-semibold">Cost Effective</h3>
             <p className="text-gray-600 text-center">
@@ -27,7 +27,7 @@ export default function Benifits() {
               cost.
             </p>
           </div>
-          <div className="flex flex-col items-center gap-4 p-6 rounded-lg">
+          <div className="flex flex-col items-center gap-4 p-6 rounded-lg bg-white">
             <RiRobot2Line className="text-3xl text-black mr-2" />
             <h3 className="text-xl font-semibold">AI Powered</h3>
             <p className="text-gray-600 text-center">
