@@ -67,11 +67,11 @@ export default function TriggerCard({
           className="absolute right-2 top-2 p-2 hover:bg-gray-50 rounded-full transition-all duration-200"
           onClick={() => setShowCard(false)}
         >
-          <IoClose className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+          <IoClose className="w-5 h-5 text-teal hover:text-red-500" />
         </button>
         <CardTitle className="text-2xl font-bold text-gray-900">
           <div className="flex items-center gap-2">
-            <FaYoutube className="w-6 h-6 text-gray-600" />
+            <FaYoutube className="w-6 h-6 text-teal" />
             YouTube
           </div>
         </CardTitle>

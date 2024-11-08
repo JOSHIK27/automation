@@ -27,7 +27,7 @@ export function AnimatedSubscribeButtonDemo({
 }) {
   return (
     <AnimatedSubscribeButton
-      buttonColor="black"
+      buttonColor="teal"
       buttonTextColor="white"
       subscribeStatus={false}
       nodes={nodes}
