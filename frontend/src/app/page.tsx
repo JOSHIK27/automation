@@ -8,6 +8,18 @@ import { auth } from "../../auth";
 import CTA from "@/components/cta";
 export default async function Home() {
   const session = await auth();
+  console.log(session?.user);
+  const resp = await fetch("http://localhost:8000/user", {
+    method: "POST",
+    body: JSON.stringify({
+      name: session?.user?.name,
+      email: session?.user?.email,
+      image: session?.user?.image,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   return (
     <>

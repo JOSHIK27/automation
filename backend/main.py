@@ -1,13 +1,26 @@
 from fastapi import FastAPI
-from routers import users, webhooks
-from db.db import engine
-from models.user import User
+from fastapi.middleware.cors import CORSMiddleware
+from .routers.users import router as users_router
+from .routers.webhooks import router as webhooks_router
+from .db.db import engine
+from .models.user import User
 from sqlmodel import SQLModel
+
 
 app = FastAPI()
 
-app.include_router(users.router)
-app.include_router(webhooks.router)
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(users_router)
+app.include_router(webhooks_router)
 
 
 SQLModel.metadata.create_all(engine)
