@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from ..schemas.users import User
+from ...schemas.users import User
 from sqlmodel import Session
-from ..db.db import engine
-from ..models.user import User as UserModal
+from ...db.db import engine
+from ...models.user import User as UserModal
 
 
 router = APIRouter()
