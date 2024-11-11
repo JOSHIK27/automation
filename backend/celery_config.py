@@ -1,21 +1,22 @@
-import os
 from celery import Celery
-from dotenv import load_dotenv
 
-load_dotenv()
+# Use local Redis
+REDIS_URL = "redis://localhost:6379"
 
-CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
+celery_app = Celery(
+    'tasks',
+    broker=REDIS_URL,
+    # backend=REDIS_URL,
+)
 
-celery_app = Celery('tasks',
-                    broker=CELERY_BROKER_URL,
-                    broker_use_ssl={
-                        'ssl_cert_reqs': None  # Required for Upstash
-                    })
+celery_app.conf.result_backend = REDIS_URL
 
+# Add these configurations
 celery_app.conf.update(
+    result_expires=3600,  # Results expire in 1 hour
+    accept_content=['json'],
     task_serializer='json',
     result_serializer='json',
-    accept_content=['json'],
-    timezone='UTC',
-    enable_utc=True,
+    broker_connection_retry_on_startup=True,
 )
+
