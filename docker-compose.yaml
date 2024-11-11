@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  fastapi-server:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - celery-worker
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - IDEOGRAM_API_KEY=${IDEOGRAM_API_KEY}
+      - PYTHONPATH=/app
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - backend/.env
+    ports:
+      - 8000:80
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+  celery-worker:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    command: celery -A celery_config worker --loglevel=info
+    depends_on:
+      - redis
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - IDEOGRAM_API_KEY=${IDEOGRAM_API_KEY}
+      - PYTHONPATH=/app
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - backend/.env

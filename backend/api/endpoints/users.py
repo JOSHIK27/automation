@@ -1,10 +1,16 @@
 from fastapi import APIRouter
-from ...schemas.users import User
+# from ...schemas.users import User
 from sqlmodel import Session
-from ...db.db import engine
-from ...models.user import User as UserModal
-from ...celery_config import celery_app
-from ...tasks import generate_image_task
+# from ...db.db import engine
+# from ...models.user import User as UserModal
+# from ...celery_config import celery_app
+# from ...tasks import generate_image_task
+from schemas.users import User
+from db.db import engine
+from models.user import User as UserModal
+from celery_config import celery_app
+from tasks import generate_image_task
+
 router = APIRouter()
 
 @router.post("/user")

@@ -1,4 +1,4 @@
-from backend.celery_config import celery_app
+from celery_config import celery_app
 import time
 import requests
 from dotenv import load_dotenv

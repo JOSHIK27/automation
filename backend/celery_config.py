@@ -1,12 +1,16 @@
 from celery import Celery
+from dotenv import load_dotenv  
+import os
+
+load_dotenv()
 
 # Use local Redis
-REDIS_URL = "redis://localhost:6379"
+REDIS_URL = os.getenv("CELERY_BROKER_URL")
 
 celery_app = Celery(
     'tasks',
     broker=REDIS_URL,
-    # backend=REDIS_URL,
+    backend=REDIS_URL,
 )
 
 celery_app.conf.result_backend = REDIS_URL

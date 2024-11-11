@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .api.endpoints.users import router as users_router
-from .api.endpoints.webhooks import router as webhooks_router
-from .db.db import engine
-from .models.user import User
+from api.endpoints.users import router as users_router
+from api.endpoints.webhooks import router as webhooks_router
+from db.db import engine
 from sqlmodel import SQLModel
 
 
