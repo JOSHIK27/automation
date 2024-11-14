@@ -1,5 +1,4 @@
-from celery_config import celery_app
-import time
+from backend.celery_config import celery_app
 import requests
 from dotenv import load_dotenv
 import os

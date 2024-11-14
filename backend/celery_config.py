@@ -8,9 +8,9 @@ load_dotenv()
 REDIS_URL = os.getenv("CELERY_BROKER_URL")
 
 celery_app = Celery(
-    'tasks',
+    'backend',
     broker=REDIS_URL,
-    backend=REDIS_URL,
+    include=["backend.tasks"]
 )
 
 celery_app.conf.result_backend = REDIS_URL
