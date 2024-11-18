@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { BsLightningChargeFill } from "react-icons/bs";
-import { auth } from "../../auth";
+import logo from "../../public/images/cs.png";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -29,7 +29,8 @@ export function Nav() {
             <NavigationMenuItem className="mr-6">
               <Link href="/">
                 <div className="flex items-center ml-2">
-                  <BsLightningChargeFill className="h-6 w-6 mr-2 text-teal-700" />
+                  {/* <BsLightningChargeFill className="h-6 w-6 mr-2 text-teal-700" /> */}
+                  <img src={logo.src} alt="logo" className="h-10 w-10 mr-2" />
                   <h1 className="text-2xl font-bold pt-1">Automate</h1>
                 </div>
               </Link>

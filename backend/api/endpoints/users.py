@@ -1,12 +1,14 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 from backend.schemas.users import User
 from sqlmodel import Session
 from backend.db.db import engine
 from backend.models.user import User as UserModal
 from backend.celery_config import celery_app
 from backend.tasks import generate_image_task
-
 router = APIRouter() 
+
+
+
 
 @router.get("/")
 def sample():
@@ -20,6 +22,7 @@ def addUser(user: User):
         session.commit()
     return {"message": "Success"}
  
+
 
 @router.post("/generate-image")
 def generate_image_handler(prompt: str):
