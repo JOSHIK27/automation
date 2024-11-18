@@ -36,7 +36,7 @@ export default async function Home() {
   );
 }
 
-export async function getSessionToken() {
+async function getSessionToken() {
   const cookieStore = await cookies();
   const sessionToken = cookieStore
     .getAll()
