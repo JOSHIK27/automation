@@ -1,18 +1,18 @@
 "use client";
 import {
   addEdge,
+  MarkerType,
   ReactFlow,
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Background } from "@xyflow/react";
-import CustomEdge from "@/components/customedge";
 import { BackgroundVariant } from "@xyflow/react";
 import { useCallback, useEffect, useState } from "react";
 import CustomNode from "@/components/customnode";
+import { ConnectionLineType } from "@xyflow/react";
 import { useSession } from "next-auth/react";
-
 import { initialEdges, initialNodes } from "@/lib/constants/workflow";
 import TriggerCard from "@/components/triggercard";
 import { useRouter } from "next/navigation";
@@ -36,7 +36,7 @@ export default function Flow() {
 
   const onConnect = useCallback(
     (connection: any) => {
-      const edge = { ...connection, type: "custom-edge" };
+      const edge = { ...connection, type: ConnectionLineType.SimpleBezier };
       setEdges((eds) => addEdge(edge, eds));
     },
     [setEdges]
@@ -82,14 +82,15 @@ export default function Flow() {
           id: String(Number(node.id) + 1),
           position: {
             x: nodes[nodes.length - 1].position.x,
-            y: nodes[nodes.length - 1].position.y + 400,
+            y: nodes[nodes.length - 1].position.y + 250,
           },
           data: {
             label: "Select the action that you want to perform",
             type: "Action",
           },
           type: "custom",
-          draggable: false,
+          draggable: true,
+          animated: true,
         },
       ]);
       setEdges((eds) => [
@@ -98,7 +99,14 @@ export default function Flow() {
           id: node.id + "->" + String(Number(node.id) + 1),
           source: node.id,
           target: String(Number(node.id) + 1),
-          type: "custom-edge",
+          type: ConnectionLineType.SimpleBezier,
+          animated: true,
+          markerEnd: {
+            type: MarkerType.Arrow,
+            width: 30,
+            height: 30,
+            color: "#008080",
+          },
         },
       ]);
     } else {
@@ -109,7 +117,7 @@ export default function Flow() {
           return {
             ...n,
             id: String(Number(n.id) + 1),
-            position: { x: n.position.x, y: n.position.y + 400 },
+            position: { x: n.position.x, y: n.position.y + 250 },
           };
         }
         return n;
@@ -118,14 +126,15 @@ export default function Flow() {
         id: String(Number(node.id) + 1),
         position: {
           x: nodes[nodes.length - 1].position.x,
-          y: nodes[Number(node.id) - 1].position.y + 400,
+          y: nodes[Number(node.id) - 1].position.y + 250,
         },
         data: {
           label: "Select the action that you want to perform",
           type: "Action",
         },
         type: "custom",
-        draggable: false,
+        draggable: true,
+        animated: true,
       };
       updatedNodes.push(newNode);
       updatedNodes.sort((a, b) => Number(a.id) - Number(b.id));
@@ -139,6 +148,13 @@ export default function Flow() {
               String(Number(edge.target) + 1),
             source: String(Number(edge.source) + 1),
             target: String(Number(edge.target) + 1),
+            animated: true,
+            markerEnd: {
+              type: MarkerType.Arrow,
+              width: 30,
+              height: 30,
+              color: "#008080",
+            },
           };
         }
         return edge;
@@ -148,16 +164,19 @@ export default function Flow() {
         id: String(Number(node.id) + 1) + "->" + String(Number(node.id) + 2),
         source: String(Number(node.id) + 1),
         target: String(Number(node.id) + 2),
-        type: "custom-edge",
+        type: ConnectionLineType.SimpleBezier,
+        animated: true,
+        markerEnd: {
+          type: MarkerType.Arrow,
+          width: 30,
+          height: 30,
+          color: "#008080",
+        },
       });
       console.log(updatedNodes, newEdges);
       setNodes(updatedNodes);
       setEdges(newEdges);
     }
-  };
-
-  const edgeTypes = {
-    "custom-edge": CustomEdge,
   };
 
   const nodeTypes = {
@@ -189,10 +208,11 @@ export default function Flow() {
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
         onConnect={onConnect}
-        edgeTypes={edgeTypes}
+        // edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
-        snapToGrid={true}
+        // snapToGrid={true}
         snapGrid={[20, 20]}
+        connectionLineType={ConnectionLineType.SmoothStep}
       >
         <Background
           variant={BackgroundVariant.Dots}
