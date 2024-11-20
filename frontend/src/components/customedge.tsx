@@ -1,8 +1,7 @@
 import {
   BaseEdge,
-  getStraightPath,
-  getBezierPath,
   getSimpleBezierPath,
+  EdgeLabelRenderer,
 } from "@xyflow/react";
 
 type CustomEdgeProps = {
@@ -20,7 +19,7 @@ export default function CustomEdge({
   targetX,
   targetY,
 }: CustomEdgeProps) {
-  const [edgePath] = getSimpleBezierPath({
+  const [edgePath, labelX, labelY] = getSimpleBezierPath({
     sourceX,
     sourceY,
     targetX,
@@ -30,6 +29,16 @@ export default function CustomEdge({
   return (
     <>
       <BaseEdge id={id} path={edgePath} />
+      <EdgeLabelRenderer>
+        <div
+          className="button-edge__label nodrag nopan"
+          style={{
+            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+          }}
+        >
+          <button className="button-edge__button">+</button>
+        </div>
+      </EdgeLabelRenderer>
     </>
   );
 }

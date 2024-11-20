@@ -96,3 +96,39 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.button-edge__label {
+  position: absolute;
+  pointer-events: all;
+  transform-origin: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-edge__button {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #f3f3f4;
+  color: #333;
+  background-color: #f3f3f4;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 11px;
+  padding: 0;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-edge__button:hover {
+  background-color: #f3f3f4;
+  border-color: #f3f3f4;
+  transform: scale(1.05);
+}
+
+.button-edge__button:active {
+  transform: scale(0.95);
+}

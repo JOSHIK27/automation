@@ -23,6 +23,16 @@ export const initialNodes = [
     draggable: true,
     animated: true,
   },
+  {
+    id: "customWithHandle",
+    position: { x: 588, y: 550 },
+    data: {
+      label: "",
+      type: "",
+    },
+    type: "customWithHandle",
+    draggable: true,
+  },
 ];
 
 export const initialEdges = [
@@ -30,7 +40,7 @@ export const initialEdges = [
     id: "1->2",
     source: "1",
     target: "2",
-    type: ConnectionLineType.SimpleBezier,
+    type: "custom",
     animated: true,
     markerEnd: {
       type: MarkerType.Arrow,
@@ -38,5 +48,11 @@ export const initialEdges = [
       height: 30,
       color: "#008080",
     },
+  },
+  {
+    id: "2->customWithHandle",
+    source: "2",
+    target: "customWithHandle",
+    animated: true,
   },
 ];

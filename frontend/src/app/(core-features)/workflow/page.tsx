@@ -11,12 +11,14 @@ import { Background } from "@xyflow/react";
 import { BackgroundVariant } from "@xyflow/react";
 import { useCallback, useEffect, useState } from "react";
 import CustomNode from "@/components/customnode";
+import CustomEdge from "@/components/customedge";
 import { ConnectionLineType } from "@xyflow/react";
 import { useSession } from "next-auth/react";
 import { initialEdges, initialNodes } from "@/lib/constants/workflow";
 import TriggerCard from "@/components/triggercard";
 import { useRouter } from "next/navigation";
 import HashLoader from "react-spinners/HashLoader";
+import CustomNodeWithHandle from "@/components/customnodehandle";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -59,6 +61,21 @@ export default function Flow() {
     return null;
   }
 
+  // let customnodewithhandleY = 0,
+  //   customnodewithhandleX = 0;
+  // nodes.forEach((node) => {
+  //   customnodewithhandleY = Math.max(customnodewithhandleY, node.position.y);
+  //   customnodewithhandleX = Math.max(customnodewithhandleX, node.position.x);
+  // });
+  // customnodewithhandleY += 250;
+
+  // const customNodeWithHandle = {
+  //   id: "customWithHandle",
+  //   type: "customWithHandle",
+  //   data: { label: "Custom Node with Handle", type: "Custom Node with Handle" },
+  //   position: { x: customnodewithhandleX, y: customnodewithhandleY },
+  // };
+
   const onNodeClick = (event: any, node: any) => {
     if (event.target.tagName === "SPAN") {
       setShowCard(true);
@@ -99,7 +116,7 @@ export default function Flow() {
           id: node.id + "->" + String(Number(node.id) + 1),
           source: node.id,
           target: String(Number(node.id) + 1),
-          type: ConnectionLineType.SimpleBezier,
+          type: "custom",
           animated: true,
           markerEnd: {
             type: MarkerType.Arrow,
@@ -155,6 +172,7 @@ export default function Flow() {
               height: 30,
               color: "#008080",
             },
+            type: "custom",
           };
         }
         return edge;
@@ -164,7 +182,7 @@ export default function Flow() {
         id: String(Number(node.id) + 1) + "->" + String(Number(node.id) + 2),
         source: String(Number(node.id) + 1),
         target: String(Number(node.id) + 2),
-        type: ConnectionLineType.SimpleBezier,
+        // type: ConnectionLineType.SimpleBezier,
         animated: true,
         markerEnd: {
           type: MarkerType.Arrow,
@@ -172,8 +190,8 @@ export default function Flow() {
           height: 30,
           color: "#008080",
         },
+        type: "custom",
       });
-      console.log(updatedNodes, newEdges);
       setNodes(updatedNodes);
       setEdges(newEdges);
     }
@@ -181,6 +199,10 @@ export default function Flow() {
 
   const nodeTypes = {
     custom: CustomNode,
+    customWithHandle: CustomNodeWithHandle,
+  };
+  const edgeTypes = {
+    custom: CustomEdge,
   };
 
   return (
@@ -208,9 +230,9 @@ export default function Flow() {
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
         onConnect={onConnect}
-        // edgeTypes={edgeTypes}
+        edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
-        // snapToGrid={true}
+        snapToGrid={true}
         snapGrid={[20, 20]}
         connectionLineType={ConnectionLineType.SmoothStep}
       >
