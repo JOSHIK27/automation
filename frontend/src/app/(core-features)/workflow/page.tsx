@@ -60,64 +60,79 @@ export default function Flow() {
   if (!session) {
     return null;
   }
-  console.log(nodes, edges);
-  // let customnodewithhandleY = 0,
-  //   customnodewithhandleX = 0;
-  // nodes.forEach((node) => {
-  //   customnodewithhandleY = Math.max(customnodewithhandleY, node.position.y);
-  //   customnodewithhandleX = Math.max(customnodewithhandleX, node.position.x);
-  // });
-  // customnodewithhandleY += 250;
-
-  // const customNodeWithHandle = {
-  //   id: "customWithHandle",
-  //   type: "customWithHandle",
-  //   data: { label: "Custom Node with Handle", type: "Custom Node with Handle" },
-  //   position: { x: customnodewithhandleX, y: customnodewithhandleY },
-  // };
 
   const onEdgeClick = (event: any, edge: any) => {
     const { source, target } = edge;
-    let flag = false;
-    edges.forEach((e) => {
-      if (e.source === source) {
-        flag = true;
-      }
-    });
-    if (!flag) {
-      setNodes((nds) => [
-        ...nds,
-        {
-          id: String(Number(source) + 1),
-          position: {
-            x: nodes[nodes.length - 1].position.x,
-            y: nodes[nodes.length - 1].position.y + 250,
-          },
-          data: {
-            label: "Select the action that you want to perform",
-            type: "Action",
-          },
-          type: "custom",
-          draggable: true,
-          animated: true,
+    console.log(source, target);
+    let flag = target === "customWithHandle";
+    console.log(flag);
+    if (flag) {
+      let newnodexposition = 0,
+        newnodeyposition = 0;
+      nodes.forEach((n) => {
+        if (n.id !== "customWithHandle") {
+          newnodexposition = Math.max(newnodexposition, n.position.x);
+          newnodeyposition = Math.max(newnodeyposition, n.position.y);
+        }
+      });
+      const newnodes = [];
+      newnodes.push({
+        id: String(Number(source) + 1),
+        position: {
+          x: newnodexposition,
+          y: newnodeyposition + 250,
         },
-      ]);
-      setEdges((eds) => [
-        ...eds,
-        {
-          id: source + "->" + String(Number(source) + 1),
-          source: source,
-          target: String(Number(source) + 1),
-          type: "custom",
-          animated: true,
-          markerEnd: {
-            type: MarkerType.Arrow,
-            width: 30,
-            height: 30,
-            color: "#008080",
-          },
+        data: {
+          label: "Select the action that you want to perform",
+          type: "Action",
         },
-      ]);
+        type: "custom",
+        draggable: true,
+        animated: true,
+      });
+      newnodes.push({
+        id: "customWithHandle",
+        position: {
+          x: 588,
+          y: newnodeyposition + 200 + 250,
+        },
+        data: {
+          label: "",
+          type: "",
+        },
+        type: "customWithHandle",
+        draggable: true,
+      });
+      const updatedNodes = nodes.filter((n) => n.id !== "customWithHandle");
+      updatedNodes.push(newnodes[0]);
+      updatedNodes.push(newnodes[1]);
+      setNodes(updatedNodes);
+
+      const updatedEdges = edges.filter((e) => e.target !== target);
+      console.log(updatedEdges);
+
+      updatedEdges.push({
+        id: `${source}->${String(Number(source) + 1)}`,
+        source: source,
+        target: String(Number(source) + 1),
+        type: "custom",
+        animated: true,
+        markerEnd: {
+          type: MarkerType.Arrow,
+          width: 30,
+          height: 30,
+          color: "#008080",
+        },
+      });
+      console.log(updatedEdges);
+      updatedEdges.push({
+        id: `${String(Number(source) + 1)}->${"customWithHandle"}`,
+        source: String(Number(source) + 1),
+        target: "customWithHandle",
+        animated: true,
+      });
+      console.log(updatedEdges);
+      setEdges(updatedEdges);
     } else {
       const currentNodes = nodes;
       const currentEdges = edges;
