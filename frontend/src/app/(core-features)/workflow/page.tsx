@@ -60,7 +60,7 @@ export default function Flow() {
   if (!session) {
     return null;
   }
-
+  console.log(nodes, edges);
   // let customnodewithhandleY = 0,
   //   customnodewithhandleX = 0;
   // nodes.forEach((node) => {
@@ -76,27 +76,19 @@ export default function Flow() {
   //   position: { x: customnodewithhandleX, y: customnodewithhandleY },
   // };
 
-  const onNodeClick = (event: any, node: any) => {
-    if (event.target.tagName === "SPAN") {
-      setShowCard(true);
-      setCardId(node.id);
-      return;
-    }
-    if (event.target.tagName !== "BUTTON") {
-      return;
-    }
+  const onEdgeClick = (event: any, edge: any) => {
+    const { source, target } = edge;
     let flag = false;
-    edges.forEach((edge) => {
-      if (edge.source === node.id) {
+    edges.forEach((e) => {
+      if (e.source === source) {
         flag = true;
       }
     });
-
     if (!flag) {
       setNodes((nds) => [
         ...nds,
         {
-          id: String(Number(node.id) + 1),
+          id: String(Number(source) + 1),
           position: {
             x: nodes[nodes.length - 1].position.x,
             y: nodes[nodes.length - 1].position.y + 250,
@@ -113,9 +105,9 @@ export default function Flow() {
       setEdges((eds) => [
         ...eds,
         {
-          id: node.id + "->" + String(Number(node.id) + 1),
-          source: node.id,
-          target: String(Number(node.id) + 1),
+          id: source + "->" + String(Number(source) + 1),
+          source: source,
+          target: String(Number(source) + 1),
           type: "custom",
           animated: true,
           markerEnd: {
@@ -129,8 +121,17 @@ export default function Flow() {
     } else {
       const currentNodes = nodes;
       const currentEdges = edges;
-      const updatedNodes = currentNodes.map((n) => {
-        if (n.id > node.id) {
+      let updatedNodes = currentNodes.map((n) => {
+        if (n.id === "customWithHandle") {
+          return {
+            ...n,
+            position: {
+              x: n.position.x,
+              y: n.position.y + 200,
+            },
+          };
+        }
+        if (Number(n.id) > Number(source)) {
           return {
             ...n,
             id: String(Number(n.id) + 1),
@@ -139,11 +140,34 @@ export default function Flow() {
         }
         return n;
       });
+      let maxnodeheight = 0;
+      updatedNodes.forEach((node) => {
+        if (node.id !== "customWithHandle") {
+          maxnodeheight = Math.max(maxnodeheight, node.position.y);
+        }
+      });
+      updatedNodes = updatedNodes.map((node) => {
+        if (node.id === "customWithHandle") {
+          return {
+            ...node,
+            position: { x: node.position.x, y: maxnodeheight + 200 },
+          };
+        }
+        return node;
+      });
+      let newnodexposition = 0,
+        newnodeyposition = 0;
+      updatedNodes.forEach((n) => {
+        if (n.id === source) {
+          newnodexposition = n.position.x;
+          newnodeyposition = n.position.y + 250;
+        }
+      });
       const newNode = {
-        id: String(Number(node.id) + 1),
+        id: String(Number(source) + 1),
         position: {
-          x: nodes[nodes.length - 1].position.x,
-          y: nodes[Number(node.id) - 1].position.y + 250,
+          x: newnodexposition,
+          y: newnodeyposition,
         },
         data: {
           label: "Select the action that you want to perform",
@@ -156,7 +180,10 @@ export default function Flow() {
       updatedNodes.push(newNode);
       updatedNodes.sort((a, b) => Number(a.id) - Number(b.id));
       const newEdges: any[] = currentEdges.map((edge) => {
-        if (Number(edge.source) > Number(node.id)) {
+        if (
+          edge.target !== "customWithHandle" &&
+          Number(edge.source) > Number(source)
+        ) {
           return {
             ...edge,
             id:
@@ -175,13 +202,28 @@ export default function Flow() {
             type: "custom",
           };
         }
+        if (edge.target === "customWithHandle") {
+          return {
+            ...edge,
+            id: String(updatedNodes.length - 1) + "->" + "customWithHandle",
+            source: String(updatedNodes.length - 1),
+            target: "customWithHandle",
+            animated: true,
+            markerEnd: {
+              type: MarkerType.Arrow,
+              width: 30,
+              height: 30,
+              color: "#008080",
+            },
+          };
+        }
         return edge;
       });
 
       newEdges.push({
-        id: String(Number(node.id) + 1) + "->" + String(Number(node.id) + 2),
-        source: String(Number(node.id) + 1),
-        target: String(Number(node.id) + 2),
+        id: String(Number(source) + 1) + "->" + String(Number(source) + 2),
+        source: String(Number(source) + 1),
+        target: String(Number(source) + 2),
         // type: ConnectionLineType.SimpleBezier,
         animated: true,
         markerEnd: {
@@ -194,6 +236,14 @@ export default function Flow() {
       });
       setNodes(updatedNodes);
       setEdges(newEdges);
+    }
+  };
+
+  const onNodeClick = (event: any, node: any) => {
+    if (event.target.tagName === "SPAN") {
+      setShowCard(true);
+      setCardId(node.id);
+      return;
     }
   };
 
@@ -229,6 +279,7 @@ export default function Flow() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
+        onEdgeClick={onEdgeClick}
         onConnect={onConnect}
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}

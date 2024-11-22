@@ -36,7 +36,12 @@ export default function CustomEdge({
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
           }}
         >
-          <button className="button-edge__button">+</button>
+          <button
+            onClick={() => console.log("clicked")}
+            className="button-edge__button"
+          >
+            +
+          </button>
         </div>
       </EdgeLabelRenderer>
     </>

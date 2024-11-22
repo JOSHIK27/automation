@@ -1,6 +1,7 @@
 import { Handle, Position } from "@xyflow/react";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { Separator } from "./ui/separator";
 
 export default function CustomNode({
   data,
@@ -28,13 +29,14 @@ export default function CustomNode({
           />
         </button>
       </div>
+      <Separator className="my-3" />
       <span className="text-base font-normal text-gray-900 block mb-3 leading-relaxed">
         {data.label}
       </span>
-      <button className="w-full bg-teal text-white font-medium py-2 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2 border border-gray-200 hover:border-gray-300 hover:translate-y-[-2px] active:translate-y-[1px]">
+      {/* <button className="w-full bg-teal text-white font-medium py-2 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2 border border-gray-200 hover:border-gray-300 hover:translate-y-[-2px] active:translate-y-[1px]">
         <BsFillPlusCircleFill className="text-white text-base" />
         Append Node
-      </button>
+      </button> */}
       <Handle
         onConnect={(params) => console.log("handle onConnect", params)}
         type="source"
