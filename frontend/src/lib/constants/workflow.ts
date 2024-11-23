@@ -7,10 +7,10 @@ export const initialNodes = [
     data: {
       label: "Select the event that you want to trigger",
       type: "Trigger",
+      selected: false,
     },
     type: "custom",
     draggable: true,
-    animated: true,
   },
   {
     id: "2",
@@ -18,17 +18,18 @@ export const initialNodes = [
     data: {
       label: "Select the action that you want to perform",
       type: "Action",
+      selected: false,
     },
     type: "custom",
     draggable: true,
-    animated: true,
   },
   {
     id: "customWithHandle",
-    position: { x: 588, y: 550 },
+    position: { x: 588, y: 525 },
     data: {
       label: "",
       type: "",
+      selected: false,
     },
     type: "customWithHandle",
     draggable: true,
@@ -43,9 +44,7 @@ export const initialEdges = [
     type: "custom",
     animated: true,
     markerEnd: {
-      type: MarkerType.Arrow,
-      width: 30,
-      height: 30,
+      type: MarkerType.ArrowClosed,
       color: "#008080",
     },
   },
@@ -54,5 +53,11 @@ export const initialEdges = [
     source: "2",
     target: "customWithHandle",
     animated: true,
+    markerEnd: {
+      type: MarkerType.Arrow,
+      width: 25,
+      height: 25,
+      color: "#008080",
+    },
   },
 ];

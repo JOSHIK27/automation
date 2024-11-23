@@ -14,14 +14,14 @@ export default async function Home() {
   const sessionToken = await getSessionToken();
   console.log(sessionToken);
 
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-    method: "POST",
-    body: JSON.stringify(session?.user),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
-    },
-  });
+  // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+  //   method: "POST",
+  //   body: JSON.stringify(session?.user),
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
+  //   },
+  // });
 
   return (
     <>

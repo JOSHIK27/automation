@@ -35,6 +35,28 @@ export default function Flow() {
     setIsSubscribed(false);
     setSelectValue("");
   }, [cardId, nodes.length]);
+  useEffect(() => {
+    const updatedNodes = nodes.map((node) => {
+      if (node.id === cardId) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            selected: true,
+          },
+        };
+      } else {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            selected: false,
+          },
+        };
+      }
+    });
+    setNodes(updatedNodes);
+  }, [cardId]);
 
   const onConnect = useCallback(
     (connection: any) => {
@@ -85,6 +107,7 @@ export default function Flow() {
         data: {
           label: "Select the action that you want to perform",
           type: "Action",
+          selected: false,
         },
         type: "custom",
         draggable: true,
@@ -94,11 +117,12 @@ export default function Flow() {
         id: "customWithHandle",
         position: {
           x: 588,
-          y: newnodeyposition + 200 + 250,
+          y: newnodeyposition + 175 + 250,
         },
         data: {
           label: "",
           type: "",
+          selected: false,
         },
         type: "customWithHandle",
         draggable: true,
@@ -109,7 +133,6 @@ export default function Flow() {
       setNodes(updatedNodes);
 
       const updatedEdges = edges.filter((e) => e.target !== target);
-      console.log(updatedEdges);
 
       updatedEdges.push({
         id: `${source}->${String(Number(source) + 1)}`,
@@ -118,20 +141,22 @@ export default function Flow() {
         type: "custom",
         animated: true,
         markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: "#008080",
+        },
+      });
+      updatedEdges.push({
+        id: `${String(Number(source) + 1)}->${"customWithHandle"}`,
+        source: String(Number(source) + 1),
+        target: "customWithHandle",
+        animated: true,
+        markerEnd: {
           type: MarkerType.Arrow,
           width: 30,
           height: 30,
           color: "#008080",
         },
       });
-      console.log(updatedEdges);
-      updatedEdges.push({
-        id: `${String(Number(source) + 1)}->${"customWithHandle"}`,
-        source: String(Number(source) + 1),
-        target: "customWithHandle",
-        animated: true,
-      });
-      console.log(updatedEdges);
       setEdges(updatedEdges);
     } else {
       const currentNodes = nodes;
@@ -142,7 +167,11 @@ export default function Flow() {
             ...n,
             position: {
               x: n.position.x,
-              y: n.position.y + 200,
+              y: n.position.y + 150,
+            },
+            data: {
+              ...n.data,
+              selected: false,
             },
           };
         }
@@ -165,7 +194,7 @@ export default function Flow() {
         if (node.id === "customWithHandle") {
           return {
             ...node,
-            position: { x: node.position.x, y: maxnodeheight + 200 },
+            position: { x: node.position.x, y: maxnodeheight + 175 },
           };
         }
         return node;
@@ -187,6 +216,7 @@ export default function Flow() {
         data: {
           label: "Select the action that you want to perform",
           type: "Action",
+          selected: false,
         },
         type: "custom",
         draggable: true,

@@ -10,13 +10,7 @@ import {
 import { AnimatedSubscribeButtonDemo } from "./ui/animated-button";
 import { FaYoutube } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "./ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 
 export default function TriggerCard({
   showCard,
