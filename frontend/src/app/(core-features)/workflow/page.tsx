@@ -19,7 +19,7 @@ import TriggerCard from "@/components/triggercard";
 import { useRouter } from "next/navigation";
 import HashLoader from "react-spinners/HashLoader";
 import CustomNodeWithHandle from "@/components/customnodehandle";
-import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -32,6 +32,7 @@ export default function Flow() {
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [selectValue, setSelectValue] = useState("");
   const { data: session, status } = useSession();
+  const [videoTitle, setVideoTitle] = useState("");
   const router = useRouter();
   useEffect(() => {
     setIsSubscribed(false);
@@ -301,7 +302,7 @@ export default function Flow() {
   };
 
   const handleTriggerWorkflow = () => {
-    console.log("Triggering workflow...");
+    toast.success("Workflow triggered successfully!");
   };
 
   return (
@@ -343,6 +344,8 @@ export default function Flow() {
         setTrigger={setTrigger}
         trigger={trigger}
         channelId={channelId}
+        videoTitle={videoTitle}
+        setVideoTitle={setVideoTitle}
         setChannelId={setChannelId}
         selectValue={selectValue}
         setSelectValue={setSelectValue}

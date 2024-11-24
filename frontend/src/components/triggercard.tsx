@@ -20,6 +20,8 @@ export default function TriggerCard({
   setTrigger,
   trigger,
   channelId,
+  videoTitle,
+  setVideoTitle,
   setChannelId,
   selectValue,
   setSelectValue,
@@ -37,6 +39,8 @@ export default function TriggerCard({
   trigger: string;
   setChannelId: any;
   channelId: string;
+  videoTitle: string;
+  setVideoTitle: (videoTitle: string) => void;
   selectValue: string;
   setSelectValue: (value: string) => void;
   isSubscribed: boolean;
@@ -50,10 +54,12 @@ export default function TriggerCard({
     handleSubmit,
     control,
     formState: { errors },
+    getValues,
   } = useForm();
   const onSubmit = (data: any) => {
     console.log(data);
   };
+  console.log(getValues("trigger"));
 
   return (
     <Card
@@ -115,6 +121,12 @@ export default function TriggerCard({
                       >
                         When video uploads to channel
                       </SelectItem>
+                      <SelectItem
+                        value="Pre Production of a video"
+                        className="hover:bg-gray-50 cursor-pointer py-2.5"
+                      >
+                        Pre Production of a video
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -125,34 +137,66 @@ export default function TriggerCard({
                 </p>
               )}
             </div>
-            <div>
-              <label
-                className="text-sm font-medium text-gray-700 mb-1.5 block"
-                htmlFor="channelId"
-              >
-                Enter Channel Id
-              </label>
-              <Controller
-                control={control}
-                rules={{ required: "This field is required" }}
-                name="channelId"
-                render={({ field }) => (
-                  <Input
-                    onChange={(e) => {
-                      field.onChange(e.target.value);
-                      setChannelId(e.target.value);
-                    }}
-                    placeholder="Enter here..."
-                  />
-                )}
-              />
-              {errors.channelId?.type === "required" && (
-                <p role="alert" className="text-red-500 text-sm mt-1.5">
-                  Please enter channel id
-                </p>
-              )}
-            </div>
 
+            {getValues("trigger") === "Pre Production of a video" && (
+              <div>
+                <label
+                  className="text-sm font-medium text-gray-700 mb-1.5 block"
+                  htmlFor="videoTitle"
+                >
+                  Enter Video Title
+                </label>
+                <Controller
+                  control={control}
+                  rules={{ required: "This field is required" }}
+                  name="videoTitle"
+                  render={({ field }) => (
+                    <Input
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                        setVideoTitle(e.target.value);
+                      }}
+                      placeholder="Enter here..."
+                    />
+                  )}
+                />
+                {errors.videoTitle?.type === "required" && (
+                  <p role="alert" className="text-red-500 text-sm mt-1.5">
+                    Please enter video title
+                  </p>
+                )}
+              </div>
+            )}
+            {getValues("trigger") !== undefined &&
+              getValues("trigger") !== "Pre Production of a video" && (
+                <div>
+                  <label
+                    className="text-sm font-medium text-gray-700 mb-1.5 block"
+                    htmlFor="channelId"
+                  >
+                    Enter Channel Id
+                  </label>
+                  <Controller
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    name="channelId"
+                    render={({ field }) => (
+                      <Input
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          setChannelId(e.target.value);
+                        }}
+                        placeholder="Enter here..."
+                      />
+                    )}
+                  />
+                  {errors.channelId?.type === "required" && (
+                    <p role="alert" className="text-red-500 text-sm mt-1.5">
+                      Please enter channel id
+                    </p>
+                  )}
+                </div>
+              )}
             <AnimatedSubscribeButtonDemo
               isSubscribed={isSubscribed}
               setIsSubscribed={setIsSubscribed}
