@@ -1,15 +1,41 @@
 import { Handle, Position } from "@xyflow/react";
-import { BsFillPlusCircleFill } from "react-icons/bs";
+import { BiCaptions } from "react-icons/bi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Separator } from "./ui/separator";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2 } from "react-icons/md";
+import { BiSolidImage } from "react-icons/bi";
+import { RiVideoUploadLine } from "react-icons/ri";
+import HashLoader from "react-spinners/HashLoader";
+import { GridLoader } from "react-spinners";
+import { useState } from "react";
 
 export default function CustomNode({
   data,
 }: {
   data: { label: string; type: string; selected: boolean };
 }) {
+  const [loading, setLoading] = useState(true);
+  const isPlaceholderLabel = (label: string) => {
+    return (
+      label === "Select the event that you want to trigger" ||
+      label === "Select the action that you want to perform"
+    );
+  };
+
+  const getIconForLabel = (label: string) => {
+    const iconProps = { className: "text-gray-400 text-[16px]" };
+
+    switch (label) {
+      case "Generate Captions":
+        return <BiCaptions {...iconProps} />;
+      case "Generate a thumbnail":
+        return <BiSolidImage {...iconProps} />;
+      default:
+        return <RiVideoUploadLine {...iconProps} />;
+    }
+  };
+
   return (
     <div
       className={`${
@@ -36,19 +62,35 @@ export default function CustomNode({
           )}
           <span className="text-sm font-medium text-gray-600">{data.type}</span>
         </div>
-        <button className="p-1.5 hover:bg-gray-50 rounded-full transition-all duration-200 hover:rotate-12">
-          <RiDeleteBin6Line
-            size={18}
-            className="text-teal hover:text-red-500"
-          />
-        </button>
+        {loading ? (
+          <HashLoader loading={true} size={18} color="#009688" />
+        ) : (
+          <button className="p-1.5 hover:bg-gray-50 rounded-full transition-all duration-200 hover:rotate-12">
+            <RiDeleteBin6Line
+              size={18}
+              className="text-teal hover:text-red-500"
+            />
+          </button>
+        )}
       </div>
       <Separator className="my-3" />
-      <span className="text-[13px] font-[400] text-gray-600 block leading-relaxed">
-        {data.label === "Select the event that you want to trigger" ||
-        data.label === "Select the action that you want to perform"
-          ? "No Description"
-          : data.label}
+      <span
+        className={`
+          flex items-center gap-2 text-sm font-medium text-gray-600
+          ${
+            isPlaceholderLabel(data.label)
+              ? "italic text-gray-400"
+              : "bg-gray-50 border border-gray-200 w-fit py-2 px-3 rounded-lg hover:bg-gray-100 transition-all duration-200"
+          }
+        `}
+      >
+        {!isPlaceholderLabel(data.label) && (
+          <>
+            {getIconForLabel(data.label)}
+            {data.label}
+          </>
+        )}
+        {isPlaceholderLabel(data.label) && "No Description"}
       </span>
       <Handle
         onConnect={(params) => console.log("handle onConnect", params)}

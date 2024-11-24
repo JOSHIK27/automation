@@ -12,6 +12,7 @@ interface AnimatedSubscribeButtonProps {
   nodes: any;
   setNodes: any;
   trigger: string;
+  channelId: string;
   cardId: string;
   actions: any[];
   isSubscribed: boolean;
@@ -29,6 +30,7 @@ export const AnimatedSubscribeButton: React.FC<
   nodes,
   setNodes,
   trigger,
+  channelId,
   cardId,
   actions,
   isSubscribed,
@@ -36,7 +38,7 @@ export const AnimatedSubscribeButton: React.FC<
 }) => {
   const handleSubmit = () => {
     if (cardId === "1") {
-      if (trigger === "") {
+      if (trigger === "" || channelId === "") {
         return;
       }
       const currentNodes = nodes;

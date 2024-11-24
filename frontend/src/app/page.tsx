@@ -12,7 +12,6 @@ import { sessionTokenName } from "@/lib/constants/common";
 export default async function Home() {
   const session = await auth();
   const sessionToken = await getSessionToken();
-  console.log(sessionToken);
 
   // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
   //   method: "POST",

@@ -11,6 +11,7 @@ import { AnimatedSubscribeButtonDemo } from "./ui/animated-button";
 import { FaYoutube } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Input } from "./ui/input";
 
 export default function TriggerCard({
   showCard,
@@ -18,6 +19,8 @@ export default function TriggerCard({
   cardId,
   setTrigger,
   trigger,
+  channelId,
+  setChannelId,
   selectValue,
   setSelectValue,
   isSubscribed,
@@ -32,6 +35,8 @@ export default function TriggerCard({
   cardId: string;
   setTrigger: (trigger: string) => void;
   trigger: string;
+  setChannelId: any;
+  channelId: string;
   selectValue: string;
   setSelectValue: (value: string) => void;
   isSubscribed: boolean;
@@ -53,79 +58,108 @@ export default function TriggerCard({
   return (
     <Card
       className={`${
-        showCard ? "absolute top-20 right-4 w-[400px] z-10" : "hidden"
-      } border-gray-200 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_50px_-10px_rgba(0,0,0,0.2)] transition-all duration-300`}
+        showCard ? "absolute top-20 right-4 w-[450px] z-10" : "hidden"
+      } border-gray-200 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_50px_-10px_rgba(0,0,0,0.2)] transition-all duration-300 rounded-xl`}
     >
-      <CardHeader className="relative">
+      <CardHeader className="relative pb-2">
         <button
-          className="absolute right-2 top-2 p-2 hover:bg-gray-50 rounded-full transition-all duration-200"
+          className="absolute right-4 top-4 p-1.5 hover:bg-gray-100 rounded-full transition-all duration-200"
           onClick={() => setShowCard(false)}
         >
-          <IoClose className="w-5 h-5 text-teal hover:text-red-500" />
+          <IoClose className="w-4 h-4 text-gray-500 hover:text-gray-700" />
         </button>
-        <CardTitle className="text-2xl font-bold text-gray-900">
-          <div className="flex items-center gap-2">
-            <FaYoutube className="w-6 h-6 text-teal" />
-            YouTube
+        <CardTitle className="text-xl font-semibold text-gray-800">
+          <div className="flex items-center gap-2.5">
+            <FaYoutube className="w-5 h-5 text-red-600" />
+            YouTube Integration
           </div>
         </CardTitle>
-        <Separator className="my-4 bg-gray-200" />
+        <Separator className="my-3 bg-gray-100" />
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-2">
         {cardId === "1" ? (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <label
-              className="text-sm text-gray-500 font-medium mb-2 block"
-              htmlFor="trigger"
-            >
-              Trigger
-            </label>
-            <Controller
-              control={control}
-              rules={{ required: "This field is required" }}
-              name="trigger"
-              render={({ field }) => (
-                <Select
-                  //   value={field.value}
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    setSelectValue(value);
-                    setTrigger(value);
-                    setIsSubscribed(false);
-                  }}
-                >
-                  <SelectTrigger className="w-full border-gray-200 bg-white hover:bg-gray-50 transition-all duration-200">
-                    <SelectValue placeholder="Select Event" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
-                    <SelectItem
-                      value="When a new video is uploaded"
-                      className="hover:bg-gray-50"
-                    >
-                      When a new video is uploaded to my channel
-                    </SelectItem>
-                    <SelectItem
-                      value="When a new video is uploaded to a specific channel"
-                      className="hover:bg-gray-50"
-                    >
-                      When a new video is uploaded to a specific channel
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <label
+                className="text-sm font-medium text-gray-700 mb-1.5 block"
+                htmlFor="trigger"
+              >
+                Select Trigger
+              </label>
+              <Controller
+                control={control}
+                rules={{ required: "This field is required" }}
+                name="trigger"
+                render={({ field }) => (
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectValue(value);
+                      setTrigger(value);
+                      setIsSubscribed(false);
+                    }}
+                  >
+                    <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
+                      <SelectValue placeholder="Choose an event trigger" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
+                      <SelectItem
+                        value="When video uploads to my channel"
+                        className="hover:bg-gray-50 cursor-pointer py-2.5"
+                      >
+                        When video uploads to my channel
+                      </SelectItem>
+                      <SelectItem
+                        value="When video uploads to channel"
+                        className="hover:bg-gray-50 cursor-pointer py-2.5"
+                      >
+                        When video uploads to channel
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.trigger?.type === "required" && (
+                <p role="alert" className="text-red-500 text-sm mt-1.5">
+                  Please select a trigger event
+                </p>
               )}
-            />
-            {errors.trigger?.type === "required" && (
-              <p role="alert" className="text-red-500 text-sm mt-2">
-                You must select an event
-              </p>
-            )}
-            <br />
+            </div>
+            <div>
+              <label
+                className="text-sm font-medium text-gray-700 mb-1.5 block"
+                htmlFor="channelId"
+              >
+                Enter Channel Id
+              </label>
+              <Controller
+                control={control}
+                rules={{ required: "This field is required" }}
+                name="channelId"
+                render={({ field }) => (
+                  <Input
+                    onChange={(e) => {
+                      field.onChange(e.target.value);
+                      setChannelId(e.target.value);
+                    }}
+                    placeholder="Enter here..."
+                  />
+                )}
+              />
+              {errors.channelId?.type === "required" && (
+                <p role="alert" className="text-red-500 text-sm mt-1.5">
+                  Please enter channel id
+                </p>
+              )}
+            </div>
+
             <AnimatedSubscribeButtonDemo
               isSubscribed={isSubscribed}
               setIsSubscribed={setIsSubscribed}
               nodes={nodes as any}
               setNodes={setNodes as any}
               trigger={trigger}
+              channelId={channelId}
               cardId={cardId}
               t1="Submit"
               t2="Submitted"
@@ -134,62 +168,65 @@ export default function TriggerCard({
             />
           </form>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <label
-              className="text-sm text-gray-500 font-medium mb-2 block"
-              htmlFor="action"
-            >
-              Action
-            </label>
-            <Controller
-              control={control}
-              rules={{ required: "This field is required" }}
-              name="action"
-              render={({ field }) => (
-                <Select
-                  //   value={field.value}
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    setSelectValue(value);
-                    setIsSubscribed(false);
-                    setActions((a: any) => [
-                      ...a,
-                      { cardId: cardId, action: value },
-                    ]);
-                  }}
-                >
-                  <SelectTrigger className="w-full border-gray-200 bg-white hover:bg-gray-50 transition-colors">
-                    <SelectValue placeholder="Select Action" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
-                    <SelectItem
-                      value="Generate a thumbnail"
-                      className="hover:bg-gray-50"
-                    >
-                      Generate a thumbnail
-                    </SelectItem>
-                    <SelectItem
-                      value="Generate Captions"
-                      className="hover:bg-gray-50"
-                    >
-                      Generate Captions
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <label
+                className="text-sm font-medium text-gray-700 mb-1.5 block"
+                htmlFor="action"
+              >
+                Select Action
+              </label>
+              <Controller
+                control={control}
+                rules={{ required: "This field is required" }}
+                name="action"
+                render={({ field }) => (
+                  <Select
+                    //   value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectValue(value);
+                      setIsSubscribed(false);
+                      setActions((a: any) => [
+                        ...a,
+                        { cardId: cardId, action: value },
+                      ]);
+                    }}
+                  >
+                    <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
+                      <SelectValue placeholder="Choose an action" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
+                      <SelectItem
+                        value="Generate a thumbnail"
+                        className="hover:bg-gray-50 cursor-pointer py-2.5"
+                      >
+                        Generate a thumbnail
+                      </SelectItem>
+                      <SelectItem
+                        value="Generate Captions"
+                        className="hover:bg-gray-50 cursor-pointer py-2.5"
+                      >
+                        Generate Captions
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.action?.type === "required" && (
+                <p role="alert" className="text-red-500 text-sm mt-1.5">
+                  Please select an action
+                </p>
               )}
-            />
-            {errors.action?.type === "required" && (
-              <p role="alert" className="text-red-500 text-sm mt-2">
-                You must select an action
-              </p>
-            )}
-            <br />
+            </div>
+
             <AnimatedSubscribeButtonDemo
               isSubscribed={isSubscribed}
               setIsSubscribed={setIsSubscribed}
               nodes={nodes as any}
               setNodes={setNodes as any}
               trigger={trigger}
+              channelId={channelId}
               cardId={cardId}
               t1="Submit"
               t2="Submitted"
