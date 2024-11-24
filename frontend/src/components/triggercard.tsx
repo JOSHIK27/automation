@@ -12,6 +12,11 @@ import { FaYoutube } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
+import { useDispatch } from "react-redux";
+import { setVidTitle } from "@/app/store/slices/trigger-card-slices/video-title-slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
+import { setChannelId } from "@/app/store/slices/trigger-card-slices/channel-id-slice";
 
 export default function TriggerCard({
   showCard,
@@ -19,10 +24,6 @@ export default function TriggerCard({
   cardId,
   setTrigger,
   trigger,
-  channelId,
-  videoTitle,
-  setVideoTitle,
-  setChannelId,
   selectValue,
   setSelectValue,
   isSubscribed,
@@ -37,10 +38,6 @@ export default function TriggerCard({
   cardId: string;
   setTrigger: (trigger: string) => void;
   trigger: string;
-  setChannelId: any;
-  channelId: string;
-  videoTitle: string;
-  setVideoTitle: (videoTitle: string) => void;
   selectValue: string;
   setSelectValue: (value: string) => void;
   isSubscribed: boolean;
@@ -50,6 +47,8 @@ export default function TriggerCard({
   actions: any;
   setActions: any;
 }) {
+  const dispatch = useDispatch();
+  const vTitle = useSelector((state: RootState) => state.videoTitle.value);
   const {
     handleSubmit,
     control,
@@ -59,7 +58,7 @@ export default function TriggerCard({
   const onSubmit = (data: any) => {
     console.log(data);
   };
-  console.log(getValues("trigger"));
+  console.log(vTitle);
 
   return (
     <Card
@@ -154,7 +153,7 @@ export default function TriggerCard({
                     <Input
                       onChange={(e) => {
                         field.onChange(e.target.value);
-                        setVideoTitle(e.target.value);
+                        dispatch(setVidTitle(e.target.value));
                       }}
                       placeholder="Enter here..."
                     />
@@ -184,7 +183,7 @@ export default function TriggerCard({
                       <Input
                         onChange={(e) => {
                           field.onChange(e.target.value);
-                          setChannelId(e.target.value);
+                          dispatch(setChannelId(e.target.value));
                         }}
                         placeholder="Enter here..."
                       />
@@ -203,7 +202,6 @@ export default function TriggerCard({
               nodes={nodes as any}
               setNodes={setNodes as any}
               trigger={trigger}
-              channelId={channelId}
               cardId={cardId}
               t1="Submit"
               t2="Submitted"
@@ -270,7 +268,6 @@ export default function TriggerCard({
               nodes={nodes as any}
               setNodes={setNodes as any}
               trigger={trigger}
-              channelId={channelId}
               cardId={cardId}
               t1="Submit"
               t2="Submitted"

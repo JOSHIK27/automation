@@ -3,7 +3,11 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Nav } from "@/components/nav";
 import { SessionProvider } from "next-auth/react";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
+import { store } from "./store/store";
+import { Provider } from "react-redux";
+import Providers from "./providers";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -31,10 +35,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider>
-          <Nav />
-          {children}
+          <Providers>
+            <Nav />
+            {children}
+          </Providers>
+          <Toaster expand={true} richColors position="bottom-right" />
         </SessionProvider>
-        <Toaster expand={true} richColors position="bottom-right" />
       </body>
     </html>
   );

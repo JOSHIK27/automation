@@ -1,13 +1,12 @@
 import { Handle, Position } from "@xyflow/react";
 import { BiCaptions } from "react-icons/bi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { Separator } from "./ui/separator";
+import { Separator } from "@/components/ui/separator";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { BiSolidImage } from "react-icons/bi";
 import { RiVideoUploadLine } from "react-icons/ri";
 import HashLoader from "react-spinners/HashLoader";
-import { GridLoader } from "react-spinners";
 import { useState } from "react";
 
 export default function CustomNode({

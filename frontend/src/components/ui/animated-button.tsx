@@ -8,7 +8,6 @@ export function AnimatedSubscribeButtonDemo({
   nodes,
   setNodes,
   trigger,
-  channelId,
   cardId,
   actions,
   setActions,
@@ -20,7 +19,6 @@ export function AnimatedSubscribeButtonDemo({
   nodes: Node[];
   setNodes: any;
   trigger: string;
-  channelId: string;
   cardId: string;
   actions: any[];
   setActions: any;
@@ -35,7 +33,6 @@ export function AnimatedSubscribeButtonDemo({
       nodes={nodes}
       setNodes={setNodes}
       trigger={trigger}
-      channelId={channelId}
       cardId={cardId}
       actions={actions}
       isSubscribed={isSubscribed}

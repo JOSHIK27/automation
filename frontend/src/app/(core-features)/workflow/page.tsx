@@ -10,8 +10,8 @@ import "@xyflow/react/dist/style.css";
 import { Background } from "@xyflow/react";
 import { BackgroundVariant } from "@xyflow/react";
 import { useCallback, useEffect, useState } from "react";
-import CustomNode from "@/components/customnode";
-import CustomEdge from "@/components/customedge";
+import CustomNode from "@/components/reactflow/customnode";
+import CustomEdge from "@/components/reactflow/customedge";
 import { ConnectionLineType } from "@xyflow/react";
 import { useSession } from "next-auth/react";
 import { initialEdges, initialNodes } from "@/lib/constants/workflow";
@@ -343,10 +343,6 @@ export default function Flow() {
         cardId={cardId}
         setTrigger={setTrigger}
         trigger={trigger}
-        channelId={channelId}
-        videoTitle={videoTitle}
-        setVideoTitle={setVideoTitle}
-        setChannelId={setChannelId}
         selectValue={selectValue}
         setSelectValue={setSelectValue}
         isSubscribed={isSubscribed}

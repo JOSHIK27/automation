@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { RootState } from "@/app/store/store";
+import { useSelector } from "react-redux";
 
 interface AnimatedSubscribeButtonProps {
   buttonColor: string;
@@ -12,7 +14,6 @@ interface AnimatedSubscribeButtonProps {
   nodes: any;
   setNodes: any;
   trigger: string;
-  channelId: string;
   cardId: string;
   actions: any[];
   isSubscribed: boolean;
@@ -30,12 +31,12 @@ export const AnimatedSubscribeButton: React.FC<
   nodes,
   setNodes,
   trigger,
-  channelId,
   cardId,
   actions,
   isSubscribed,
   setIsSubscribed,
 }) => {
+  const channelId = useSelector((state: RootState) => state.channelId.value);
   const handleSubmit = () => {
     if (cardId === "1") {
       if (trigger === "" || channelId === "") {
