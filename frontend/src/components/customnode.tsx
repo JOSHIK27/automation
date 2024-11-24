@@ -50,7 +50,7 @@ export default function CustomNode({
           type="target"
           isConnectableStart
           position={Position.Top}
-          className="!w-2 !h-2 !border-[2px] !border-teal !bg-white"
+          className="!w-4 !h-4 !border-[2px] !border-teal !bg-transparent !rounded-full relative before:content-[''] before:absolute before:w-2 before:h-2 before:bg-teal before:rounded-full before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2"
         />
       )}
       <div className="flex items-center justify-between">
