@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 import requests
 import os
-
+from celery import chain
+from ...tasks import task1, generate_image_task
 router = APIRouter()
 
 api_key = os.getenv("DUMPLING_API_KEY")
@@ -34,3 +35,13 @@ async def generatetranscript():
         return {"error": f"Failed to fetch transcript: {str(e)}"}
     except Exception as e:
         return {"error": f"An unexpected error occurred: {str(e)}"}
+    
+
+@router.get("/testing")
+def testinghandler():
+
+    chain(generate_image_task.s("Two men facing forward with their faces split down the middle, each side showing one man. The left man is an Indian male with a beard and sharp features, the right man is an East Asian male with short hair and rounder features. A dramatic background with glowing hues of green on the left and red on the right, creating a sense of intensity. The split between their faces looks like a cracked tear, adding a competitive and high-stakes vibe. Cinematic lighting with a bold focus on the faces, creating a sharp, high-contrast look"), task1.s()).apply_async()
+
+    return {
+        "message": "Tasks queued"
+    }

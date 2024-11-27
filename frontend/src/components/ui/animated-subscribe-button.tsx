@@ -37,9 +37,15 @@ export const AnimatedSubscribeButton: React.FC<
   setIsSubscribed,
 }) => {
   const channelId = useSelector((state: RootState) => state.channelId.value);
+  const videoTitle = useSelector((state: RootState) => state.videoTitle.value);
   const handleSubmit = () => {
     if (cardId === "1") {
-      if (trigger === "" || channelId === "") {
+      if (
+        trigger === "" ||
+        (trigger === "Pre Production of a video" && videoTitle === "") ||
+        (trigger === "When video uploads to my channel" && channelId === "") ||
+        (trigger === "When video uploads to channel" && channelId === "")
+      ) {
         return;
       }
       const currentNodes = nodes;

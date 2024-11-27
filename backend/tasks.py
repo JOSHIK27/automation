@@ -23,7 +23,19 @@ def generate_image_task(prompt: str):
         "Content-Type": "application/json"
     }
 
-    response = requests.post(url, json=payload, headers=headers)
+    response = requests.post(url, json=payload, headers=headers).json()
+    print(response)
 
-    return response.json()
+    return {
+        "url": response["data"][0]["url"]
+    }
+
+
+@celery_app.task
+def task1(url: dict):
+    print("Hello")
+    print(url)
+    return {
+        "message": "Yoink"
+    }
 
