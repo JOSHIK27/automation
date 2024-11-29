@@ -16,8 +16,14 @@ import { useDispatch } from "react-redux";
 import { setVidTitle } from "@/app/store/slices/trigger-card-slices/video-title-slice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
-import { setChannelId } from "@/app/store/slices/trigger-card-slices/channel-id-slice";
-
+import { Textarea } from "./ui/textarea";
+import { dataModel } from "@/data/selectDependencies";
+import {
+  setTriggerType,
+  setWorkflowType,
+  setTriggerInput,
+} from "@/app/store/slices/trigger-card-slices/trigger-slice";
+import { actionsSlice } from "@/app/store/slices/trigger-card-slices/actions-slice";
 export default function TriggerCard({
   showCard,
   setShowCard,
@@ -48,17 +54,28 @@ export default function TriggerCard({
   setActions: any;
 }) {
   const dispatch = useDispatch();
-  const vTitle = useSelector((state: RootState) => state.videoTitle.value);
+  const { updateAction } = actionsSlice.actions;
+  const actionsList: any[] = useSelector((state: RootState) => state.actions);
+  const currentAction = actionsList.find((action) => action.cardId === cardId);
+
+  const triggerType = useSelector(
+    (state: RootState) => state.trigger.triggerType
+  );
+  const workflowType = useSelector(
+    (state: RootState) => state.trigger.workflowType
+  );
   const {
     handleSubmit,
     control,
     formState: { errors },
     getValues,
+    watch,
+    setValue,
   } = useForm();
   const onSubmit = (data: any) => {
     console.log(data);
   };
-  console.log(vTitle);
+  console.log(getValues());
 
   return (
     <Card
@@ -87,121 +104,132 @@ export default function TriggerCard({
             <div>
               <label
                 className="text-sm font-medium text-gray-700 mb-1.5 block"
-                htmlFor="trigger"
+                htmlFor="workflowType"
+              >
+                Select Workflow Type
+              </label>
+              <Controller
+                control={control}
+                name="workflowType"
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setValue("triggerType", "");
+                      setIsSubscribed(false);
+                      dispatch(setWorkflowType(value));
+                      dispatch(setTriggerType(""));
+                    }}
+                  >
+                    <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
+                      <SelectValue
+                        placeholder={dataModel.workflowTypes.placeholder}
+                      />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
+                      {dataModel.workflowTypes.options.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.workflowType?.type === "required" && (
+                <p role="alert" className="text-red-500 text-sm mt-1.5">
+                  Please select a workflow type
+                </p>
+              )}
+            </div>
+            <div>
+              <label
+                className="text-sm font-medium text-gray-700 mb-1.5 block"
+                htmlFor="triggerType"
               >
                 Select Trigger
               </label>
               <Controller
                 control={control}
                 rules={{ required: "This field is required" }}
-                name="trigger"
+                name="triggerType"
                 render={({ field }) => (
                   <Select
+                    value={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
                       setSelectValue(value);
-                      setTrigger(value);
                       setIsSubscribed(false);
+                      dispatch(setTriggerType(value));
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
-                      <SelectValue placeholder="Choose an event trigger" />
+                      <SelectValue
+                        placeholder={dataModel.triggerTypes.placeholder}
+                      />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
-                      <SelectItem
-                        value="When video uploads to my channel"
-                        className="hover:bg-gray-50 cursor-pointer py-2.5"
-                      >
-                        When video uploads to my channel
-                      </SelectItem>
-                      <SelectItem
-                        value="When video uploads to channel"
-                        className="hover:bg-gray-50 cursor-pointer py-2.5"
-                      >
-                        When video uploads to channel
-                      </SelectItem>
-                      <SelectItem
-                        value="Pre Production of a video"
-                        className="hover:bg-gray-50 cursor-pointer py-2.5"
-                      >
-                        Pre Production of a video
-                      </SelectItem>
+                      {dataModel.triggerTypes.options[
+                        workflowType as keyof typeof dataModel.triggerTypes.options
+                      ]?.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
               />
-              {errors.trigger?.type === "required" && (
+              {errors.triggerType?.type === "required" && (
                 <p role="alert" className="text-red-500 text-sm mt-1.5">
                   Please select a trigger event
                 </p>
               )}
             </div>
-
-            {getValues("trigger") === "Pre Production of a video" && (
+            {triggerType && (
               <div>
-                <label
-                  className="text-sm font-medium text-gray-700 mb-1.5 block"
-                  htmlFor="videoTitle"
-                >
-                  Enter Video Title
+                <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+                  {
+                    dataModel.triggerInputs[
+                      triggerType as keyof typeof dataModel.triggerInputs
+                    ].label
+                  }
                 </label>
                 <Controller
                   control={control}
                   rules={{ required: "This field is required" }}
-                  name="videoTitle"
+                  name="triggerInput"
                   render={({ field }) => (
                     <Input
+                      value={field.value}
                       onChange={(e) => {
                         field.onChange(e.target.value);
-                        dispatch(setVidTitle(e.target.value));
+                        dispatch(setTriggerInput(e.target.value));
+                        setIsSubscribed(false);
                       }}
-                      placeholder="Enter here..."
+                      placeholder={
+                        dataModel.triggerInputs[
+                          triggerType as keyof typeof dataModel.triggerInputs
+                        ].placeholder
+                      }
                     />
                   )}
                 />
-                {errors.videoTitle?.type === "required" && (
+                {errors.triggerInput?.type === "required" && (
                   <p role="alert" className="text-red-500 text-sm mt-1.5">
-                    Please enter video title
+                    Please enter the required input
                   </p>
                 )}
               </div>
             )}
-            {getValues("trigger") !== undefined &&
-              getValues("trigger") !== "Pre Production of a video" && (
-                <div>
-                  <label
-                    className="text-sm font-medium text-gray-700 mb-1.5 block"
-                    htmlFor="channelId"
-                  >
-                    Enter Channel Id
-                  </label>
-                  <Controller
-                    control={control}
-                    rules={{ required: "This field is required" }}
-                    name="channelId"
-                    render={({ field }) => (
-                      <Input
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          dispatch(setChannelId(e.target.value));
-                        }}
-                        placeholder="Enter here..."
-                      />
-                    )}
-                  />
-                  {errors.channelId?.type === "required" && (
-                    <p role="alert" className="text-red-500 text-sm mt-1.5">
-                      Please enter channel id
-                    </p>
-                  )}
-                </div>
-              )}
             <AnimatedSubscribeButtonDemo
               isSubscribed={isSubscribed}
               setIsSubscribed={setIsSubscribed}
               nodes={nodes as any}
               setNodes={setNodes as any}
-              trigger={trigger}
+              trigger={triggerType}
               cardId={cardId}
               t1="Submit"
               t2="Submitted"
@@ -212,54 +240,68 @@ export default function TriggerCard({
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label
-                className="text-sm font-medium text-gray-700 mb-1.5 block"
-                htmlFor="action"
-              >
+              <label className="text-sm font-medium text-gray-700 mb-1.5 block">
                 Select Action
               </label>
               <Controller
                 control={control}
+                name="actionType"
                 rules={{ required: "This field is required" }}
-                name="action"
                 render={({ field }) => (
                   <Select
-                    //   value={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
-                      setSelectValue(value);
-                      setIsSubscribed(false);
-                      setActions((a: any) => [
-                        ...a,
-                        { cardId: cardId, action: value },
-                      ]);
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
                       <SelectValue placeholder="Choose an action" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
-                      <SelectItem
-                        value="Generate a thumbnail"
-                        className="hover:bg-gray-50 cursor-pointer py-2.5"
-                      >
-                        Generate a thumbnail
-                      </SelectItem>
-                      <SelectItem
-                        value="Generate Captions"
-                        className="hover:bg-gray-50 cursor-pointer py-2.5"
-                      >
-                        Generate Captions
-                      </SelectItem>
+                      {dataModel.actionTypes[
+                        triggerType as keyof typeof dataModel.actionTypes
+                      ]?.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 )}
               />
-              {errors.action?.type === "required" && (
+              {errors.actionType?.type === "required" && (
                 <p role="alert" className="text-red-500 text-sm mt-1.5">
-                  Please select an action
+                  Please select an action type
                 </p>
               )}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+                {
+                  dataModel.actionInputs[
+                    currentAction?.actionType as keyof typeof dataModel.actionInputs
+                  ].label
+                }
+              </label>
+              <Controller
+                control={control}
+                name="actionInput"
+                render={({ field }) => (
+                  <Input
+                    value={field.value}
+                    onChange={(e) => {
+                      field.onChange(e.target.value);
+                      dispatch(
+                        updateAction({
+                          cardId,
+                          actionType: currentAction?.actionType,
+                          actionInput: e.target.value,
+                        })
+                      );
+                    }}
+                  />
+                )}
+              />
             </div>
 
             <AnimatedSubscribeButtonDemo

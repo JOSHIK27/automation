@@ -38,14 +38,18 @@ export const AnimatedSubscribeButton: React.FC<
 }) => {
   const channelId = useSelector((state: RootState) => state.channelId.value);
   const videoTitle = useSelector((state: RootState) => state.videoTitle.value);
+  const triggerInput = useSelector(
+    (state: RootState) => state.trigger.triggerInput
+  );
+  const triggerType = useSelector(
+    (state: RootState) => state.trigger.triggerType
+  );
+  const workflowType = useSelector(
+    (state: RootState) => state.trigger.workflowType
+  );
   const handleSubmit = () => {
     if (cardId === "1") {
-      if (
-        trigger === "" ||
-        (trigger === "Pre Production of a video" && videoTitle === "") ||
-        (trigger === "When video uploads to my channel" && channelId === "") ||
-        (trigger === "When video uploads to channel" && channelId === "")
-      ) {
+      if (workflowType === "" || triggerType === "" || triggerInput === "") {
         return;
       }
       const currentNodes = nodes;
