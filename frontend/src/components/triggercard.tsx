@@ -13,10 +13,8 @@ import { IoClose } from "react-icons/io5";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { useDispatch } from "react-redux";
-import { setVidTitle } from "@/app/store/slices/trigger-card-slices/video-title-slice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
-import { Textarea } from "./ui/textarea";
 import { dataModel } from "@/data/selectDependencies";
 import {
   setTriggerType,
@@ -24,6 +22,8 @@ import {
   setTriggerInput,
 } from "@/app/store/slices/trigger-card-slices/trigger-slice";
 import { actionsSlice } from "@/app/store/slices/trigger-card-slices/actions-slice";
+import { actionItemType } from "@/types";
+
 export default function TriggerCard({
   showCard,
   setShowCard,
@@ -55,7 +55,9 @@ export default function TriggerCard({
 }) {
   const dispatch = useDispatch();
   const { updateAction } = actionsSlice.actions;
-  const actionsList: any[] = useSelector((state: RootState) => state.actions);
+  const actionsList: actionItemType[] = useSelector(
+    (state: RootState) => state.actions
+  );
   const currentAction = actionsList.find((action) => action.cardId === cardId);
 
   const triggerType = useSelector(
@@ -68,14 +70,11 @@ export default function TriggerCard({
     handleSubmit,
     control,
     formState: { errors },
-    getValues,
-    watch,
     setValue,
   } = useForm();
   const onSubmit = (data: any) => {
     console.log(data);
   };
-  console.log(getValues());
 
   return (
     <Card
@@ -251,6 +250,13 @@ export default function TriggerCard({
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value);
+                      dispatch(
+                        updateAction({
+                          cardId,
+                          actionType: value,
+                          actionInput: "",
+                        })
+                      );
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
@@ -275,34 +281,46 @@ export default function TriggerCard({
               )}
             </div>
 
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1.5 block">
-                {
-                  dataModel.actionInputs[
-                    currentAction?.actionType as keyof typeof dataModel.actionInputs
-                  ].label
-                }
-              </label>
-              <Controller
-                control={control}
-                name="actionInput"
-                render={({ field }) => (
-                  <Input
-                    value={field.value}
-                    onChange={(e) => {
-                      field.onChange(e.target.value);
-                      dispatch(
-                        updateAction({
-                          cardId,
-                          actionType: currentAction?.actionType,
-                          actionInput: e.target.value,
-                        })
-                      );
-                    }}
+            {currentAction &&
+              currentAction.actionType &&
+              dataModel.actionInputs[
+                currentAction.actionType as keyof typeof dataModel.actionInputs
+              ][0] && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+                    {
+                      dataModel.actionInputs[
+                        currentAction.actionType as keyof typeof dataModel.actionInputs
+                      ][0].label
+                    }
+                  </label>
+                  <Controller
+                    control={control}
+                    name="actionInput"
+                    rules={{ required: "This field is required" }}
+                    render={({ field }) => (
+                      <Input
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          dispatch(
+                            updateAction({
+                              cardId,
+                              actionType: currentAction?.actionType,
+                              actionInput: e.target.value,
+                            })
+                          );
+                        }}
+                      />
+                    )}
                   />
-                )}
-              />
-            </div>
+                  {errors.actionInput?.type === "required" && (
+                    <p role="alert" className="text-red-500 text-sm mt-1.5">
+                      Please enter the required input
+                    </p>
+                  )}
+                </div>
+              )}
 
             <AnimatedSubscribeButtonDemo
               isSubscribed={isSubscribed}

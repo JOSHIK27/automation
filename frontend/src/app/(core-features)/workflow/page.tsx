@@ -20,20 +20,23 @@ import { useRouter } from "next/navigation";
 import HashLoader from "react-spinners/HashLoader";
 import CustomNodeWithHandle from "@/components/customnodehandle";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { insertActionInBetween } from "@/app/store/slices/trigger-card-slices/actions-slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [trigger, setTrigger] = useState("");
-  const [channelId, setChannelId] = useState("");
   const [showCard, setShowCard] = useState(false);
   const [cardId, setCardId] = useState<string>("");
   const [actions, setActions] = useState<any[]>([]);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [selectValue, setSelectValue] = useState("");
   const { data: session, status } = useSession();
-  const [videoTitle, setVideoTitle] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
@@ -159,6 +162,13 @@ export default function Flow() {
         },
       });
       setEdges(updatedEdges);
+      dispatch(
+        insertActionInBetween({
+          cardId: String(Number(source) + 1),
+          actionType: "",
+          actionInput: "",
+        })
+      );
     } else {
       const currentNodes = nodes;
       const currentEdges = edges;
@@ -283,6 +293,14 @@ export default function Flow() {
       setNodes(updatedNodes);
       setEdges(newEdges);
     }
+
+    dispatch(
+      insertActionInBetween({
+        cardId: String(Number(source) + 1),
+        actionType: "",
+        actionInput: "",
+      })
+    );
   };
 
   const onNodeClick = (event: any, node: any) => {

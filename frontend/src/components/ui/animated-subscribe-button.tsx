@@ -36,8 +36,6 @@ export const AnimatedSubscribeButton: React.FC<
   isSubscribed,
   setIsSubscribed,
 }) => {
-  const channelId = useSelector((state: RootState) => state.channelId.value);
-  const videoTitle = useSelector((state: RootState) => state.videoTitle.value);
   const triggerInput = useSelector(
     (state: RootState) => state.trigger.triggerInput
   );

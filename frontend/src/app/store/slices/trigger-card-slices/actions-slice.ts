@@ -1,12 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { actionItemType } from "@/types";
 
-interface Action {
-  cardId: string;
-  actionType: string;
-  actionInput: string;
-}
-
-const initialState: Action[] = [];
+const initialState: actionItemType[] = [
+  { cardId: "2", actionType: "", actionInput: "" },
+];
 
 export const actionsSlice = createSlice({
   name: "actions",
@@ -23,9 +20,32 @@ export const actionsSlice = createSlice({
         actionToUpdate.actionInput = actionInput;
       }
     },
+    insertActionInBetween: (state, action) => {
+      const { cardId, actionType, actionInput } = action.payload;
+      const actionToInsert = { cardId, actionType, actionInput };
+
+      const updatedActions = state.map((action) => {
+        if (Number(action.cardId) >= Number(cardId)) {
+          return {
+            ...action,
+            cardId: String(Number(action.cardId) + 1),
+          };
+        }
+        return action;
+      });
+      state.splice(0, state.length);
+
+      updatedActions.push(actionToInsert);
+      updatedActions.sort((a, b) => Number(a.cardId) - Number(b.cardId));
+
+      updatedActions.forEach((action) => {
+        state.push(action);
+      });
+    },
   },
 });
 
-export const { setActions, updateAction } = actionsSlice.actions;
+export const { setActions, updateAction, insertActionInBetween } =
+  actionsSlice.actions;
 
 export default actionsSlice.reducer;
