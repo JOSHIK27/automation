@@ -76,6 +76,7 @@ export default function TriggerCard({
     formState: { errors },
     setValue,
     resetField,
+    reset,
   } = useForm({
     defaultValues: {
       workflowType: workflowType,
@@ -87,18 +88,13 @@ export default function TriggerCard({
   });
 
   useEffect(() => {
-    if (cardId !== "1") {
-      resetField("actionType");
-      resetField("actionInput");
-    }
+    reset();
   }, [cardId]);
 
-  useEffect(() => {
-    console.log(cardId);
-  }, [cardId]);
   const onSubmit = (data: any) => {
     console.log(data);
   };
+  console.log(currentAction?.actionType);
 
   return (
     <Card
@@ -269,6 +265,7 @@ export default function TriggerCard({
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
                   <Select
+                    value={currentAction?.actionType || ""}
                     onValueChange={(value) => {
                       field.onChange(value);
                       dispatch(
@@ -283,7 +280,10 @@ export default function TriggerCard({
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
                       <SelectValue placeholder="Choose an action" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
+                    <SelectContent
+                      id="action-types"
+                      className="bg-white border-gray-200 rounded-lg shadow-lg"
+                    >
                       {dataModel.actionTypes[
                         triggerType as keyof typeof dataModel.actionTypes
                       ]?.map((option) => (
