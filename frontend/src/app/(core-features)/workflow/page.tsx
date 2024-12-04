@@ -37,6 +37,9 @@ export default function Flow() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
+  const triggerState = useSelector((state: RootState) => state.trigger);
+  const actionsList = useSelector((state: RootState) => state.actions);
+  console.log(triggerState, actionsList);
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
@@ -319,8 +322,54 @@ export default function Flow() {
     custom: CustomEdge,
   };
 
-  const handleTriggerWorkflow = () => {
-    toast.success("Workflow triggered successfully!");
+  const handleTriggerWorkflow = async () => {
+    if (triggerState.triggerType === "") {
+      toast.error("Please select a trigger");
+      return;
+    }
+    if (triggerState.triggerInput === "") {
+      toast.error("Please enter the input for trigger");
+      return;
+    }
+    if (triggerState.triggerInput === "") {
+      toast.error("Please enter the input for trigger");
+      return;
+    }
+
+    for (const action of actionsList) {
+      if (action.actionType === "") {
+        toast.error("Please select an action in card number " + action.cardId);
+        return;
+      }
+      if (action.actionInput === "") {
+        toast.error("Please enter the input for card number " + action.cardId);
+        return;
+      }
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/trigger-workflow`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            triggerState,
+            actionsList,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to trigger workflow");
+      }
+
+      toast.success("Workflow triggered successfully!");
+    } catch (error) {
+      toast.error("Failed to trigger workflow");
+    }
   };
 
   return (

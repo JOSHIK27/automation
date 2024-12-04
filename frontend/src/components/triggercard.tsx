@@ -23,6 +23,7 @@ import {
 } from "@/app/store/slices/trigger-card-slices/trigger-slice";
 import { actionsSlice } from "@/app/store/slices/trigger-card-slices/actions-slice";
 import { actionItemType } from "@/types";
+import { useEffect } from "react";
 
 export default function TriggerCard({
   showCard,
@@ -66,12 +67,35 @@ export default function TriggerCard({
   const workflowType = useSelector(
     (state: RootState) => state.trigger.workflowType
   );
+  const triggerInput = useSelector(
+    (state: RootState) => state.trigger.triggerInput
+  );
   const {
     handleSubmit,
     control,
     formState: { errors },
     setValue,
-  } = useForm();
+    resetField,
+  } = useForm({
+    defaultValues: {
+      workflowType: workflowType,
+      triggerType: triggerType,
+      triggerInput: triggerInput,
+      actionType: currentAction?.actionType,
+      actionInput: currentAction?.actionInput,
+    },
+  });
+
+  useEffect(() => {
+    if (cardId !== "1") {
+      resetField("actionType");
+      resetField("actionInput");
+    }
+  }, [cardId]);
+
+  useEffect(() => {
+    console.log(cardId);
+  }, [cardId]);
   const onSubmit = (data: any) => {
     console.log(data);
   };
@@ -113,10 +137,9 @@ export default function TriggerCard({
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
                   <Select
-                    value={field.value}
+                    defaultValue={workflowType}
                     onValueChange={(value) => {
                       field.onChange(value);
-                      setValue("triggerType", "");
                       setIsSubscribed(false);
                       dispatch(setWorkflowType(value));
                       dispatch(setTriggerType(""));
@@ -156,7 +179,6 @@ export default function TriggerCard({
                 name="triggerType"
                 render={({ field }) => (
                   <Select
-                    value={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
                       setSelectValue(value);
@@ -202,7 +224,6 @@ export default function TriggerCard({
                   name="triggerInput"
                   render={({ field }) => (
                     <Input
-                      value={field.value}
                       onChange={(e) => {
                         field.onChange(e.target.value);
                         dispatch(setTriggerInput(e.target.value));
@@ -300,7 +321,6 @@ export default function TriggerCard({
                     rules={{ required: "This field is required" }}
                     render={({ field }) => (
                       <Input
-                        value={field.value}
                         onChange={(e) => {
                           field.onChange(e.target.value);
                           dispatch(

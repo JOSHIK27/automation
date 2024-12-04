@@ -45,6 +45,7 @@ export const AnimatedSubscribeButton: React.FC<
   const workflowType = useSelector(
     (state: RootState) => state.trigger.workflowType
   );
+  const actionsList = useSelector((state: RootState) => state.actions);
   const handleSubmit = () => {
     if (cardId === "1") {
       if (workflowType === "" || triggerType === "" || triggerInput === "") {
@@ -60,11 +61,12 @@ export const AnimatedSubscribeButton: React.FC<
       setNodes(updatedNodes);
     } else {
       let currentAction = "";
-      actions.forEach((action) => {
+      actionsList.forEach((action) => {
         if (action.cardId === cardId) {
-          currentAction = action.action;
+          currentAction = action.actionType;
         }
       });
+      console.log(currentAction);
       if (currentAction === "") {
         return;
       }

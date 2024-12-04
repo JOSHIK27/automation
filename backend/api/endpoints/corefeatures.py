@@ -2,7 +2,7 @@ from fastapi import APIRouter
 import requests
 import os
 from celery import chain
-from ...tasks import task1, generate_image_task
+from ...tasks import generate_image_task
 router = APIRouter()
 
 api_key = os.getenv("DUMPLING_API_KEY")
@@ -44,4 +44,12 @@ def testinghandler():
 
     return {
         "message": "Tasks queued"
+    }
+
+@router.post("/trigger-workflow")
+async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
+    print(triggerState)
+    print(actionsList)  
+    return {
+        "message": "Workflow triggered"
     }
