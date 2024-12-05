@@ -13,6 +13,7 @@ export function AnimatedSubscribeButtonDemo({
   setActions,
   isSubscribed,
   setIsSubscribed,
+  disabled,
 }: {
   t1: string;
   t2: string;
@@ -24,12 +25,14 @@ export function AnimatedSubscribeButtonDemo({
   setActions: any;
   isSubscribed: boolean;
   setIsSubscribed: any;
+  disabled: boolean;
 }) {
   return (
     <AnimatedSubscribeButton
-      buttonColor="teal"
-      buttonTextColor="white"
+      buttonColor={disabled ? "#e5e7eb" : "teal"}
+      buttonTextColor={disabled ? "#6b7280" : "white"}
       subscribeStatus={false}
+      disabled={disabled}
       nodes={nodes}
       setNodes={setNodes}
       trigger={trigger}

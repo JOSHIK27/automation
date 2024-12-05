@@ -18,6 +18,7 @@ interface AnimatedSubscribeButtonProps {
   actions: any[];
   isSubscribed: boolean;
   setIsSubscribed: any;
+  disabled: boolean;
 }
 
 export const AnimatedSubscribeButton: React.FC<
@@ -35,6 +36,7 @@ export const AnimatedSubscribeButton: React.FC<
   actions,
   isSubscribed,
   setIsSubscribed,
+  disabled,
 }) => {
   const triggerInput = useSelector(
     (state: RootState) => state.trigger.triggerInput
@@ -47,6 +49,9 @@ export const AnimatedSubscribeButton: React.FC<
   );
   const actionsList = useSelector((state: RootState) => state.actions);
   const handleSubmit = () => {
+    if (disabled) {
+      return;
+    }
     if (cardId === "1") {
       if (workflowType === "" || triggerType === "" || triggerInput === "") {
         return;
@@ -93,12 +98,16 @@ export const AnimatedSubscribeButton: React.FC<
     <AnimatePresence mode="wait">
       {isSubscribed ? (
         <motion.button
-          className="relative flex w-full cursor-pointer items-center justify-center rounded-md border-none py-2"
-          style={{ backgroundColor: buttonColor, color: buttonTextColor }}
+          className="relative flex w-full cursor-pointer items-center justify-center rounded-md border-none py-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-400 disabled:text-gray-600"
+          style={{
+            backgroundColor: buttonColor,
+            color: buttonTextColor,
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           type="submit"
+          disabled={disabled}
         >
           <motion.span
             key="action"
@@ -112,13 +121,17 @@ export const AnimatedSubscribeButton: React.FC<
         </motion.button>
       ) : (
         <motion.button
-          className="relative flex w-full cursor-pointer items-center justify-center rounded-md border-none py-2"
-          style={{ backgroundColor: buttonColor, color: buttonTextColor }}
+          className="relative flex w-full cursor-pointer items-center justify-center rounded-md border-none py-2 disabled:cursor-not-allowed"
+          style={{
+            backgroundColor: buttonColor,
+            color: buttonTextColor,
+          }}
           onClick={handleSubmit}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           type="submit"
+          disabled={disabled}
         >
           <motion.span
             key="reaction"

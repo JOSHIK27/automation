@@ -23,7 +23,7 @@ import {
 } from "@/app/store/slices/trigger-card-slices/trigger-slice";
 import { actionsSlice } from "@/app/store/slices/trigger-card-slices/actions-slice";
 import { actionItemType } from "@/types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function TriggerCard({
   showCard,
@@ -55,6 +55,7 @@ export default function TriggerCard({
   setActions: any;
 }) {
   const dispatch = useDispatch();
+  const [fieldsDisabled, setFieldsDisabled] = useState(false);
   const { updateAction } = actionsSlice.actions;
   const actionsList: actionItemType[] = useSelector(
     (state: RootState) => state.actions
@@ -87,14 +88,32 @@ export default function TriggerCard({
     },
   });
 
-  useEffect(() => {
-    reset();
-  }, [cardId]);
+  // useEffect(() => {
+  //   reset();
+  //   actionsList.forEach((action) => {
+  //     if (
+  //       action.cardId != "2" &&
+  //       (action.actionInput === "" || action.actionType === "")
+  //     ) {
+  //       setFieldsDisabled(true);
+  //     }
+  //   });
+  // }, [nodes.length, ]);
 
   const onSubmit = (data: any) => {
     console.log(data);
   };
-  console.log(currentAction?.actionType);
+
+  let firstCardIdWithEmptyFields = "10000000";
+  actionsList.forEach((action) => {
+    if (
+      firstCardIdWithEmptyFields === "10000000" &&
+      (action.actionInput === "" || action.actionType === "")
+    ) {
+      firstCardIdWithEmptyFields = action.cardId;
+    }
+  });
+  console.log(firstCardIdWithEmptyFields);
 
   return (
     <Card
@@ -241,6 +260,7 @@ export default function TriggerCard({
               </div>
             )}
             <AnimatedSubscribeButtonDemo
+              disabled={false}
               isSubscribed={isSubscribed}
               setIsSubscribed={setIsSubscribed}
               nodes={nodes as any}
@@ -265,6 +285,9 @@ export default function TriggerCard({
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
                   <Select
+                    disabled={
+                      Number(cardId) > Number(firstCardIdWithEmptyFields)
+                    }
                     value={currentAction?.actionType || ""}
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -321,6 +344,9 @@ export default function TriggerCard({
                     rules={{ required: "This field is required" }}
                     render={({ field }) => (
                       <Input
+                        disabled={
+                          Number(cardId) > Number(firstCardIdWithEmptyFields)
+                        }
                         onChange={(e) => {
                           field.onChange(e.target.value);
                           dispatch(
@@ -343,6 +369,7 @@ export default function TriggerCard({
               )}
 
             <AnimatedSubscribeButtonDemo
+              disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
               isSubscribed={isSubscribed}
               setIsSubscribed={setIsSubscribed}
               nodes={nodes as any}
