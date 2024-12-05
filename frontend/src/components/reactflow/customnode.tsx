@@ -78,7 +78,7 @@ export default function CustomNode({
         )}
       </div>
       <Separator className="my-3" />
-      <div className="">
+      <div>
         <span
           className={`
             flex items-center gap-2 text-sm font-medium text-gray-600

@@ -9,7 +9,7 @@ export const actionsSlice = createSlice({
   name: "actions",
   initialState,
   reducers: {
-    setActions: (state, action) => {
+    addAction: (state, action) => {
       state.push(action.payload);
     },
     updateAction: (state, action) => {
@@ -45,7 +45,7 @@ export const actionsSlice = createSlice({
   },
 });
 
-export const { setActions, updateAction, insertActionInBetween } =
+export const { addAction, updateAction, insertActionInBetween } =
   actionsSlice.actions;
 
 export default actionsSlice.reducer;

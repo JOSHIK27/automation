@@ -66,17 +66,18 @@ export const AnimatedSubscribeButton: React.FC<
           currentAction = action.actionType;
         }
       });
-      console.log(currentAction);
       if (currentAction === "") {
         return;
       }
+
       const currentNodes = nodes;
       let label = "";
-      actions.forEach((action) => {
+      actionsList.forEach((action) => {
         if (action.cardId === cardId) {
-          label = action.action;
+          label = action.actionType;
         }
       });
+
       const updatedNodes = currentNodes.map((node: any) => {
         if (node.id === cardId) {
           return { ...node, data: { label: label, type: "Action" } };

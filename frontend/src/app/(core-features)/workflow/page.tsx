@@ -21,7 +21,10 @@ import HashLoader from "react-spinners/HashLoader";
 import CustomNodeWithHandle from "@/components/customnodehandle";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { insertActionInBetween } from "@/app/store/slices/trigger-card-slices/actions-slice";
+import {
+  addAction,
+  insertActionInBetween,
+} from "@/app/store/slices/trigger-card-slices/actions-slice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 
@@ -39,7 +42,7 @@ export default function Flow() {
   const dispatch = useDispatch();
   const triggerState = useSelector((state: RootState) => state.trigger);
   const actionsList = useSelector((state: RootState) => state.actions);
-  console.log(triggerState, actionsList);
+  console.log("actionlist: ", actionsList);
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
@@ -166,7 +169,7 @@ export default function Flow() {
       });
       setEdges(updatedEdges);
       dispatch(
-        insertActionInBetween({
+        addAction({
           cardId: String(Number(source) + 1),
           actionType: "",
           actionInput: "",
@@ -295,15 +298,14 @@ export default function Flow() {
       });
       setNodes(updatedNodes);
       setEdges(newEdges);
+      dispatch(
+        insertActionInBetween({
+          cardId: String(Number(source) + 1),
+          actionType: "",
+          actionInput: "",
+        })
+      );
     }
-
-    dispatch(
-      insertActionInBetween({
-        cardId: String(Number(source) + 1),
-        actionType: "",
-        actionInput: "",
-      })
-    );
   };
 
   const onNodeClick = (event: any, node: any) => {
