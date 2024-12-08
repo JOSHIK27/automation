@@ -9,6 +9,19 @@ export const actionsSlice = createSlice({
   name: "actions",
   initialState,
   reducers: {
+    setAction: (state, action) => {
+      const { cardId, ...rest } = action.payload;
+      const cardExists = state.find((action) => action.cardId === cardId);
+      if (!cardExists) {
+        state.push({ cardId, ...rest });
+      } else {
+        const filteredState = state.filter(
+          (action) => action.cardId !== cardId
+        );
+        filteredState.push(action.payload);
+        state = filteredState;
+      }
+    },
     addAction: (state, action) => {
       state.push(action.payload);
     },
@@ -45,7 +58,7 @@ export const actionsSlice = createSlice({
   },
 });
 
-export const { addAction, updateAction, insertActionInBetween } =
+export const { addAction, updateAction, insertActionInBetween, setAction } =
   actionsSlice.actions;
 
 export default actionsSlice.reducer;

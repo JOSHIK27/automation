@@ -4,6 +4,7 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 interface AnimatedSubscribeButtonProps {
   buttonColor: string;
@@ -64,6 +65,9 @@ export const AnimatedSubscribeButton: React.FC<
         return node;
       });
       setNodes(updatedNodes);
+      toast.warning(
+        "If you change the trigger fields, all the actions will be deleted."
+      );
     } else {
       let currentAction = "";
       actionsList.forEach((action) => {

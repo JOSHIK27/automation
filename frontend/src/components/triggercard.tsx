@@ -21,10 +21,16 @@ import {
   setWorkflowType,
   setTriggerInput,
 } from "@/app/store/slices/trigger-card-slices/trigger-slice";
-import { actionsSlice } from "@/app/store/slices/trigger-card-slices/actions-slice";
+import {
+  actionsSlice,
+  setAction,
+} from "@/app/store/slices/trigger-card-slices/actions-slice";
 import { actionItemType } from "@/types";
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
+import GenerateThumbnail from "./actionFormElementsUi/generate-thumbnail";
+import GenerateCaptions from "./actionFormElementsUi/generate-captions";
+import SwapFace from "./actionFormElementsUi/swap-face";
+import GenerateSummary from "./actionFormElementsUi/generate-summary";
 export default function TriggerCard({
   showCard,
   setShowCard,
@@ -79,13 +85,13 @@ export default function TriggerCard({
     resetField,
     reset,
   } = useForm({
-    defaultValues: {
-      workflowType: workflowType,
-      triggerType: triggerType,
-      triggerInput: triggerInput,
-      actionType: currentAction?.actionType,
-      actionInput: currentAction?.actionInput,
-    },
+    // defaultValues: {
+    //   workflowType: workflowType,
+    //   triggerType: triggerType,
+    //   triggerInput: triggerInput,
+    //   actionType: currentAction?.actionType,
+    //   actionInput: currentAction?.actionInput,
+    // },
   });
 
   // useEffect(() => {
@@ -101,7 +107,7 @@ export default function TriggerCard({
   // }, [nodes.length, ]);
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    dispatch(setAction({ cardId, ...data }));
   };
 
   let firstCardIdWithEmptyFields = "10000000";
@@ -113,7 +119,6 @@ export default function TriggerCard({
       firstCardIdWithEmptyFields = action.cardId;
     }
   });
-  console.log(firstCardIdWithEmptyFields);
 
   return (
     <Card
@@ -275,7 +280,7 @@ export default function TriggerCard({
           </form>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
+            <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 mb-1.5 block">
                 Select Action
               </label>
@@ -324,8 +329,23 @@ export default function TriggerCard({
                 </p>
               )}
             </div>
-
             {currentAction &&
+              currentAction.actionType === "Generate thumbnail" && (
+                <GenerateThumbnail control={control} errors={errors} />
+              )}
+            {currentAction &&
+              currentAction.actionType === "Generate captions" && (
+                <GenerateCaptions control={control} errors={errors} />
+              )}
+            {currentAction && currentAction.actionType === "Swap face" && (
+              <SwapFace control={control} errors={errors} />
+            )}
+            {currentAction &&
+              currentAction.actionType === "Generate summary" && (
+                <GenerateSummary control={control} errors={errors} />
+              )}
+
+            {/* {currentAction &&
               currentAction.actionType &&
               dataModel.actionInputs[
                 currentAction.actionType as keyof typeof dataModel.actionInputs
@@ -366,7 +386,7 @@ export default function TriggerCard({
                     </p>
                   )}
                 </div>
-              )}
+              )} */}
 
             <AnimatedSubscribeButtonDemo
               disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}

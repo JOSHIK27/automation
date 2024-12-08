@@ -23,17 +23,17 @@ export const dataModel = {
     },
   },
   actionTypes: {
-    "Plan a video": ["Generate thumbnail"],
-    "When a video is uploaded": ["Generate captions"],
+    "Plan a video": ["Generate thumbnail", "Swap face"],
+    "When a video is uploaded": ["Generate captions", "Generate summary"],
   },
-  actionInputs: {
-    "Generate thumbnail": [
-      {
-        label: "Enter the prompt",
-        type: "text",
-        placeholder: "Enter prompt here...",
-      },
-    ],
-    "Generate captions": [],
-  },
+  // actionInputs: {
+  //   "Generate thumbnail": [
+  //     {
+  //       label: "Enter the prompt",
+  //       type: "text",
+  //       placeholder: "Enter prompt here...",
+  //     },
+  //   ],
+  //   "Generate captions": [],
+  // },
 };
