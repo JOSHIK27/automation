@@ -129,11 +129,12 @@ export default function TriggerCard({
 
   let firstCardIdWithEmptyFields = "10000000";
   actionsList.forEach((action) => {
-    if (
-      firstCardIdWithEmptyFields === "10000000" &&
-      (action.actionInput === "" || action.actionType === "")
-    ) {
-      firstCardIdWithEmptyFields = action.cardId;
+    if (firstCardIdWithEmptyFields === "10000000") {
+      Object.keys(action).forEach((key) => {
+        if (action[key as keyof actionItemType] === "") {
+          firstCardIdWithEmptyFields = action.cardId;
+        }
+      });
     }
   });
 
@@ -233,11 +234,13 @@ export default function TriggerCard({
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
                       {getValues("workflowType") === "Pre Production"
-                        ? ["Plan a video"].map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
-                            </SelectItem>
-                          ))
+                        ? ["Plan a video", "Generate Content Ideas"].map(
+                            (option) => (
+                              <SelectItem key={option} value={option}>
+                                {option}
+                              </SelectItem>
+                            )
+                          )
                         : ["When a video is uploaded"].map((option) => (
                             <SelectItem key={option} value={option}>
                               {option}
@@ -310,9 +313,9 @@ export default function TriggerCard({
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
                   <Select
-                    // disabled={
-                    //   Number(cardId) > Number(firstCardIdWithEmptyFields)
-                    // }
+                    disabled={
+                      Number(cardId) > Number(firstCardIdWithEmptyFields)
+                    }
                     value={actionType || ""}
                     onValueChange={(value) => {
                       field.onChange(value);
