@@ -42,7 +42,6 @@ export default function Flow() {
   const dispatch = useDispatch();
   const triggerState = useSelector((state: RootState) => state.trigger);
   const actionsList = useSelector((state: RootState) => state.actions);
-  console.log("actionlist: ", actionsList);
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
@@ -94,6 +93,7 @@ export default function Flow() {
   if (!session) {
     return null;
   }
+  console.log("actionsList: ", actionsList);
 
   const onEdgeClick = (event: any, edge: any) => {
     const { source, target } = edge;
@@ -171,8 +171,6 @@ export default function Flow() {
       dispatch(
         addAction({
           cardId: String(Number(source) + 1),
-          actionType: "",
-          actionInput: "",
         })
       );
     } else {
@@ -301,8 +299,6 @@ export default function Flow() {
       dispatch(
         insertActionInBetween({
           cardId: String(Number(source) + 1),
-          actionType: "",
-          actionInput: "",
         })
       );
     }

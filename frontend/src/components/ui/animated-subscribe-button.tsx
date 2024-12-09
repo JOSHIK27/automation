@@ -2,9 +2,6 @@
 
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { RootState } from "@/app/store/store";
-import { useSelector } from "react-redux";
-import { toast } from "sonner";
 
 interface AnimatedSubscribeButtonProps {
   buttonColor: string;
@@ -39,65 +36,6 @@ export const AnimatedSubscribeButton: React.FC<
   setIsSubscribed,
   disabled,
 }) => {
-  const triggerInput = useSelector(
-    (state: RootState) => state.trigger.triggerInput
-  );
-  const triggerType = useSelector(
-    (state: RootState) => state.trigger.triggerType
-  );
-  const workflowType = useSelector(
-    (state: RootState) => state.trigger.workflowType
-  );
-  const actionsList = useSelector((state: RootState) => state.actions);
-  const handleSubmit = () => {
-    if (disabled) {
-      return;
-    }
-    if (cardId === "1") {
-      if (workflowType === "" || triggerType === "" || triggerInput === "") {
-        return;
-      }
-      const currentNodes = nodes;
-      const updatedNodes = currentNodes.map((node: any) => {
-        if (node.id === "1") {
-          return { ...node, data: { label: trigger, type: "Trigger" } };
-        }
-        return node;
-      });
-      setNodes(updatedNodes);
-      toast.warning(
-        "If you change the trigger fields, all the actions will be deleted."
-      );
-    } else {
-      let currentAction = "";
-      actionsList.forEach((action) => {
-        if (action.cardId === cardId) {
-          currentAction = action.actionType;
-        }
-      });
-      if (currentAction === "") {
-        return;
-      }
-
-      const currentNodes = nodes;
-      let label = "";
-      actionsList.forEach((action) => {
-        if (action.cardId === cardId) {
-          label = action.actionType;
-        }
-      });
-
-      const updatedNodes = currentNodes.map((node: any) => {
-        if (node.id === cardId) {
-          return { ...node, data: { label: label, type: "Action" } };
-        }
-        return node;
-      });
-      setNodes(updatedNodes);
-    }
-    setIsSubscribed(true);
-  };
-
   return (
     <AnimatePresence mode="wait">
       {isSubscribed ? (
@@ -130,7 +68,6 @@ export const AnimatedSubscribeButton: React.FC<
             backgroundColor: buttonColor,
             color: buttonTextColor,
           }}
-          onClick={handleSubmit}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

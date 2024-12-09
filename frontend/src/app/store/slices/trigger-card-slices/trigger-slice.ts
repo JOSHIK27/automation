@@ -19,9 +19,19 @@ const triggerSlice = createSlice({
     setTriggerInput: (state, action) => {
       state.triggerInput = action.payload;
     },
+    setTriggerState: (state, action) => {
+      const { triggerType, triggerInput, workflowType } = action.payload;
+      state.triggerType = triggerType;
+      state.triggerInput = triggerInput;
+      state.workflowType = workflowType;
+    },
   },
 });
 
-export const { setWorkflowType, setTriggerType, setTriggerInput } =
-  triggerSlice.actions;
+export const {
+  setWorkflowType,
+  setTriggerType,
+  setTriggerInput,
+  setTriggerState,
+} = triggerSlice.actions;
 export default triggerSlice.reducer;

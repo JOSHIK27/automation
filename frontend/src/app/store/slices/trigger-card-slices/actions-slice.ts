@@ -1,25 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { actionItemType } from "@/types";
 
-const initialState: actionItemType[] = [
-  { cardId: "2", actionType: "", actionInput: "" },
-];
+const initialState: actionItemType[] = [{ cardId: "2" }];
 
 export const actionsSlice = createSlice({
   name: "actions",
   initialState,
   reducers: {
     setAction: (state, action) => {
-      const { cardId, ...rest } = action.payload;
+      const { cardId } = action.payload;
       const cardExists = state.find((action) => action.cardId === cardId);
       if (!cardExists) {
-        state.push({ cardId, ...rest });
+        state.push(action.payload);
       } else {
-        const filteredState = state.filter(
-          (action) => action.cardId !== cardId
-        );
-        filteredState.push(action.payload);
-        state = filteredState;
+        const index = state.findIndex((action) => action.cardId === cardId);
+        if (index !== -1) {
+          state[index] = action.payload;
+        }
       }
     },
     addAction: (state, action) => {
@@ -34,8 +31,8 @@ export const actionsSlice = createSlice({
       }
     },
     insertActionInBetween: (state, action) => {
-      const { cardId, actionType, actionInput } = action.payload;
-      const actionToInsert = { cardId, actionType, actionInput };
+      const { cardId } = action.payload;
+      const actionToInsert = { cardId };
 
       const updatedActions = state.map((action) => {
         if (Number(action.cardId) >= Number(cardId)) {

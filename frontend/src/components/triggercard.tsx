@@ -16,21 +16,15 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { dataModel } from "@/data/selectDependencies";
-import {
-  setTriggerType,
-  setWorkflowType,
-  setTriggerInput,
-} from "@/app/store/slices/trigger-card-slices/trigger-slice";
-import {
-  actionsSlice,
-  setAction,
-} from "@/app/store/slices/trigger-card-slices/actions-slice";
+import { setTriggerState } from "@/app/store/slices/trigger-card-slices/trigger-slice";
+import { setAction } from "@/app/store/slices/trigger-card-slices/actions-slice";
 import { actionItemType } from "@/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GenerateThumbnail from "./actionFormElementsUi/generate-thumbnail";
 import GenerateCaptions from "./actionFormElementsUi/generate-captions";
 import SwapFace from "./actionFormElementsUi/swap-face";
 import GenerateSummary from "./actionFormElementsUi/generate-summary";
+import { toast } from "sonner";
 export default function TriggerCard({
   showCard,
   setShowCard,
@@ -62,37 +56,29 @@ export default function TriggerCard({
 }) {
   const dispatch = useDispatch();
   const [fieldsDisabled, setFieldsDisabled] = useState(false);
-  const { updateAction } = actionsSlice.actions;
+  const [actionType, setActionType] = useState("");
   const actionsList: actionItemType[] = useSelector(
     (state: RootState) => state.actions
-  );
-  const currentAction = actionsList.find((action) => action.cardId === cardId);
-
-  const triggerType = useSelector(
-    (state: RootState) => state.trigger.triggerType
-  );
-  const workflowType = useSelector(
-    (state: RootState) => state.trigger.workflowType
-  );
-  const triggerInput = useSelector(
-    (state: RootState) => state.trigger.triggerInput
   );
   const {
     handleSubmit,
     control,
     formState: { errors },
-    setValue,
-    resetField,
-    reset,
-  } = useForm({
-    // defaultValues: {
-    //   workflowType: workflowType,
-    //   triggerType: triggerType,
-    //   triggerInput: triggerInput,
-    //   actionType: currentAction?.actionType,
-    //   actionInput: currentAction?.actionInput,
-    // },
-  });
+    watch,
+    getValues,
+  } = useForm();
+
+  useEffect(() => {
+    setActionType(watch("actionType"));
+  }, [watch("actionType")]);
+
+  useEffect(() => {
+    setActionType("");
+  }, [cardId]);
+
+  watch("workflowType");
+  watch("triggerType");
+  watch("triggerInput");
 
   // useEffect(() => {
   //   reset();
@@ -107,7 +93,44 @@ export default function TriggerCard({
   // }, [nodes.length, ]);
 
   const onSubmit = (data: any) => {
-    dispatch(setAction({ cardId, ...data }));
+    if (cardId === "1") {
+      const { triggerType, triggerInput, workflowType } = data;
+      if (workflowType === "" || triggerType === "" || triggerInput === "") {
+        return;
+      }
+
+      dispatch(setTriggerState({ triggerType, triggerInput, workflowType }));
+      const currentNodes = nodes;
+      const updatedNodes = currentNodes.map((node: any) => {
+        if (node.id === "1") {
+          return {
+            ...node,
+            data: {
+              label: triggerType,
+              type: "Trigger",
+            },
+          };
+        }
+        return node;
+      });
+      setNodes(updatedNodes);
+      toast.warning(
+        "If you change the trigger fields, all the actions will be deleted."
+      );
+    } else {
+      const { triggerType, triggerInput, workflowType, ...rest } = data;
+      dispatch(setAction({ cardId, ...rest }));
+
+      const currentNodes = nodes;
+      const updatedNodes = currentNodes.map((node: any) => {
+        if (node.id === cardId) {
+          return { ...node, data: { label: actionType, type: "Action" } };
+        }
+        return node;
+      });
+      setNodes(updatedNodes);
+    }
+    setIsSubscribed(true);
   };
 
   let firstCardIdWithEmptyFields = "10000000";
@@ -157,12 +180,10 @@ export default function TriggerCard({
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
                   <Select
-                    defaultValue={workflowType}
+                    defaultValue={getValues("workflowType")}
                     onValueChange={(value) => {
                       field.onChange(value);
                       setIsSubscribed(false);
-                      dispatch(setWorkflowType(value));
-                      dispatch(setTriggerType(""));
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
@@ -203,7 +224,6 @@ export default function TriggerCard({
                       field.onChange(value);
                       setSelectValue(value);
                       setIsSubscribed(false);
-                      dispatch(setTriggerType(value));
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
@@ -213,7 +233,9 @@ export default function TriggerCard({
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
                       {dataModel.triggerTypes.options[
-                        workflowType as keyof typeof dataModel.triggerTypes.options
+                        getValues(
+                          "workflowType"
+                        ) as keyof typeof dataModel.triggerTypes.options
                       ]?.map((option) => (
                         <SelectItem key={option} value={option}>
                           {option}
@@ -229,12 +251,14 @@ export default function TriggerCard({
                 </p>
               )}
             </div>
-            {triggerType && (
+            {getValues("triggerType") && (
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1.5 block">
                   {
                     dataModel.triggerInputs[
-                      triggerType as keyof typeof dataModel.triggerInputs
+                      getValues(
+                        "triggerType"
+                      ) as keyof typeof dataModel.triggerInputs
                     ].label
                   }
                 </label>
@@ -246,12 +270,13 @@ export default function TriggerCard({
                     <Input
                       onChange={(e) => {
                         field.onChange(e.target.value);
-                        dispatch(setTriggerInput(e.target.value));
                         setIsSubscribed(false);
                       }}
                       placeholder={
                         dataModel.triggerInputs[
-                          triggerType as keyof typeof dataModel.triggerInputs
+                          getValues(
+                            "triggerType"
+                          ) as keyof typeof dataModel.triggerInputs
                         ].placeholder
                       }
                     />
@@ -270,7 +295,7 @@ export default function TriggerCard({
               setIsSubscribed={setIsSubscribed}
               nodes={nodes as any}
               setNodes={setNodes as any}
-              trigger={triggerType}
+              trigger={getValues("triggerType")}
               cardId={cardId}
               t1="Submit"
               t2="Submitted"
@@ -290,19 +315,12 @@ export default function TriggerCard({
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
                   <Select
-                    disabled={
-                      Number(cardId) > Number(firstCardIdWithEmptyFields)
-                    }
-                    value={currentAction?.actionType || ""}
+                    // disabled={
+                    //   Number(cardId) > Number(firstCardIdWithEmptyFields)
+                    // }
+                    value={actionType || ""}
                     onValueChange={(value) => {
                       field.onChange(value);
-                      dispatch(
-                        updateAction({
-                          cardId,
-                          actionType: value,
-                          actionInput: "",
-                        })
-                      );
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
@@ -313,7 +331,9 @@ export default function TriggerCard({
                       className="bg-white border-gray-200 rounded-lg shadow-lg"
                     >
                       {dataModel.actionTypes[
-                        triggerType as keyof typeof dataModel.actionTypes
+                        getValues(
+                          "triggerType"
+                        ) as keyof typeof dataModel.actionTypes
                       ]?.map((option) => (
                         <SelectItem key={option} value={option}>
                           {option}
@@ -329,21 +349,18 @@ export default function TriggerCard({
                 </p>
               )}
             </div>
-            {currentAction &&
-              currentAction.actionType === "Generate thumbnail" && (
-                <GenerateThumbnail control={control} errors={errors} />
-              )}
-            {currentAction &&
-              currentAction.actionType === "Generate captions" && (
-                <GenerateCaptions control={control} errors={errors} />
-              )}
-            {currentAction && currentAction.actionType === "Swap face" && (
+            {actionType === "Generate thumbnail" && (
+              <GenerateThumbnail control={control} errors={errors} />
+            )}
+            {actionType === "Generate captions" && (
+              <GenerateCaptions control={control} errors={errors} />
+            )}
+            {actionType === "Swap face" && (
               <SwapFace control={control} errors={errors} />
             )}
-            {currentAction &&
-              currentAction.actionType === "Generate summary" && (
-                <GenerateSummary control={control} errors={errors} />
-              )}
+            {actionType === "Generate summary" && (
+              <GenerateSummary control={control} errors={errors} />
+            )}
 
             {/* {currentAction &&
               currentAction.actionType &&
@@ -389,7 +406,8 @@ export default function TriggerCard({
               )} */}
 
             <AnimatedSubscribeButtonDemo
-              disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
+              // disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
+              disabled={false}
               isSubscribed={isSubscribed}
               setIsSubscribed={setIsSubscribed}
               nodes={nodes as any}
