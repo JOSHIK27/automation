@@ -406,16 +406,13 @@ export default function Flow() {
         showCard={showCard}
         setShowCard={setShowCard}
         cardId={cardId}
-        setTrigger={setTrigger}
         trigger={trigger}
-        selectValue={selectValue}
         setSelectValue={setSelectValue}
         isSubscribed={isSubscribed}
         setIsSubscribed={setIsSubscribed}
         nodes={nodes}
         setNodes={setNodes}
         actions={actions}
-        setActions={setActions}
       />
 
       <ReactFlow

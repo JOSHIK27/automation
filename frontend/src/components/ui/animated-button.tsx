@@ -10,7 +10,6 @@ export function AnimatedSubscribeButtonDemo({
   trigger,
   cardId,
   actions,
-  setActions,
   isSubscribed,
   setIsSubscribed,
   disabled,
@@ -22,7 +21,6 @@ export function AnimatedSubscribeButtonDemo({
   trigger: string;
   cardId: string;
   actions: any[];
-  setActions: any;
   isSubscribed: boolean;
   setIsSubscribed: any;
   disabled: boolean;

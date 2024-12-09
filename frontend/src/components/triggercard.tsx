@@ -25,37 +25,31 @@ import GenerateCaptions from "./actionFormElementsUi/generate-captions";
 import SwapFace from "./actionFormElementsUi/swap-face";
 import GenerateSummary from "./actionFormElementsUi/generate-summary";
 import { toast } from "sonner";
+
 export default function TriggerCard({
   showCard,
   setShowCard,
   cardId,
-  setTrigger,
   trigger,
-  selectValue,
   setSelectValue,
   isSubscribed,
   setIsSubscribed,
   nodes,
   setNodes,
   actions,
-  setActions,
 }: {
   showCard: boolean;
   setShowCard: (show: boolean) => void;
   cardId: string;
-  setTrigger: (trigger: string) => void;
   trigger: string;
-  selectValue: string;
   setSelectValue: (value: string) => void;
   isSubscribed: boolean;
   setIsSubscribed: (isSubscribed: boolean) => void;
   nodes: any;
   setNodes: any;
   actions: any;
-  setActions: any;
 }) {
   const dispatch = useDispatch();
-  const [fieldsDisabled, setFieldsDisabled] = useState(false);
   const [actionType, setActionType] = useState("");
   const actionsList: actionItemType[] = useSelector(
     (state: RootState) => state.actions
@@ -192,11 +186,17 @@ export default function TriggerCard({
                       />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
-                      {dataModel.workflowTypes.options.map((option) => (
+                      {/* {dataModel.workflowTypes.options.map((option) => (
                         <SelectItem key={option} value={option}>
                           {option}
                         </SelectItem>
-                      ))}
+                      ))} */}
+                      <SelectItem value="Pre Production">
+                        Pre Production
+                      </SelectItem>
+                      <SelectItem value="Post Production">
+                        Post Production
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -232,15 +232,17 @@ export default function TriggerCard({
                       />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
-                      {dataModel.triggerTypes.options[
-                        getValues(
-                          "workflowType"
-                        ) as keyof typeof dataModel.triggerTypes.options
-                      ]?.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
+                      {getValues("workflowType") === "Pre Production"
+                        ? ["Plan a video"].map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))
+                        : ["When a video is uploaded"].map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
                     </SelectContent>
                   </Select>
                 )}
@@ -254,13 +256,9 @@ export default function TriggerCard({
             {getValues("triggerType") && (
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1.5 block">
-                  {
-                    dataModel.triggerInputs[
-                      getValues(
-                        "triggerType"
-                      ) as keyof typeof dataModel.triggerInputs
-                    ].label
-                  }
+                  {getValues("triggerType") === "Plan a video"
+                    ? "Title of the video"
+                    : "Channel ID"}
                 </label>
                 <Controller
                   control={control}
@@ -273,11 +271,9 @@ export default function TriggerCard({
                         setIsSubscribed(false);
                       }}
                       placeholder={
-                        dataModel.triggerInputs[
-                          getValues(
-                            "triggerType"
-                          ) as keyof typeof dataModel.triggerInputs
-                        ].placeholder
+                        getValues("triggerType") === "Plan a video"
+                          ? "Enter title here..."
+                          : "Enter channel ID here..."
                       }
                     />
                   )}
@@ -300,7 +296,6 @@ export default function TriggerCard({
               t1="Submit"
               t2="Submitted"
               actions={actions}
-              setActions={setActions}
             />
           </form>
         ) : (
@@ -330,15 +325,21 @@ export default function TriggerCard({
                       id="action-types"
                       className="bg-white border-gray-200 rounded-lg shadow-lg"
                     >
-                      {dataModel.actionTypes[
-                        getValues(
-                          "triggerType"
-                        ) as keyof typeof dataModel.actionTypes
-                      ]?.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
+                      {getValues("triggerType") === "Plan a video"
+                        ? ["Generate thumbnail", "Swap face"].map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))
+                        : [
+                            "Generate captions",
+                            "Generate summary",
+                            "Generate timestamps",
+                          ].map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
                     </SelectContent>
                   </Select>
                 )}
@@ -361,53 +362,10 @@ export default function TriggerCard({
             {actionType === "Generate summary" && (
               <GenerateSummary control={control} errors={errors} />
             )}
-
-            {/* {currentAction &&
-              currentAction.actionType &&
-              dataModel.actionInputs[
-                currentAction.actionType as keyof typeof dataModel.actionInputs
-              ][0] && (
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1.5 block">
-                    {
-                      dataModel.actionInputs[
-                        currentAction.actionType as keyof typeof dataModel.actionInputs
-                      ][0].label
-                    }
-                  </label>
-                  <Controller
-                    control={control}
-                    name="actionInput"
-                    rules={{ required: "This field is required" }}
-                    render={({ field }) => (
-                      <Input
-                        disabled={
-                          Number(cardId) > Number(firstCardIdWithEmptyFields)
-                        }
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          dispatch(
-                            updateAction({
-                              cardId,
-                              actionType: currentAction?.actionType,
-                              actionInput: e.target.value,
-                            })
-                          );
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.actionInput?.type === "required" && (
-                    <p role="alert" className="text-red-500 text-sm mt-1.5">
-                      Please enter the required input
-                    </p>
-                  )}
-                </div>
-              )} */}
+            {actionType === "Generate timestamps" && <></>}
 
             <AnimatedSubscribeButtonDemo
-              // disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
-              disabled={false}
+              disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
               isSubscribed={isSubscribed}
               setIsSubscribed={setIsSubscribed}
               nodes={nodes as any}
@@ -417,7 +375,6 @@ export default function TriggerCard({
               t1="Submit"
               t2="Submitted"
               actions={actions}
-              setActions={setActions}
             />
           </form>
         )}

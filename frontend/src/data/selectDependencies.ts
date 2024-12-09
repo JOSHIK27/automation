@@ -24,7 +24,11 @@ export const dataModel = {
   },
   actionTypes: {
     "Plan a video": ["Generate thumbnail", "Swap face"],
-    "When a video is uploaded": ["Generate captions", "Generate summary"],
+    "When a video is uploaded": [
+      "Generate captions",
+      "Generate summary",
+      "Generate timestamps",
+    ],
   },
   // actionInputs: {
   //   "Generate thumbnail": [
