@@ -3,6 +3,7 @@ import requests
 import os
 from celery import chain
 from ...tasks import generate_image_task
+from googleapiclient.discovery import build
 router = APIRouter()
 
 api_key = os.getenv("DUMPLING_API_KEY")
@@ -52,4 +53,36 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
     print(actionsList)  
     return {
         "message": "Workflow triggered"
+    }
+
+@router.get("/youtube")
+def youtubehandler():
+
+    service = build("youtube", "v3", developerKey = os.getenv("YOUTUBE_DATA_API_KEY"))
+
+    response = service.channels().list(part = "contentDetails", id = "UCWX0cUR2rZcqKei1Vstww-A").execute()
+
+    uploads_playlist_id = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+
+    video_titles = []
+    next_page_token = None
+    
+    while True:
+        playlist_response = service.playlistItems().list(
+            part='snippet',
+            playlistId=uploads_playlist_id,
+            maxResults=50,
+            pageToken=next_page_token
+        ).execute()
+        
+        for item in playlist_response['items']:
+            video_titles.append(item['snippet']['title'])
+        
+        next_page_token = playlist_response.get('nextPageToken')
+        if not next_page_token:
+            break
+
+    print(video_titles)
+    return {
+        "message": "Success"
     }

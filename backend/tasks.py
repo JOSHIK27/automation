@@ -1,11 +1,7 @@
 from backend.celery_config import celery_app
 import requests
 import json
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
-
 
 @celery_app.task
 def generate_image_task(prompt: str):
@@ -89,3 +85,56 @@ def swap_face(target_image_url: str, source_image_url: str):
     response = requests.request("POST", url, headers=headers, data=payload)
 
     print(response.text)
+
+@celery_app.task
+def generate_summary():
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.getenv('DUMPLING_API_KEY')}"
+    }
+    
+    response = requests.post("/api/v1/get-youtube-transcript", headers = headers , json= {
+            "videoUrl": "string", 
+            "includeTimestamps": "boolean",
+            "timestampsToCombine": "number", 
+            "preferredLanguage": "string" 
+        }
+    )
+
+
+@celery_app.task
+def generate_transcript():
+    
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.getenv('DUMPLING_API_KEY')}"
+    }
+    
+    response = requests.post("/api/v1/get-youtube-transcript", headers = headers , json= {
+            "videoUrl": "string", 
+            "includeTimestamps": "boolean",
+            "timestampsToCombine": "number", 
+            "preferredLanguage": "string" 
+        }
+    )
+
+@celery_app.task
+def generate_content_ideas():
+    pass
+
+@celery_app.task
+def generate_timestamps():
+    
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.getenv('DUMPLING_API_KEY')}"
+    }
+    
+    response = requests.post("/api/v1/get-youtube-transcript", headers = headers , json= {
+            "videoUrl": "string", 
+            "includeTimestamps": "boolean",
+            "timestampsToCombine": "number", 
+            "preferredLanguage": "string" 
+        }
+    )
