@@ -8,7 +8,15 @@ import {
   SelectItem,
 } from "./ui/select";
 import { AnimatedSubscribeButtonDemo } from "./ui/animated-button";
-import { FaYoutube } from "react-icons/fa";
+import {
+  FaYoutube,
+  FaVideo,
+  FaLightbulb,
+  FaUpload,
+  FaImage,
+  FaClosedCaptioning,
+  FaClock,
+} from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
@@ -25,6 +33,7 @@ import GenerateCaptions from "./actionFormElementsUi/generate-captions";
 import SwapFace from "./actionFormElementsUi/swap-face";
 import GenerateSummary from "./actionFormElementsUi/generate-summary";
 import { toast } from "sonner";
+import { MdFace, MdSummarize } from "react-icons/md";
 
 export default function TriggerCard({
   showCard,
@@ -187,16 +196,23 @@ export default function TriggerCard({
                       />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
-                      {/* {dataModel.workflowTypes.options.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))} */}
-                      <SelectItem value="Pre Production">
-                        Pre Production
+                      <SelectItem
+                        value="Pre Production"
+                        className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <FaVideo className="w-4 h-4 text-blue-500" />
+                          Pre Production
+                        </div>
                       </SelectItem>
-                      <SelectItem value="Post Production">
-                        Post Production
+                      <SelectItem
+                        value="Post Production"
+                        className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <FaUpload className="w-4 h-4 text-green-500" />
+                          Post Production
+                        </div>
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -234,16 +250,48 @@ export default function TriggerCard({
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
                       {getValues("workflowType") === "Pre Production"
-                        ? ["Plan a video", "Generate Content Ideas"].map(
-                            (option) => (
-                              <SelectItem key={option} value={option}>
-                                {option}
-                              </SelectItem>
-                            )
-                          )
-                        : ["When a video is uploaded"].map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
+                        ? [
+                            {
+                              label: "Plan a video",
+                              icon: (
+                                <FaVideo className="w-4 h-4 text-blue-500" />
+                              ),
+                            },
+                            {
+                              label: "Generate Content Ideas",
+                              icon: (
+                                <FaLightbulb className="w-4 h-4 text-yellow-500" />
+                              ),
+                            },
+                          ].map((option) => (
+                            <SelectItem
+                              key={option.label}
+                              value={option.label}
+                              className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                            >
+                              <div className="flex items-center gap-2">
+                                {option.icon}
+                                {option.label}
+                              </div>
+                            </SelectItem>
+                          ))
+                        : [
+                            {
+                              label: "When a video is uploaded",
+                              icon: (
+                                <FaUpload className="w-4 h-4 text-green-500" />
+                              ),
+                            },
+                          ].map((option) => (
+                            <SelectItem
+                              key={option.label}
+                              value={option.label}
+                              className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                            >
+                              <div className="flex items-center gap-2">
+                                {option.icon}
+                                {option.label}
+                              </div>
                             </SelectItem>
                           ))}
                     </SelectContent>
@@ -329,18 +377,60 @@ export default function TriggerCard({
                       className="bg-white border-gray-200 rounded-lg shadow-lg"
                     >
                       {getValues("triggerType") === "Plan a video"
-                        ? ["Generate thumbnail", "Swap face"].map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
+                        ? [
+                            {
+                              label: "Generate thumbnail",
+                              icon: (
+                                <FaImage className="w-4 h-4 text-purple-500" />
+                              ),
+                            },
+                            {
+                              label: "Swap face",
+                              icon: (
+                                <MdFace className="w-4 h-4 text-orange-500" />
+                              ),
+                            },
+                          ].map((option) => (
+                            <SelectItem
+                              key={option.label}
+                              value={option.label}
+                              className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                            >
+                              <div className="flex items-center gap-2">
+                                {option.icon}
+                                {option.label}
+                              </div>
                             </SelectItem>
                           ))
                         : [
-                            "Generate captions",
-                            "Generate summary",
-                            "Generate timestamps",
+                            {
+                              label: "Generate captions",
+                              icon: (
+                                <FaClosedCaptioning className="w-4 h-4 text-blue-500" />
+                              ),
+                            },
+                            {
+                              label: "Generate summary",
+                              icon: (
+                                <MdSummarize className="w-4 h-4 text-green-500" />
+                              ),
+                            },
+                            {
+                              label: "Generate timestamps",
+                              icon: (
+                                <FaClock className="w-4 h-4 text-red-500" />
+                              ),
+                            },
                           ].map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
+                            <SelectItem
+                              key={option.label}
+                              value={option.label}
+                              className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                            >
+                              <div className="flex items-center gap-2">
+                                {option.icon}
+                                {option.label}
+                              </div>
                             </SelectItem>
                           ))}
                     </SelectContent>

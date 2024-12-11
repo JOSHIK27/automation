@@ -23,8 +23,9 @@ export default function GenerateSummary({
         <Controller
           control={control}
           name="summaryLanguage"
+          rules={{ required: "Please select a language" }}
           render={({ field }) => (
-            <Select {...field}>
+            <Select {...field} onValueChange={field.onChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Select Language" />
               </SelectTrigger>
@@ -35,6 +36,11 @@ export default function GenerateSummary({
             </Select>
           )}
         />
+        {errors.summaryLanguage && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors.summaryLanguage.message}
+          </p>
+        )}
       </div>
     </>
   );

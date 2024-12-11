@@ -27,6 +27,7 @@ import {
 } from "@/app/store/slices/trigger-card-slices/actions-slice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
+import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -93,7 +94,6 @@ export default function Flow() {
   if (!session) {
     return null;
   }
-  console.log("actionsList: ", actionsList);
 
   const onEdgeClick = (event: any, edge: any) => {
     const { source, target } = edge;
@@ -335,13 +335,12 @@ export default function Flow() {
     }
 
     for (const action of actionsList) {
-      if (action.actionType === "") {
-        toast.error("Please select an action in card number " + action.cardId);
-        return;
-      }
-      if (action.actionInput === "") {
-        toast.error("Please enter the input for card number " + action.cardId);
-        return;
+      console.log(action);
+      for (const key in action) {
+        if (!action[key as keyof typeof action]) {
+          toast.error(`Please enter the input for ${key}`);
+          return;
+        }
       }
     }
 
@@ -363,6 +362,9 @@ export default function Flow() {
       if (!response.ok) {
         throw new Error("Failed to trigger workflow");
       }
+      const finalResponse = await response.json();
+      console.log(finalResponse);
+      dispatch(setTasksStatus(finalResponse));
 
       toast.success("Workflow triggered successfully!");
     } catch (error) {

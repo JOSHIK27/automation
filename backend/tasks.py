@@ -66,6 +66,7 @@ def generate_thumbnail(prompt: str):
 
 
 
+
 @celery_app.task
 def swap_face(target_image_url: str, source_image_url: str):
 

@@ -3,7 +3,7 @@ import requests
 import os
 from celery import chain
 from ...tasks import generate_image_task
-from ...tasks import generate_content_ideas
+from ...tasks import generate_thumbnail
 from ...celery_config import celery_app
 router = APIRouter()
 
@@ -50,19 +50,22 @@ def testinghandler():
 
 @router.post("/trigger-workflow")
 async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
-    print(triggerState)
-    print(actionsList)  
-    return {
-        "message": "Workflow triggered"
-    }
+    # Convert complex objects to simple dictionaries before processing
+    trigger_data = dict(triggerState)
+    actions_data = [dict(action) for action in actionsList]
 
+    response = []
+    for action in actions_data:
+        print(action['actionType'])
+        if action['actionType'] == 'Generate thumbnail':
+            task_id = generate_thumbnail.delay(action["thumbnailPrompt"])
+            response.append({
+                "task_id": str(task_id),  # Ensure task_id is serializable
+                "cardId": action["cardId"]
+            })
 
-@router.post("/youtube")
-def youtube_handler(id: str):
+    return {"response": response}
 
-    task = generate_content_ideas.delay(id)
-
-    return {"task_id": task.id, "status": "Task submitted"}
 
 
 @router.get("/result/{task_id}")
@@ -74,3 +77,4 @@ async def get_result(task_id: str):
         return {"status": "Task completed", "result": result.result}
     else:
         return {"status": f"Task failed or has an unknown state: {result.state}"}
+    
