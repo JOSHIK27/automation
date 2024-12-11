@@ -2,6 +2,9 @@ from backend.celery_config import celery_app
 import requests
 import json
 import os
+from googleapiclient.discovery import build
+from openai import OpenAI
+
 
 @celery_app.task
 def generate_image_task(prompt: str):
@@ -120,8 +123,48 @@ def generate_transcript():
     )
 
 @celery_app.task
-def generate_content_ideas():
-    pass
+def generate_content_ideas(channel_id: str):
+
+    service = build("youtube", "v3", developerKey = os.getenv("YOUTUBE_DATA_API_KEY"))
+
+    response = service.channels().list(part = "contentDetails", id = channel_id).execute()
+
+    uploads_playlist_id = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+
+    video_titles = []
+    next_page_token = None
+    
+    while True:
+        playlist_response = service.playlistItems().list(
+            part='snippet',
+            playlistId=uploads_playlist_id,
+            maxResults=50,
+            pageToken=next_page_token
+        ).execute()
+        
+        for item in playlist_response['items']:
+            video_titles.append(item['snippet']['title'])
+        
+        next_page_token = playlist_response.get('nextPageToken')
+        if not next_page_token:
+            break
+
+    openai_client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
+    completion = openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {
+                "role": "user",
+                "content": f"You are an expert creative content creator who is known for innovation. I want you to give me 5 creative youtube video idea's based on my past video's on my youtube channel. Here's the list of titles of my videos: {video_titles}"
+            }
+        ]
+    )
+    print(completion)
+
+    return {
+        "Content_Ideas": completion
+    }
 
 @celery_app.task
 def generate_timestamps():
@@ -138,3 +181,5 @@ def generate_timestamps():
             "preferredLanguage": "string" 
         }
     )
+
+

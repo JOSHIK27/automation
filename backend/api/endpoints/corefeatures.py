@@ -3,7 +3,8 @@ import requests
 import os
 from celery import chain
 from ...tasks import generate_image_task
-from googleapiclient.discovery import build
+from ...tasks import generate_content_ideas
+from ...celery_config import celery_app
 router = APIRouter()
 
 api_key = os.getenv("DUMPLING_API_KEY")
@@ -55,34 +56,21 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
         "message": "Workflow triggered"
     }
 
-@router.get("/youtube")
-def youtubehandler():
 
-    service = build("youtube", "v3", developerKey = os.getenv("YOUTUBE_DATA_API_KEY"))
+@router.post("/youtube")
+def youtube_handler(id: str):
 
-    response = service.channels().list(part = "contentDetails", id = "UCWX0cUR2rZcqKei1Vstww-A").execute()
+    task = generate_content_ideas.delay(id)
 
-    uploads_playlist_id = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+    return {"task_id": task.id, "status": "Task submitted"}
 
-    video_titles = []
-    next_page_token = None
-    
-    while True:
-        playlist_response = service.playlistItems().list(
-            part='snippet',
-            playlistId=uploads_playlist_id,
-            maxResults=50,
-            pageToken=next_page_token
-        ).execute()
-        
-        for item in playlist_response['items']:
-            video_titles.append(item['snippet']['title'])
-        
-        next_page_token = playlist_response.get('nextPageToken')
-        if not next_page_token:
-            break
 
-    print(video_titles)
-    return {
-        "message": "Success"
-    }
+@router.get("/result/{task_id}")
+async def get_result(task_id: str):
+    result = celery_app.AsyncResult(task_id)
+    if result.state == "PENDING":
+        return {"status": "Task is still running"}
+    elif result.state == "SUCCESS":
+        return {"status": "Task completed", "result": result.result}
+    else:
+        return {"status": f"Task failed or has an unknown state: {result.state}"}
