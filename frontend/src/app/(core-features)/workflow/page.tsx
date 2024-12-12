@@ -43,6 +43,8 @@ export default function Flow() {
   const dispatch = useDispatch();
   const triggerState = useSelector((state: RootState) => state.trigger);
   const actionsList = useSelector((state: RootState) => state.actions);
+  const taskStatus = useSelector((state: RootState) => state.taskstatus);
+  console.log(taskStatus);
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
@@ -362,9 +364,8 @@ export default function Flow() {
       if (!response.ok) {
         throw new Error("Failed to trigger workflow");
       }
-      const finalResponse = await response.json();
-      console.log(finalResponse);
-      dispatch(setTasksStatus(finalResponse));
+      const { response: data } = await response.json();
+      dispatch(setTasksStatus(data));
 
       toast.success("Workflow triggered successfully!");
     } catch (error) {

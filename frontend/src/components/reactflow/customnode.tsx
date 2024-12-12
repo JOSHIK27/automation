@@ -1,16 +1,17 @@
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 import { Handle, Position } from "@xyflow/react";
-import { BiCaptions } from "react-icons/bi";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { Separator } from "@/components/ui/separator";
+import HashLoader from "react-spinners/HashLoader";
+import { BiCaptions, BiSolidImage } from "react-icons/bi";
+import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2 } from "react-icons/md";
-import { BiSolidImage } from "react-icons/bi";
-import { RiVideoUploadLine } from "react-icons/ri";
-import HashLoader from "react-spinners/HashLoader";
-import { useState } from "react";
 
 export default function CustomNode({
   data,
+  id,
 }: {
   data: {
     label: string;
@@ -18,8 +19,39 @@ export default function CustomNode({
     selected: boolean;
     prompt?: string;
   };
+  id: string;
 }) {
-  const [loading, setLoading] = useState(true);
+  const taskStatus = useSelector((state: RootState) => state.taskstatus);
+  const currentTaskStatus = taskStatus.find((task) => task.id === id);
+  console.log(currentTaskStatus, taskStatus);
+
+  useEffect(() => {
+    let timerId: ReturnType<typeof setInterval>;
+    if (currentTaskStatus && currentTaskStatus.status === "PENDING") {
+      try {
+        timerId = setInterval(() => {
+          checkStatus();
+        }, 2000);
+      } catch (error) {
+        console.error("Error setting up interval:", error);
+      }
+    }
+
+    return () => {
+      clearInterval(timerId);
+    };
+  }, []);
+
+  const checkStatus = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/result/${1000}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error checking status:", error);
+    }
+  };
+
   const isPlaceholderLabel = (label: string) => {
     return (
       label === "Select the event that you want to trigger" ||
@@ -66,7 +98,7 @@ export default function CustomNode({
           )}
           <span className="text-sm font-medium text-gray-600">{data.type}</span>
         </div>
-        {loading ? (
+        {currentTaskStatus && currentTaskStatus.status === "running" ? (
           <HashLoader loading={true} size={18} color="#009688" />
         ) : (
           <button className="p-1.5 hover:bg-gray-50 rounded-full transition-all duration-200 hover:rotate-12">

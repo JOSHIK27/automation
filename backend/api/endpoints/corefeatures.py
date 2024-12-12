@@ -61,7 +61,8 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
             task_id = generate_thumbnail.delay(action["thumbnailPrompt"])
             response.append({
                 "task_id": str(task_id),  # Ensure task_id is serializable
-                "cardId": action["cardId"]
+                "cardId": action["cardId"],
+                "status": "PENDING"
             })
 
     return {"response": response}
@@ -72,9 +73,9 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
 async def get_result(task_id: str):
     result = celery_app.AsyncResult(task_id)
     if result.state == "PENDING":
-        return {"status": "Task is still running"}
+        return {"status": "PENDING"}
     elif result.state == "SUCCESS":
-        return {"status": "Task completed", "result": result.result}
+        return {"status": "SUCCESS", "result": result.result}
     else:
         return {"status": f"Task failed or has an unknown state: {result.state}"}
     

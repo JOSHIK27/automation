@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import triggerReducer from "./slices/trigger-card-slices/trigger-slice";
 import actionsReducer from "./slices/trigger-card-slices/actions-slice";
+import taskstatusReducer from "./slices/trigger-card-slices/task-status-slice";
 
 export const store = configureStore({
   reducer: {
     trigger: triggerReducer,
     actions: actionsReducer,
+    taskstatus: taskstatusReducer,
   },
 });
 
