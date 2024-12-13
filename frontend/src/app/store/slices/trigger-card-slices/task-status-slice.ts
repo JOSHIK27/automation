@@ -7,7 +7,7 @@ const taskstatusslice = createSlice({
   initialState,
   reducers: {
     setTasksStatus: (state, action) => {
-      state = action.payload;
+      return action.payload;
     },
   },
 });

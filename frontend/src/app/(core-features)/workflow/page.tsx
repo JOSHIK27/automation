@@ -43,8 +43,10 @@ export default function Flow() {
   const dispatch = useDispatch();
   const triggerState = useSelector((state: RootState) => state.trigger);
   const actionsList = useSelector((state: RootState) => state.actions);
-  const taskStatus = useSelector((state: RootState) => state.taskstatus);
-  console.log(taskStatus);
+  const taskStatus = useSelector((state: RootState) => {
+    return state.taskstatus;
+  });
+
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
@@ -337,7 +339,6 @@ export default function Flow() {
     }
 
     for (const action of actionsList) {
-      console.log(action);
       for (const key in action) {
         if (!action[key as keyof typeof action]) {
           toast.error(`Please enter the input for ${key}`);
@@ -364,6 +365,7 @@ export default function Flow() {
       if (!response.ok) {
         throw new Error("Failed to trigger workflow");
       }
+
       const { response: data } = await response.json();
       dispatch(setTasksStatus(data));
 

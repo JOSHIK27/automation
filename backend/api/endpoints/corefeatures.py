@@ -58,7 +58,7 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
     for action in actions_data:
         print(action['actionType'])
         if action['actionType'] == 'Generate thumbnail':
-            task_id = generate_thumbnail.delay(action["thumbnailPrompt"])
+            task_id = generate_image_task.delay(action["thumbnailPrompt"])
             response.append({
                 "task_id": str(task_id),  # Ensure task_id is serializable
                 "cardId": action["cardId"],
@@ -72,6 +72,7 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
 @router.get("/result/{task_id}")
 async def get_result(task_id: str):
     result = celery_app.AsyncResult(task_id)
+    print(result.result)
     if result.state == "PENDING":
         return {"status": "PENDING"}
     elif result.state == "SUCCESS":

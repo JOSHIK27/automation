@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { Handle, Position } from "@xyflow/react";
 import { Separator } from "@/components/ui/separator";
@@ -8,6 +8,8 @@ import { BiCaptions, BiSolidImage } from "react-icons/bi";
 import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2 } from "react-icons/md";
+import { log } from "console";
+import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
 
 export default function CustomNode({
   data,
@@ -21,9 +23,9 @@ export default function CustomNode({
   };
   id: string;
 }) {
+  const dispatch = useDispatch();
   const taskStatus = useSelector((state: RootState) => state.taskstatus);
-  const currentTaskStatus = taskStatus.find((task) => task.id === id);
-  console.log(currentTaskStatus, taskStatus);
+  const currentTaskStatus = taskStatus.find((task) => task.cardId === id);
 
   useEffect(() => {
     let timerId: ReturnType<typeof setInterval>;
@@ -40,12 +42,23 @@ export default function CustomNode({
     return () => {
       clearInterval(timerId);
     };
-  }, []);
+  }, [taskStatus]);
 
   const checkStatus = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/result/${1000}`);
+      const response = await fetch(
+        `http://localhost:8000/result/${currentTaskStatus?.task_id}`
+      );
       const data = await response.json();
+      if (data.status === "SUCCESS") {
+        const updatedTaskStatus = taskStatus.map((task) => {
+          if (task.cardId === id) {
+            return { ...task, status: "SUCCESS" };
+          }
+          return task;
+        });
+        dispatch(setTasksStatus(updatedTaskStatus));
+      }
       return data;
     } catch (error) {
       console.error("Error checking status:", error);
