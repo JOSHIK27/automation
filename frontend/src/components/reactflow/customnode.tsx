@@ -185,6 +185,49 @@ export default function CustomNode({
         className="!w-3 !h-3 !border-[2px] !border-teal/50 !bg-white
           hover:!border-teal transition-colors duration-200"
       />
+
+      {false && (
+        <div className="mt-4">
+          <Separator className="my-4 bg-gray-100" />
+
+          <button
+            onClick={() => {
+              /* Add your result view/copy logic */
+            }}
+            className="group flex w-full items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 transition-all duration-200 hover:border-teal/20 hover:bg-teal/5"
+          >
+            <div className="flex items-center gap-2.5">
+              <svg
+                className="h-4 w-4 text-teal"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="text-sm text-gray-600">View result</span>
+            </div>
+            <svg
+              className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:translate-x-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

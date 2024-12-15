@@ -4,6 +4,7 @@ import os
 from celery import chain
 from ...tasks import generate_image_task
 from ...tasks import generate_thumbnail
+from ...tasks import generate_content_ideas
 from ...celery_config import celery_app
 router = APIRouter()
 
@@ -64,7 +65,13 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
                 "cardId": action["cardId"],
                 "status": "PENDING"
             })
-
+        elif action['actionType'] == 'Analyse my channel videos and generate ideas':
+            task_id = generate_content_ideas.delay(trigger_data["triggerInput"])
+            response.append({
+                "task_id": str(task_id),  # Ensure task_id is serializable
+                "cardId": action["cardId"],
+                "status": "PENDING"
+            })
     return {"response": response}
 
 

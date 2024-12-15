@@ -161,7 +161,6 @@ def generate_content_ideas(channel_id: str):
             }
         ]
     )
-    print(completion)
 
     return {
         "Content_Ideas": completion
