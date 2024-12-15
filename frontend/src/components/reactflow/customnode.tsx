@@ -8,7 +8,6 @@ import { BiCaptions, BiSolidImage } from "react-icons/bi";
 import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2 } from "react-icons/md";
-import { log } from "console";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
 
 export default function CustomNode({
@@ -111,7 +110,7 @@ export default function CustomNode({
           )}
           <span className="text-sm font-medium text-gray-600">{data.type}</span>
         </div>
-        {currentTaskStatus && currentTaskStatus.status === "running" ? (
+        {currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
           <HashLoader loading={true} size={18} color="#009688" />
         ) : (
           <button className="p-1.5 hover:bg-gray-50 rounded-full transition-all duration-200 hover:rotate-12">

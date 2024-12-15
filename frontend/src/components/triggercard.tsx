@@ -60,6 +60,9 @@ export default function TriggerCard({
 }) {
   const dispatch = useDispatch();
   const [actionType, setActionType] = useState("");
+  const triggerType = useSelector(
+    (state: RootState) => state.trigger.triggerType
+  );
   const actionsList: actionItemType[] = useSelector(
     (state: RootState) => state.actions
   );
@@ -69,6 +72,7 @@ export default function TriggerCard({
     formState: { errors },
     watch,
     getValues,
+    reset,
   } = useForm();
 
   useEffect(() => {
@@ -77,6 +81,7 @@ export default function TriggerCard({
 
   useEffect(() => {
     setActionType("");
+    reset();
   }, [cardId]);
 
   watch("workflowType");
@@ -170,7 +175,11 @@ export default function TriggerCard({
       </CardHeader>
       <CardContent className="pt-2">
         {cardId === "1" ? (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            key={`trigger-form-${cardId}`}
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
             <div>
               <label
                 className="text-sm font-medium text-gray-700 mb-1.5 block"
@@ -350,7 +359,11 @@ export default function TriggerCard({
             />
           </form>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            key={`action-form-${cardId}`}
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 mb-1.5 block">
                 Select Action
@@ -376,7 +389,7 @@ export default function TriggerCard({
                       id="action-types"
                       className="bg-white border-gray-200 rounded-lg shadow-lg"
                     >
-                      {getValues("triggerType") === "Plan a video"
+                      {triggerType === "Plan a video"
                         ? [
                             {
                               label: "Generate thumbnail",
