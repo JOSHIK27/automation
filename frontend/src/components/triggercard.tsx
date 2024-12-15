@@ -16,6 +16,7 @@ import {
   FaImage,
   FaClosedCaptioning,
   FaClock,
+  FaExclamationCircle,
 } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
@@ -156,35 +157,37 @@ export default function TriggerCard({
     <Card
       className={`${
         showCard ? "absolute top-20 right-4 w-[450px] z-10" : "hidden"
-      } border-gray-200 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_50px_-10px_rgba(0,0,0,0.2)] transition-all duration-300 rounded-xl`}
+      } bg-white/80 backdrop-blur-md border-0 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_40px_rgb(0,0,0,0.16)] transition-all duration-300 rounded-2xl`}
     >
-      <CardHeader className="relative pb-2">
+      <CardHeader className="relative pb-2 space-y-4">
         <button
-          className="absolute right-4 top-4 p-1.5 hover:bg-gray-100 rounded-full transition-all duration-200"
+          className="absolute right-4 top-4 p-2 hover:bg-gray-100/80 rounded-full transition-all duration-200"
           onClick={() => setShowCard(false)}
         >
-          <IoClose className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+          <IoClose className="w-4 h-4 text-gray-500" />
         </button>
-        <CardTitle className="text-xl font-semibold text-gray-800">
-          <div className="flex items-center gap-2.5">
-            <FaYoutube className="w-5 h-5 text-red-600" />
+        <CardTitle className="text-2xl font-semibold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-red-50 rounded-lg">
+              <FaYoutube className="w-6 h-6 text-red-500" />
+            </div>
             YouTube Integration
           </div>
         </CardTitle>
-        <Separator className="my-3 bg-gray-100" />
+        <Separator className="my-3 bg-gradient-to-r from-gray-200 to-transparent" />
       </CardHeader>
       <CardContent className="pt-2">
         {cardId === "1" ? (
           <form
             key={`trigger-form-${cardId}`}
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4"
+            className="space-y-6"
           >
-            <div>
-              <label
-                className="text-sm font-medium text-gray-700 mb-1.5 block"
-                htmlFor="workflowType"
-              >
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700 inline-flex items-center gap-2">
+                <span className="p-1.5 bg-blue-50 rounded-md">
+                  <FaVideo className="w-3.5 h-3.5 text-blue-500" />
+                </span>
                 Select Workflow Type
               </label>
               <Controller
@@ -199,12 +202,12 @@ export default function TriggerCard({
                       setIsSubscribed(false);
                     }}
                   >
-                    <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
+                    <SelectTrigger className="w-full border border-gray-200 bg-white/50 hover:bg-white hover:border-gray-300 transition-all duration-200 h-11 rounded-lg shadow-sm">
                       <SelectValue
                         placeholder={dataModel.workflowTypes.placeholder}
                       />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
+                    <SelectContent className="bg-white/80 backdrop-blur-sm border-gray-200 rounded-lg shadow-xl">
                       <SelectItem
                         value="Pre Production"
                         className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
@@ -335,11 +338,18 @@ export default function TriggerCard({
                           ? "Enter title here..."
                           : "Enter channel ID here..."
                       }
+                      className="h-11 px-4 bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                     />
                   )}
                 />
                 {errors.triggerInput?.type === "required" && (
-                  <p role="alert" className="text-red-500 text-sm mt-1.5">
+                  <p
+                    role="alert"
+                    className="text-red-500 text-sm mt-1.5 flex items-center gap-2"
+                  >
+                    <span className="p-1 bg-red-50 rounded-full">
+                      <FaExclamationCircle className="w-3 h-3" />
+                    </span>
                     Please enter the required input
                   </p>
                 )}

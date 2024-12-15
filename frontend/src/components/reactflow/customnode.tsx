@@ -86,11 +86,18 @@ export default function CustomNode({
 
   return (
     <div
-      className={`${
-        data.selected
-          ? "border-[1.5px] border-gray-400"
-          : "border border-gray-200"
-      } bg-white rounded-[8px] w-[400px] p-5 relative shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_50px_-10px_rgba(0,0,0,0.2)] transition-all duration-300`}
+      className={`
+        ${
+          data.selected
+            ? "border-2 border-teal/30 ring-2 ring-teal/20"
+            : "border border-gray-200"
+        }
+        bg-white rounded-xl w-[400px] p-6 relative
+        shadow-lg shadow-gray-100/50
+        hover:shadow-xl hover:shadow-gray-200/50
+        transition-all duration-300 ease-in-out
+        backdrop-blur-sm
+      `}
     >
       {data.type === "Action" && (
         <Handle
@@ -98,56 +105,85 @@ export default function CustomNode({
           type="target"
           isConnectableStart
           position={Position.Top}
-          className="!w-4 !h-4 !border-[2px] !border-teal !bg-transparent !rounded-full relative before:content-[''] before:absolute before:w-2 before:h-2 before:bg-teal before:rounded-full before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2"
+          className="!w-5 !h-5 !border-[2px] !border-teal/50 !bg-white !rounded-full
+            before:content-[''] before:absolute before:w-2 before:h-2 
+            before:bg-teal before:rounded-full before:top-1/2 
+            before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
+            hover:!border-teal transition-colors duration-200"
         />
       )}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1 bg-gray-50 rounded-lg px-3 py-1.5 border border-gray-200 hover:bg-gray-100 transition-all duration-200 hover:translate-y-[-2px]">
-          {data.type !== "Trigger" ? (
-            <MdOutlineStickyNote2 className="text-teal text-[18px]" />
-          ) : (
-            <IoPlayCircle className="text-teal text-[18px]" />
-          )}
-          <span className="text-sm font-medium text-gray-600">{data.type}</span>
+
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div
+            className={`
+            flex items-center gap-1.5 
+            ${data.type === "Trigger" ? "bg-teal/10" : "bg-gray-100"} 
+            rounded-lg px-4 py-2 
+            border border-gray-200/50
+            hover:translate-y-[-1px]
+            transition-all duration-200
+          `}
+          >
+            {data.type !== "Trigger" ? (
+              <MdOutlineStickyNote2 className="text-teal text-lg" />
+            ) : (
+              <IoPlayCircle className="text-teal text-lg" />
+            )}
+            <span className="text-sm font-semibold text-gray-700">
+              {data.type}
+            </span>
+          </div>
         </div>
+
         {currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
-          <HashLoader loading={true} size={18} color="#009688" />
+          <div className="mr-2">
+            <HashLoader loading={true} size={20} color="#009688" />
+          </div>
         ) : (
-          <button className="p-1.5 hover:bg-gray-50 rounded-full transition-all duration-200 hover:rotate-12">
+          <button className="p-2 hover:bg-red-50 rounded-lg transition-all duration-200 group">
             <RiDeleteBin6Line
               size={18}
-              className="text-teal hover:text-red-500"
+              className="text-gray-400 group-hover:text-red-500 transition-colors"
             />
           </button>
         )}
       </div>
-      <Separator className="my-3" />
-      <div>
-        <span
-          className={`
-            flex items-center gap-2 text-sm font-medium text-gray-600
-            ${
-              isPlaceholderLabel(data.label)
-                ? "italic text-gray-400"
-                : "bg-gray-50 border border-gray-200 w-fit py-2 px-3 rounded-lg hover:bg-gray-100 transition-all duration-200"
-            }
+
+      <Separator className="my-4 bg-gray-100" />
+
+      <div className="px-1">
+        {isPlaceholderLabel(data.label) ? (
+          <span className="text-sm text-gray-400 italic flex items-center gap-2">
+            <MdOutlineStickyNote2 className="text-gray-300" />
+            No Description
+          </span>
+        ) : (
+          <div
+            className={`
+            flex items-center gap-2.5 
+            bg-gradient-to-r from-gray-50 to-white
+            border border-gray-200/70
+            w-fit py-2.5 px-4 rounded-lg
+            hover:border-teal/20 hover:from-teal/5 hover:to-white
+            transition-all duration-200
           `}
-        >
-          {!isPlaceholderLabel(data.label) && (
-            <>
-              {getIconForLabel(data.label)}
+          >
+            {getIconForLabel(data.label)}
+            <span className="text-sm font-medium text-gray-700">
               {data.label}
-            </>
-          )}
-          {isPlaceholderLabel(data.label) && "No Description"}
-        </span>
+            </span>
+          </div>
+        )}
       </div>
+
       <Handle
         onConnect={(params) => console.log("handle onConnect", params)}
         type="source"
         isConnectableEnd
         position={Position.Bottom}
-        className="!w-2 !h-2 !border-[2px] !border-teal !bg-white"
+        className="!w-3 !h-3 !border-[2px] !border-teal/50 !bg-white
+          hover:!border-teal transition-colors duration-200"
       />
     </div>
   );

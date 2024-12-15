@@ -2,38 +2,60 @@ import { AiOutlineClockCircle } from "react-icons/ai";
 import { BsPiggyBank } from "react-icons/bs";
 import { RiRobot2Line } from "react-icons/ri";
 
-export default function Benifits() {
+export default function Benefits() {
   return (
-    <section className="mb-20">
-      <h2 className="text-center text-4xl font-bold mb-8">Benefits</h2>
-      <div className="mx-8 bg-gray-100 p-12 rounded-lg border-gray-200 border-[1px]">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-          <div className="flex flex-col items-center gap-4 p-6 rounded-lg bg-white">
-            <AiOutlineClockCircle className="text-3xl text-black mr-2" />
-            <h3 className="text-xl font-semibold">Time Saver</h3>
+    <section className="py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-teal-600 to-teal-800 bg-clip-text text-transparent">
+            Why Choose Automation.ai?
+          </h2>
+          <p className="mt-6 text-lg leading-8 text-gray-600">
+            Streamline your workflow with powerful automation tools designed for
+            modern businesses
+          </p>
+        </div>
 
-            <p className="text-gray-600 text-center">
-              Automate your workflow and save countless hours. Let our
-              automation handle repetitive tasks while you focus on what matters
-              most.
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-4 p-6 rounded-lg bg-white">
-            <BsPiggyBank className="text-3xl text-black mr-2" />
-            <h3 className="text-xl font-semibold">Cost Effective</h3>
-            <p className="text-gray-600 text-center">
-              Eliminate expensive freelancer fees. Our platform provides
-              professional-grade automation at a fraction of the traditional
-              cost.
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-4 p-6 rounded-lg bg-white">
-            <RiRobot2Line className="text-3xl text-black mr-2" />
-            <h3 className="text-xl font-semibold">AI Powered</h3>
-            <p className="text-gray-600 text-center">
-              Leverage cutting-edge AI technology for intelligent,
-              out-of-the-box solutions that adapt to your specific needs.
-            </p>
+        <div className="mx-auto mt-16 max-w-7xl sm:mt-20 lg:mt-24">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-3">
+            <div className="relative p-8 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200/50 hover:shadow-lg transition-all">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600">
+                <AiOutlineClockCircle className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mt-6 text-lg font-semibold leading-7 text-gray-900">
+                Time Saver
+              </h3>
+              <p className="mt-4 text-base leading-7 text-gray-600">
+                Automate repetitive tasks and save countless hours. Focus on
+                strategic work while our AI handles the routine operations.
+              </p>
+            </div>
+
+            <div className="relative p-8 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200/50 hover:shadow-lg transition-all">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600">
+                <BsPiggyBank className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mt-6 text-lg font-semibold leading-7 text-gray-900">
+                Cost Effective
+              </h3>
+              <p className="mt-4 text-base leading-7 text-gray-600">
+                Reduce operational costs by automating manual processes. Get
+                enterprise-grade automation at a fraction of traditional costs.
+              </p>
+            </div>
+
+            <div className="relative p-8 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200/50 hover:shadow-lg transition-all">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600">
+                <RiRobot2Line className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mt-6 text-lg font-semibold leading-7 text-gray-900">
+                AI Powered
+              </h3>
+              <p className="mt-4 text-base leading-7 text-gray-600">
+                Leverage cutting-edge AI technology for intelligent automation
+                that adapts to your specific business needs.
+              </p>
+            </div>
           </div>
         </div>
       </div>
