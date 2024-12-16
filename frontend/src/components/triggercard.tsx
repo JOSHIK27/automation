@@ -85,11 +85,12 @@ export default function TriggerCard({
     reset,
     setValue,
   } = useForm();
-  console.log(getValues("triggerType"), videoTitle, channelId);
+
   useEffect(() => {
     setActionType(watch("actionType"));
   }, [watch("actionType")]);
 
+  // saving previous values of trigger fields
   useEffect(() => {
     reset();
     if (cardId === "1") {
@@ -105,9 +106,14 @@ export default function TriggerCard({
   }, [cardId]);
 
   useEffect(() => {
-    setValue("triggerType", "");
-  }, [watch("workflowType")]);
+    if (triggerType === "Plan a video") {
+      setValue("videoTitle", videoTitle);
+    } else {
+      setValue("channelId", channelId);
+    }
+  }, [watch("triggerType")]);
 
+  console.log(getValues("workflowType"), getValues("triggerType"));
   watch("workflowType");
   watch("triggerType");
   watch("triggerInput");
@@ -128,7 +134,17 @@ export default function TriggerCard({
     if (cardId === "1") {
       const { triggerType, triggerInput, workflowType, videoTitle, channelId } =
         data;
-      if (workflowType === "" || triggerType === "" || triggerInput === "") {
+      if (workflowType === "" || triggerType === "") {
+        return;
+      }
+      if (triggerType === "Plan a video" && videoTitle === "") {
+        return;
+      }
+      if (
+        (triggerType === "When a video is uploaded" ||
+          triggerType === "Generate Content Ideas") &&
+        channelId === ""
+      ) {
         return;
       }
 
@@ -229,6 +245,7 @@ export default function TriggerCard({
                     onValueChange={(value) => {
                       field.onChange(value);
                       setIsSubscribed(false);
+                      setValue("triggerType", "");
                     }}
                   >
                     <SelectTrigger className="w-full bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 h-11 rounded-lg shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
@@ -298,6 +315,11 @@ export default function TriggerCard({
                       field.onChange(value);
                       setSelectValue(value);
                       setIsSubscribed(false);
+                      if (value === "Plan a video") {
+                        setValue("videoTitle", videoTitle);
+                      } else {
+                        setValue("channelId", channelId);
+                      }
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
