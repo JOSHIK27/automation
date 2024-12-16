@@ -6,6 +6,7 @@ from ...tasks import generate_image_task
 from ...tasks import generate_thumbnail
 from ...tasks import generate_content_ideas
 from ...celery_config import celery_app
+from keybert import KeyBERT
 router = APIRouter()
 
 api_key = os.getenv("DUMPLING_API_KEY")

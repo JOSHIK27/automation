@@ -4,7 +4,7 @@ import json
 import os
 from googleapiclient.discovery import build
 from openai import OpenAI
-
+from keybert import KeyBERT
 
 @celery_app.task
 def generate_image_task(prompt: str):
@@ -183,3 +183,13 @@ def generate_timestamps():
     )
 
 
+@celery_app.task
+def generate_seo_keywords(textContent: str):
+
+    kw_model = KeyBERT()
+
+    keywords = kw_model.extract_keywords(textContent, keyphrase_ngram_range=(1, 2), stop_words=None)
+
+    return {
+        keywords: keywords
+    }

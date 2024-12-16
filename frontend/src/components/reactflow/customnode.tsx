@@ -4,6 +4,7 @@ import { RootState } from "@/app/store/store";
 import { Handle, Position } from "@xyflow/react";
 import { Separator } from "@/components/ui/separator";
 import HashLoader from "react-spinners/HashLoader";
+import { BeatLoader, FadeLoader, SyncLoader } from "react-spinners";
 import { BiCaptions, BiSolidImage } from "react-icons/bi";
 import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
@@ -138,7 +139,7 @@ export default function CustomNode({
 
         {currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
           <div className="mr-2">
-            <HashLoader loading={true} size={20} color="#009688" />
+            <BeatLoader loading={true} size={10} color="#009688" />
           </div>
         ) : (
           <button className="p-2 hover:bg-red-50 rounded-lg transition-all duration-200 group">

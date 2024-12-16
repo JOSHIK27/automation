@@ -18,6 +18,7 @@ import {
   FaClock,
   FaExclamationCircle,
   FaEdit,
+  FaSearch,
 } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
@@ -428,6 +429,12 @@ export default function TriggerCard({
                         ))}
                       {triggerType === "When a video is uploaded" &&
                         [
+                          {
+                            label: "Generate SEO optimized keywords",
+                            icon: (
+                              <FaSearch className="w-4 h-4 text-blue-500" />
+                            ),
+                          },
                           {
                             label: "Generate captions",
                             icon: (
