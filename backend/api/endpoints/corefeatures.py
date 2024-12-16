@@ -88,3 +88,16 @@ async def get_result(task_id: str):
     else:
         return {"status": f"Task failed or has an unknown state: {result.state}"}
     
+
+@router.post("/generate-seo-optimised-keywords")
+def generatekeywords(textContent: str):
+
+    kw_model = KeyBERT()
+
+    keywords = kw_model.extract_keywords(textContent, keyphrase_ngram_range=(1, 2), stop_words=None)
+
+    print(keywords)
+
+    return {
+        "message": "Success"
+    }

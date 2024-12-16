@@ -193,3 +193,28 @@ def generate_seo_keywords(textContent: str):
     return {
         keywords: keywords
     }
+
+@celery_app.task
+def generate_seo_title(transcript: str):
+
+    openai_client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
+
+    prompt = f"""
+    Create 5 SEO-optimized YouTube titles for the following video content:
+    {transcript}
+    Each title should:
+    - Contain relevant keywords.
+    - Be under 60 characters.
+    - Be engaging and click-worthy.
+    """
+
+    completion = openai_client.chat.completions.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=150,
+        temperature=0.7
+    )
+
+    return {
+        "title": completion
+    }

@@ -204,30 +204,45 @@ export default function TriggerCard({
                       setIsSubscribed(false);
                     }}
                   >
-                    <SelectTrigger className="w-full border border-gray-200 bg-white/50 hover:bg-white hover:border-gray-300 transition-all duration-200 h-11 rounded-lg shadow-sm">
+                    <SelectTrigger className="w-full bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 h-11 rounded-lg shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                       <SelectValue
                         placeholder={dataModel.workflowTypes.placeholder}
+                        className="text-gray-600 placeholder:text-gray-400"
                       />
                     </SelectTrigger>
-                    <SelectContent className="bg-white/80 backdrop-blur-sm border-gray-200 rounded-lg shadow-xl">
-                      <SelectItem
-                        value="Pre Production"
-                        className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
-                      >
-                        <div className="flex items-center gap-2">
-                          <FaVideo className="w-4 h-4 text-blue-500" />
-                          Pre Production
-                        </div>
-                      </SelectItem>
-                      <SelectItem
-                        value="Post Production"
-                        className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
-                      >
-                        <div className="flex items-center gap-2">
-                          <FaEdit className="w-4 h-4 text-green-500" />
-                          Post Production
-                        </div>
-                      </SelectItem>
+                    <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-lg overflow-hidden animate-in fade-in-0 zoom-in-95">
+                      <div className="px-1 py-2">
+                        <SelectItem
+                          value="Pre Production"
+                          className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-blue-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-50 rounded-lg">
+                              <FaVideo className="w-4 h-4 text-blue-500" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-medium text-gray-700">
+                                Pre Production
+                              </span>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem
+                          value="Post Production"
+                          className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-green-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-green-50 rounded-lg">
+                              <FaEdit className="w-4 h-4 text-green-500" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-medium text-gray-700">
+                                Post Production
+                              </span>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      </div>
                     </SelectContent>
                   </Select>
                 )}
@@ -429,6 +444,12 @@ export default function TriggerCard({
                         ))}
                       {triggerType === "When a video is uploaded" &&
                         [
+                          {
+                            label: "Generate SEO optimized title",
+                            icon: (
+                              <FaSearch className="w-4 h-4 text-blue-500" />
+                            ),
+                          },
                           {
                             label: "Generate SEO optimized keywords",
                             icon: (
