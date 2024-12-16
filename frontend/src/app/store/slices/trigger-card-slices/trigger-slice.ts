@@ -4,6 +4,8 @@ const initialState = {
   workflowType: "",
   triggerType: "",
   triggerInput: "",
+  channelId: "",
+  videoTitle: "",
 };
 
 const triggerSlice = createSlice({
@@ -11,10 +13,13 @@ const triggerSlice = createSlice({
   initialState,
   reducers: {
     setTriggerState: (state, action) => {
-      const { triggerType, triggerInput, workflowType } = action.payload;
+      const { triggerType, triggerInput, workflowType, channelId, videoTitle } =
+        action.payload;
       state.triggerType = triggerType;
       state.triggerInput = triggerInput;
       state.workflowType = workflowType;
+      state.channelId = channelId;
+      state.videoTitle = videoTitle;
     },
   },
 });

@@ -16,13 +16,12 @@ import {
   FaImage,
   FaClosedCaptioning,
   FaClock,
-  FaExclamationCircle,
   FaEdit,
   FaSearch,
+  FaExclamationCircle,
 } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { Input } from "./ui/input";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
@@ -67,9 +66,16 @@ export default function TriggerCard({
   const triggerType = useSelector(
     (state: RootState) => state.trigger.triggerType
   );
+  const workflowType = useSelector(
+    (state: RootState) => state.trigger.workflowType
+  );
   const actionsList: actionItemType[] = useSelector(
     (state: RootState) => state.actions
   );
+  const videoTitle = useSelector(
+    (state: RootState) => state.trigger.videoTitle
+  );
+  const channelId = useSelector((state: RootState) => state.trigger.channelId);
   const {
     handleSubmit,
     control,
@@ -77,22 +83,34 @@ export default function TriggerCard({
     watch,
     getValues,
     reset,
+    setValue,
   } = useForm();
-
+  console.log(getValues("triggerType"), videoTitle, channelId);
   useEffect(() => {
     setActionType(watch("actionType"));
   }, [watch("actionType")]);
 
   useEffect(() => {
-    setActionType("");
     reset();
+    if (cardId === "1") {
+      setValue("workflowType", workflowType);
+      setValue("triggerType", triggerType);
+      if (triggerType === "Plan a video") {
+        setValue("videoTitle", videoTitle);
+      } else {
+        setValue("channelId", channelId);
+      }
+    }
+    setActionType("");
   }, [cardId]);
+
+  useEffect(() => {
+    setValue("triggerType", "");
+  }, [watch("workflowType")]);
 
   watch("workflowType");
   watch("triggerType");
   watch("triggerInput");
-
-  console.log(triggerType);
 
   // useEffect(() => {
   //   reset();
@@ -108,12 +126,21 @@ export default function TriggerCard({
 
   const onSubmit = (data: any) => {
     if (cardId === "1") {
-      const { triggerType, triggerInput, workflowType } = data;
+      const { triggerType, triggerInput, workflowType, videoTitle, channelId } =
+        data;
       if (workflowType === "" || triggerType === "" || triggerInput === "") {
         return;
       }
 
-      dispatch(setTriggerState({ triggerType, triggerInput, workflowType }));
+      dispatch(
+        setTriggerState({
+          triggerType,
+          triggerInput,
+          workflowType,
+          videoTitle,
+          channelId,
+        })
+      );
       const currentNodes = nodes;
       const updatedNodes = currentNodes.map((node: any) => {
         if (node.id === "1") {
@@ -198,7 +225,7 @@ export default function TriggerCard({
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
                   <Select
-                    defaultValue={getValues("workflowType")}
+                    defaultValue={workflowType}
                     onValueChange={(value) => {
                       field.onChange(value);
                       setIsSubscribed(false);
@@ -266,6 +293,7 @@ export default function TriggerCard({
                 name="triggerType"
                 render={({ field }) => (
                   <Select
+                    defaultValue={triggerType}
                     onValueChange={(value) => {
                       field.onChange(value);
                       setSelectValue(value);
@@ -278,7 +306,8 @@ export default function TriggerCard({
                       />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
-                      {getValues("workflowType") === "Pre Production"
+                      {(getValues("workflowType") || workflowType) ===
+                      "Pre Production"
                         ? [
                             {
                               label: "Plan a video",
@@ -333,45 +362,78 @@ export default function TriggerCard({
                 </p>
               )}
             </div>
-            {getValues("triggerType") && (
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1.5 block">
-                  {getValues("triggerType") === "Plan a video"
-                    ? "Title of the video"
-                    : "Channel ID"}
-                </label>
-                <Controller
-                  control={control}
-                  rules={{ required: "This field is required" }}
-                  name="triggerInput"
-                  render={({ field }) => (
-                    <Textarea
-                      onChange={(e) => {
-                        field.onChange(e.target.value);
-                        setIsSubscribed(false);
-                      }}
-                      placeholder={
-                        getValues("triggerType") === "Plan a video"
-                          ? "Enter title here..."
-                          : "Enter channel ID here..."
-                      }
-                      className="h-11 px-4 bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-                    />
+            {(getValues("triggerType") || triggerType) &&
+              (getValues("triggerType") || triggerType) === "Plan a video" && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+                    Title of the video
+                  </label>
+                  <Controller
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    name="videoTitle"
+                    render={({ field }) => (
+                      <Textarea
+                        defaultValue={videoTitle}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          setIsSubscribed(false);
+                        }}
+                        placeholder="Enter title here..."
+                        className="h-11 px-4 bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                      />
+                    )}
+                  />
+                  {errors.videoTitle?.type === "required" && (
+                    <p
+                      role="alert"
+                      className="text-red-500 text-sm mt-1.5 flex items-center gap-2"
+                    >
+                      <span className="p-1 bg-red-50 rounded-full">
+                        <FaExclamationCircle className="w-3 h-3" />
+                      </span>
+                      Please enter the required input
+                    </p>
                   )}
-                />
-                {errors.triggerInput?.type === "required" && (
-                  <p
-                    role="alert"
-                    className="text-red-500 text-sm mt-1.5 flex items-center gap-2"
-                  >
-                    <span className="p-1 bg-red-50 rounded-full">
-                      <FaExclamationCircle className="w-3 h-3" />
-                    </span>
-                    Please enter the required input
-                  </p>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            {(getValues("triggerType") || triggerType) &&
+              ["Generate Content Ideas", "When a video is uploaded"].includes(
+                getValues("triggerType") || triggerType
+              ) && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1.5 block">
+                    Enter the channel ID
+                  </label>
+                  <Controller
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    name="channelId"
+                    render={({ field }) => (
+                      <Textarea
+                        defaultValue={channelId}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          setIsSubscribed(false);
+                        }}
+                        placeholder="Enter channel ID here..."
+                        className="h-11 px-4 bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                      />
+                    )}
+                  />
+                  {errors.channelId?.type === "required" && (
+                    <p
+                      role="alert"
+                      className="text-red-500 text-sm mt-1.5 flex items-center gap-2"
+                    >
+                      <span className="p-1 bg-red-50 rounded-full">
+                        <FaExclamationCircle className="w-3 h-3" />
+                      </span>
+                      Please enter the required input
+                    </p>
+                  )}
+                </div>
+              )}
             <AnimatedSubscribeButtonDemo
               disabled={false}
               isSubscribed={isSubscribed}
