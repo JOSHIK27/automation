@@ -1,12 +1,17 @@
 import { Controller } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+
 export default function GenerateThumbnail({
   control,
   errors,
+  cardId,
+  actionsList,
 }: {
   control: any;
   errors: any;
+  cardId: string;
+  actionsList: any[];
 }) {
   return (
     <>
@@ -19,7 +24,14 @@ export default function GenerateThumbnail({
           name="thumbnailPrompt"
           rules={{ required: "This field is required" }}
           render={({ field }) => (
-            <Textarea {...field} placeholder="Enter Prompt" />
+            <Textarea
+              {...field}
+              placeholder="Enter Prompt"
+              defaultValue={
+                actionsList.find((action) => action.cardId === cardId)
+                  ?.thumbnailPrompt
+              }
+            />
           )}
         />
         {errors.thumbnailPrompt?.type === "required" && (

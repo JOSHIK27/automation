@@ -329,14 +329,6 @@ export default function Flow() {
       toast.error("Please select a trigger");
       return;
     }
-    if (triggerState.triggerInput === "") {
-      toast.error("Please enter the input for trigger");
-      return;
-    }
-    if (triggerState.triggerInput === "") {
-      toast.error("Please enter the input for trigger");
-      return;
-    }
 
     for (const action of actionsList) {
       for (const key in action) {

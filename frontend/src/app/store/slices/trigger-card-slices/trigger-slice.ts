@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   workflowType: "",
   triggerType: "",
-  triggerInput: "",
   channelId: "",
   videoTitle: "",
 };
@@ -13,10 +12,9 @@ const triggerSlice = createSlice({
   initialState,
   reducers: {
     setTriggerState: (state, action) => {
-      const { triggerType, triggerInput, workflowType, channelId, videoTitle } =
+      const { triggerType, workflowType, channelId, videoTitle } =
         action.payload;
       state.triggerType = triggerType;
-      state.triggerInput = triggerInput;
       state.workflowType = workflowType;
       state.channelId = channelId;
       state.videoTitle = videoTitle;

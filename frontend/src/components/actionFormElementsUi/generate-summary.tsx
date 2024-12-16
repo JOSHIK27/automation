@@ -10,9 +10,13 @@ import {
 export default function GenerateSummary({
   control,
   errors,
+  cardId,
+  actionsList,
 }: {
   control: any;
   errors: any;
+  cardId: string;
+  actionsList: any[];
 }) {
   return (
     <>
@@ -25,7 +29,14 @@ export default function GenerateSummary({
           name="summaryLanguage"
           rules={{ required: "Please select a language" }}
           render={({ field }) => (
-            <Select {...field} onValueChange={field.onChange}>
+            <Select
+              {...field}
+              onValueChange={field.onChange}
+              defaultValue={
+                actionsList.find((action) => action.cardId === cardId)
+                  ?.summaryLanguage
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select Language" />
               </SelectTrigger>

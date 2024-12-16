@@ -63,19 +63,12 @@ export default function TriggerCard({
 }) {
   const dispatch = useDispatch();
   const [actionType, setActionType] = useState("");
-  const triggerType = useSelector(
-    (state: RootState) => state.trigger.triggerType
-  );
-  const workflowType = useSelector(
-    (state: RootState) => state.trigger.workflowType
+  const { triggerType, workflowType, videoTitle, channelId } = useSelector(
+    (state: RootState) => state.trigger
   );
   const actionsList: actionItemType[] = useSelector(
     (state: RootState) => state.actions
   );
-  const videoTitle = useSelector(
-    (state: RootState) => state.trigger.videoTitle
-  );
-  const channelId = useSelector((state: RootState) => state.trigger.channelId);
   const {
     handleSubmit,
     control,
@@ -86,6 +79,7 @@ export default function TriggerCard({
     setValue,
   } = useForm();
 
+  // interdependent fields for action type
   useEffect(() => {
     setActionType(watch("actionType"));
   }, [watch("actionType")]);
@@ -103,6 +97,7 @@ export default function TriggerCard({
       }
     }
     setActionType("");
+    setValue("actionType", "");
   }, [cardId]);
 
   useEffect(() => {
@@ -112,12 +107,8 @@ export default function TriggerCard({
       setValue("channelId", channelId);
     }
   }, [watch("triggerType")]);
-
-  console.log(getValues("workflowType"), getValues("triggerType"));
   watch("workflowType");
   watch("triggerType");
-  watch("triggerInput");
-
   // useEffect(() => {
   //   reset();
   //   actionsList.forEach((action) => {
@@ -132,8 +123,7 @@ export default function TriggerCard({
 
   const onSubmit = (data: any) => {
     if (cardId === "1") {
-      const { triggerType, triggerInput, workflowType, videoTitle, channelId } =
-        data;
+      const { triggerType, workflowType, videoTitle, channelId } = data;
       if (workflowType === "" || triggerType === "") {
         return;
       }
@@ -151,7 +141,6 @@ export default function TriggerCard({
       dispatch(
         setTriggerState({
           triggerType,
-          triggerInput,
           workflowType,
           videoTitle,
           channelId,
@@ -175,7 +164,8 @@ export default function TriggerCard({
         "If you change the trigger fields, all the actions will be deleted."
       );
     } else {
-      const { triggerType, triggerInput, workflowType, ...rest } = data;
+      const { triggerType, workflowType, videoTitle, channelId, ...rest } =
+        data;
       dispatch(setAction({ cardId, ...rest }));
 
       const currentNodes = nodes;
@@ -488,7 +478,11 @@ export default function TriggerCard({
                     disabled={
                       Number(cardId) > Number(firstCardIdWithEmptyFields)
                     }
-                    value={actionType || ""}
+                    defaultValue={
+                      actionsList.find((action) => action.cardId === cardId)
+                        ?.actionType
+                    }
+                    // value={actionType || ""}
                     onValueChange={(value) => {
                       field.onChange(value);
                     }}
@@ -607,7 +601,12 @@ export default function TriggerCard({
               )}
             </div>
             {actionType === "Generate thumbnail" && (
-              <GenerateThumbnail control={control} errors={errors} />
+              <GenerateThumbnail
+                control={control}
+                errors={errors}
+                cardId={cardId}
+                actionsList={actionsList}
+              />
             )}
             {actionType === "Generate captions" && (
               <GenerateCaptions control={control} errors={errors} />
@@ -616,7 +615,12 @@ export default function TriggerCard({
               <SwapFace control={control} errors={errors} />
             )}
             {actionType === "Generate summary" && (
-              <GenerateSummary control={control} errors={errors} />
+              <GenerateSummary
+                control={control}
+                errors={errors}
+                cardId={cardId}
+                actionsList={actionsList}
+              />
             )}
             {actionType === "Generate timestamps" && <></>}
 
