@@ -79,15 +79,21 @@ export default function TriggerCard({
     setValue,
   } = useForm();
 
-  // interdependent fields for action type
+  console.log(getValues());
+
+  // this is to conditionally render fields based on action type in action cards
   useEffect(() => {
+    console.log("Hit");
     setActionType(watch("actionType"));
   }, [watch("actionType")]);
 
   // saving previous values of trigger fields
   useEffect(() => {
+    // clear the exisiting formState when cardId changed
     reset();
+    // if we are on the first card, set the values of the trigger fields to old values from trigger state
     if (cardId === "1") {
+      console.log("HIii");
       setValue("workflowType", workflowType);
       setValue("triggerType", triggerType);
       if (triggerType === "Plan a video") {
@@ -96,14 +102,30 @@ export default function TriggerCard({
         setValue("channelId", channelId);
       }
     }
-    setActionType("");
-    setValue("actionType", "");
+    // const existingAction = actionsList.find(
+    //   (action) => action.cardId === cardId
+    // );
+
+    // if (existingAction && existingAction.actionType) {
+    //   setActionType(existingAction.actionType);
+    //   setValue("actionType", existingAction.actionType);
+
+    //   Object.entries(existingAction).forEach(([key, value]) => {
+    //     if (key === cardId || key === "cardId") return;
+    //     setValue(key as keyof actionItemType, value || "");
+    //   });
+    // }
   }, [cardId]);
 
+  // this is to conditionally render fields based on trigger type in trigger card
   useEffect(() => {
     if (triggerType === "Plan a video") {
       setValue("videoTitle", videoTitle);
-    } else {
+    } else if (
+      triggerType === "Generate Content Ideas" ||
+      triggerType === "When a video is uploaded"
+    ) {
+      console.log("Hit2");
       setValue("channelId", channelId);
     }
   }, [watch("triggerType")]);
