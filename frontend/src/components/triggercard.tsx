@@ -79,69 +79,65 @@ export default function TriggerCard({
     setValue,
   } = useForm();
 
+  watch("workflowType");
+  watch("triggerType");
+  watch("actionType");
   console.log(getValues());
-
-  // this is to conditionally render fields based on action type in action cards
-  useEffect(() => {
-    console.log("Hit");
-    setActionType(watch("actionType"));
-  }, [watch("actionType")]);
 
   // saving previous values of trigger fields
   useEffect(() => {
-    // clear the exisiting formState when cardId changed
+    // clear the existing formState when cardId changed
     reset();
+
     // if we are on the first card, set the values of the trigger fields to old values from trigger state
     if (cardId === "1") {
-      console.log("HIii");
       setValue("workflowType", workflowType);
       setValue("triggerType", triggerType);
       if (triggerType === "Plan a video") {
         setValue("videoTitle", videoTitle);
-      } else {
+      } else if (
+        triggerType === "Generate Content Ideas" ||
+        triggerType === "When a video is uploaded"
+      ) {
         setValue("channelId", channelId);
       }
+    } else {
+      // For action cards, set the existing action values if they exist
+      const existingAction = actionsList.find(
+        (action) => action.cardId === cardId
+      );
+
+      if (existingAction && existingAction.actionType) {
+        setActionType(existingAction.actionType);
+        setValue("actionType", existingAction.actionType);
+
+        // Set other form values from the existing action
+        Object.entries(existingAction).forEach(([key, value]) => {
+          if (key !== "cardId") {
+            setValue(key as keyof actionItemType, value || "");
+          }
+        });
+      } else {
+        // Clear action type if no existing action
+        setActionType("");
+        setValue("actionType", "");
+      }
     }
-    // const existingAction = actionsList.find(
-    //   (action) => action.cardId === cardId
-    // );
-
-    // if (existingAction && existingAction.actionType) {
-    //   setActionType(existingAction.actionType);
-    //   setValue("actionType", existingAction.actionType);
-
-    //   Object.entries(existingAction).forEach(([key, value]) => {
-    //     if (key === cardId || key === "cardId") return;
-    //     setValue(key as keyof actionItemType, value || "");
-    //   });
-    // }
-  }, [cardId]);
+  }, [cardId, actionsList]);
 
   // this is to conditionally render fields based on trigger type in trigger card
   useEffect(() => {
-    if (triggerType === "Plan a video") {
-      setValue("videoTitle", videoTitle);
-    } else if (
-      triggerType === "Generate Content Ideas" ||
-      triggerType === "When a video is uploaded"
-    ) {
-      console.log("Hit2");
-      setValue("channelId", channelId);
+    if (cardId === "1") {
+      if (triggerType === "Plan a video") {
+        setValue("videoTitle", videoTitle);
+      } else if (
+        triggerType === "Generate Content Ideas" ||
+        triggerType === "When a video is uploaded"
+      ) {
+        setValue("channelId", channelId);
+      }
     }
   }, [watch("triggerType")]);
-  watch("workflowType");
-  watch("triggerType");
-  // useEffect(() => {
-  //   reset();
-  //   actionsList.forEach((action) => {
-  //     if (
-  //       action.cardId != "2" &&
-  //       (action.actionInput === "" || action.actionType === "")
-  //     ) {
-  //       setFieldsDisabled(true);
-  //     }
-  //   });
-  // }, [nodes.length, ]);
 
   const onSubmit = (data: any) => {
     if (cardId === "1") {
@@ -193,7 +189,10 @@ export default function TriggerCard({
       const currentNodes = nodes;
       const updatedNodes = currentNodes.map((node: any) => {
         if (node.id === cardId) {
-          return { ...node, data: { label: actionType, type: "Action" } };
+          return {
+            ...node,
+            data: { label: getValues("actionType"), type: "Action" },
+          };
         }
         return node;
       });
@@ -622,7 +621,7 @@ export default function TriggerCard({
                 </p>
               )}
             </div>
-            {actionType === "Generate thumbnail" && (
+            {getValues("actionType") === "Generate thumbnail" && (
               <GenerateThumbnail
                 control={control}
                 errors={errors}
@@ -630,13 +629,13 @@ export default function TriggerCard({
                 actionsList={actionsList}
               />
             )}
-            {actionType === "Generate captions" && (
+            {getValues("actionType") === "Generate captions" && (
               <GenerateCaptions control={control} errors={errors} />
             )}
-            {actionType === "Swap face" && (
+            {getValues("actionType") === "Swap face" && (
               <SwapFace control={control} errors={errors} />
             )}
-            {actionType === "Generate summary" && (
+            {getValues("actionType") === "Generate summary" && (
               <GenerateSummary
                 control={control}
                 errors={errors}
@@ -644,7 +643,7 @@ export default function TriggerCard({
                 actionsList={actionsList}
               />
             )}
-            {actionType === "Generate timestamps" && <></>}
+            {getValues("actionType") === "Generate timestamps" && <></>}
 
             <AnimatedSubscribeButtonDemo
               disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
