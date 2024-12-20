@@ -1,6 +1,30 @@
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BsPiggyBank } from "react-icons/bs";
 import { RiRobot2Line } from "react-icons/ri";
+import { BoltIcon } from "@heroicons/react/24/outline";
+import { SparklesIcon } from "@heroicons/react/24/outline";
+
+const benefits = [
+  {
+    title: "Visual Workflow Builder",
+    description:
+      "Create complex automation workflows with our intuitive drag-and-drop interface. Connect different AI actions and customize their behavior visually.",
+    icon: RiRobot2Line,
+  },
+  {
+    title: "AI-Powered Content Generation",
+    description:
+      "Leverage advanced AI to automatically generate video captions, create engaging thumbnails, and produce content summaries.",
+    icon: SparklesIcon,
+  },
+  {
+    title: "Customizable Triggers",
+    description:
+      "Set up automated workflows that respond to various triggers. Schedule actions or respond to events in real-time.",
+    icon: BoltIcon,
+  },
+  // Add more benefits...
+];
 
 export default function Benefits() {
   return (
@@ -18,44 +42,22 @@ export default function Benefits() {
 
         <div className="mx-auto mt-16 max-w-7xl sm:mt-20 lg:mt-24">
           <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-3">
-            <div className="relative p-8 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200/50 hover:shadow-lg transition-all">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600">
-                <AiOutlineClockCircle className="h-6 w-6 text-white" />
+            {benefits.map((benefit, index) => (
+              <div
+                key={index}
+                className="relative p-8 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200/50 hover:shadow-lg transition-all"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600">
+                  <benefit.icon className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="mt-6 text-lg font-semibold leading-7 text-gray-900">
+                  {benefit.title}
+                </h3>
+                <p className="mt-4 text-base leading-7 text-gray-600">
+                  {benefit.description}
+                </p>
               </div>
-              <h3 className="mt-6 text-lg font-semibold leading-7 text-gray-900">
-                Time Saver
-              </h3>
-              <p className="mt-4 text-base leading-7 text-gray-600">
-                Automate repetitive tasks and save countless hours. Focus on
-                strategic work while our AI handles the routine operations.
-              </p>
-            </div>
-
-            <div className="relative p-8 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200/50 hover:shadow-lg transition-all">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600">
-                <BsPiggyBank className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="mt-6 text-lg font-semibold leading-7 text-gray-900">
-                Cost Effective
-              </h3>
-              <p className="mt-4 text-base leading-7 text-gray-600">
-                Reduce operational costs by automating manual processes. Get
-                enterprise-grade automation at a fraction of traditional costs.
-              </p>
-            </div>
-
-            <div className="relative p-8 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200/50 hover:shadow-lg transition-all">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600">
-                <RiRobot2Line className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="mt-6 text-lg font-semibold leading-7 text-gray-900">
-                AI Powered
-              </h3>
-              <p className="mt-4 text-base leading-7 text-gray-600">
-                Leverage cutting-edge AI technology for intelligent automation
-                that adapts to your specific business needs.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </div>

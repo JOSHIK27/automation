@@ -18,7 +18,13 @@ export default function SwapFace({
           control={control}
           name="sourceImageUrl"
           rules={{ required: "This field is required" }}
-          render={({ field }) => <Input {...field} />}
+          render={({ field }) => (
+            <Input
+              onChange={(e) => {
+                field.onChange(e.target.value);
+              }}
+            />
+          )}
         />
         {errors.sourceImageUrl?.type === "required" && (
           <p role="alert" className="text-red-500 text-sm mt-1.5">
@@ -34,7 +40,13 @@ export default function SwapFace({
           control={control}
           name="targetImageUrl"
           rules={{ required: "This field is required" }}
-          render={({ field }) => <Input {...field} />}
+          render={({ field }) => (
+            <Input
+              onChange={(e) => {
+                field.onChange(e.target.value);
+              }}
+            />
+          )}
         />
       </div>
     </>

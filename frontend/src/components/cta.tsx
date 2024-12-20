@@ -23,11 +23,11 @@ export default function CTA() {
 
           <div className="relative">
             <h2 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Ready to Transform Your Workflow?
+              Ready to Automate Your Content Workflow?
             </h2>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-teal-50">
-              Join thousands of content creators who are already saving time and
-              boosting productivity with our automation platform.
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-200">
+              Join creators who are saving hours every week with our AI-powered
+              automation platform. Start building your custom workflows today.
             </p>
 
             <div className="mt-10 flex items-center justify-center gap-x-6">

@@ -354,12 +354,13 @@ export default function TriggerCard({
                       }
                     }}
                   >
-                    <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
+                    <SelectTrigger className="w-full bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 h-11 rounded-lg shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                       <SelectValue
                         placeholder={dataModel.triggerTypes.placeholder}
+                        className="text-gray-600 placeholder:text-gray-400"
                       />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200 rounded-lg shadow-lg">
+                    <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-lg overflow-hidden animate-in fade-in-0 zoom-in-95">
                       {(getValues("workflowType") || workflowType) ===
                       "Pre Production"
                         ? [

@@ -4,6 +4,33 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+const faqs = [
+  {
+    question: "What kind of workflows can I create?",
+    answer:
+      "You can create workflows that combine various AI actions like face swapping, caption generation, thumbnail creation, and content summarization. These can be triggered automatically or manually based on your needs.",
+  },
+  {
+    question: "How does the face swapping feature work?",
+    answer:
+      "Simply provide a source image URL containing the face you want to use, and a target image URL where you want to apply the face. Our AI will handle the rest, ensuring natural-looking results.",
+  },
+  {
+    question: "Can I customize the AI-generated content?",
+    answer:
+      "Yes! Each AI action comes with customizable parameters. You can adjust settings for caption style, thumbnail composition, summary length, and more.",
+  },
+  {
+    question: "Is coding knowledge required?",
+    answer:
+      "Not at all! Our visual workflow builder lets you create complex automations through an intuitive drag-and-drop interface. No coding required.",
+  },
+  {
+    question: "What file formats are supported?",
+    answer:
+      "We support common image formats (JPG, PNG) for face swapping and thumbnail generation, and popular video formats for caption generation.",
+  },
+];
 
 export default function Faqs() {
   return (
@@ -14,30 +41,16 @@ export default function Faqs() {
         type="single"
         collapsible
       >
-        <AccordionItem value="item-1">
-          <AccordionTrigger className="text-lg font-semibold">
-            Question 1
-          </AccordionTrigger>
-          <AccordionContent className="text-muted-foreground">
-            Answer 1
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger className="text-lg font-semibold">
-            Question 2
-          </AccordionTrigger>
-          <AccordionContent className="text-muted-foreground">
-            Answer 2
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-3">
-          <AccordionTrigger className="text-lg font-semibold">
-            Question 3
-          </AccordionTrigger>
-          <AccordionContent className="text-muted-foreground">
-            Answer 3
-          </AccordionContent>
-        </AccordionItem>
+        {faqs.map((faq) => (
+          <AccordionItem value={faq.question}>
+            <AccordionTrigger className="text-lg font-semibold">
+              {faq.question}
+            </AccordionTrigger>
+            <AccordionContent className="text-muted-foreground">
+              {faq.answer}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
       </Accordion>
     </section>
   );
