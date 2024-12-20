@@ -414,6 +414,7 @@ export default function Flow() {
         setIsSubscribed={setIsSubscribed}
         nodes={nodes}
         setNodes={setNodes}
+        setEdges={setEdges}
         actions={actions}
       />
 

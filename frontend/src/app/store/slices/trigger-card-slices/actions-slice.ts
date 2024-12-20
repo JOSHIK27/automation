@@ -52,10 +52,18 @@ export const actionsSlice = createSlice({
         state.push(action);
       });
     },
+    clearActions: (state) => {
+      state.splice(0, state.length);
+    },
   },
 });
 
-export const { addAction, updateAction, insertActionInBetween, setAction } =
-  actionsSlice.actions;
+export const {
+  addAction,
+  updateAction,
+  insertActionInBetween,
+  setAction,
+  clearActions,
+} = actionsSlice.actions;
 
 export default actionsSlice.reducer;

@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { Handle, Position } from "@xyflow/react";
 import { Separator } from "@/components/ui/separator";
-import HashLoader from "react-spinners/HashLoader";
-import { BeatLoader, FadeLoader, SyncLoader } from "react-spinners";
+import { BeatLoader } from "react-spinners";
 import { BiCaptions, BiSolidImage } from "react-icons/bi";
 import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
@@ -90,14 +89,15 @@ export default function CustomNode({
       className={`
         ${
           data.selected
-            ? "border-2 border-teal/30 ring-2 ring-teal/20"
-            : "border border-gray-200"
+            ? "border-2 border-teal/40 ring-4 ring-teal/20"
+            : "border border-gray-200/60"
         }
-        bg-white rounded-xl w-[400px] p-6 relative
-        shadow-lg shadow-gray-100/50
-        hover:shadow-xl hover:shadow-gray-200/50
-        transition-all duration-300 ease-in-out
-        backdrop-blur-sm
+        bg-white/95 rounded-2xl w-[400px] p-7 relative
+        shadow-[0_8px_30px_rgb(0,0,0,0.04)]
+        hover:shadow-[0_16px_40px_rgb(0,0,0,0.06)]
+        hover:scale-[1.01]
+        transition-all duration-300 ease-out
+        backdrop-blur-lg
       `}
     >
       {data.type === "Action" && (
@@ -106,23 +106,28 @@ export default function CustomNode({
           type="target"
           isConnectableStart
           position={Position.Top}
-          className="!w-5 !h-5 !border-[2px] !border-teal/50 !bg-white !rounded-full
-            before:content-[''] before:absolute before:w-2 before:h-2 
-            before:bg-teal before:rounded-full before:top-1/2 
-            before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
-            hover:!border-teal transition-colors duration-200"
+          className="!w-6 !h-6 !border-[2px] !border-teal/60 !bg-white !rounded-full
+            before:content-[''] before:absolute before:w-2.5 before:h-2.5 
+            before:bg-gradient-to-br before:from-teal before:to-teal/80 
+            before:rounded-full before:top-1/2 before:left-1/2 
+            before:-translate-x-1/2 before:-translate-y-1/2"
         />
       )}
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div
             className={`
-            flex items-center gap-1.5 
-            ${data.type === "Trigger" ? "bg-teal/10" : "bg-gray-100"} 
-            rounded-lg px-4 py-2 
-            border border-gray-200/50
-            hover:translate-y-[-1px]
+            flex items-center gap-2
+            ${
+              data.type === "Trigger"
+                ? "bg-gradient-to-br from-teal/10 to-teal/5"
+                : "bg-gradient-to-br from-gray-50 to-gray-100/50"
+            }
+            rounded-xl px-4 py-2.5
+            border border-gray-100
+            hover:translate-y-[-2px]
+            hover:shadow-lg hover:shadow-teal/5
             transition-all duration-200
           `}
           >
@@ -131,7 +136,7 @@ export default function CustomNode({
             ) : (
               <IoPlayCircle className="text-teal text-lg" />
             )}
-            <span className="text-sm font-semibold text-gray-700">
+            <span className="text-sm font-semibold bg-gradient-to-r from-gray-700 to-gray-600 bg-clip-text text-transparent">
               {data.type}
             </span>
           </div>
@@ -139,39 +144,41 @@ export default function CustomNode({
 
         {currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
           <div className="mr-2">
-            <BeatLoader loading={true} size={10} color="#009688" />
+            <BeatLoader loading={true} size={8} color="#009688" />
           </div>
         ) : (
-          <button className="p-2 hover:bg-red-50 rounded-lg transition-all duration-200 group">
+          <button className="p-2.5 hover:bg-red-50 rounded-xl transition-all duration-200 group">
             <RiDeleteBin6Line
               size={18}
-              className="text-gray-400 group-hover:text-red-500 transition-colors"
+              className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
             />
           </button>
         )}
       </div>
 
-      <Separator className="my-4 bg-gray-100" />
+      <Separator className="my-5 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100" />
 
       <div className="px-1">
         {isPlaceholderLabel(data.label) ? (
-          <span className="text-sm text-gray-400 italic flex items-center gap-2">
+          <span className="text-sm text-gray-400 italic flex items-center gap-2.5 px-2">
             <MdOutlineStickyNote2 className="text-gray-300" />
             No Description
           </span>
         ) : (
           <div
             className={`
-            flex items-center gap-2.5 
-            bg-gradient-to-r from-gray-50 to-white
-            border border-gray-200/70
-            w-fit py-2.5 px-4 rounded-lg
-            hover:border-teal/20 hover:from-teal/5 hover:to-white
+            flex items-center gap-3
+            bg-gradient-to-br from-gray-50 via-white to-gray-50
+            border border-gray-200/60
+            w-fit py-3 px-5 rounded-xl
+            hover:border-teal/30 hover:from-teal/5 hover:to-white
+            hover:shadow-lg hover:shadow-teal/5
+            hover:scale-[1.02]
             transition-all duration-200
           `}
           >
             {getIconForLabel(data.label)}
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium bg-gradient-to-r from-gray-700 to-gray-600 bg-clip-text text-transparent">
               {data.label}
             </span>
           </div>
@@ -183,8 +190,7 @@ export default function CustomNode({
         type="source"
         isConnectableEnd
         position={Position.Bottom}
-        className="!w-3 !h-3 !border-[2px] !border-teal/50 !bg-white
-          hover:!border-teal transition-colors duration-200"
+        className="!w-4 !h-4 !border-[2px] !border-teal/60 !bg-white"
       />
 
       {false && (

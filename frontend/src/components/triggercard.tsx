@@ -37,6 +37,9 @@ import GenerateSummary from "./actionFormElementsUi/generate-summary";
 import { toast } from "sonner";
 import { MdFace, MdSummarize } from "react-icons/md";
 import { Textarea } from "./ui/textarea";
+import { clearActions } from "@/app/store/slices/trigger-card-slices/actions-slice";
+import { initialNodes } from "@/lib/constants/workflow";
+import { initialEdges } from "@/lib/constants/workflow";
 
 export default function TriggerCard({
   showCard,
@@ -48,6 +51,7 @@ export default function TriggerCard({
   setIsSubscribed,
   nodes,
   setNodes,
+  setEdges,
   actions,
 }: {
   showCard: boolean;
@@ -59,10 +63,10 @@ export default function TriggerCard({
   setIsSubscribed: (isSubscribed: boolean) => void;
   nodes: any;
   setNodes: any;
+  setEdges: any;
   actions: any;
 }) {
   const dispatch = useDispatch();
-  const [actionType, setActionType] = useState("");
   const { triggerType, workflowType, videoTitle, channelId } = useSelector(
     (state: RootState) => state.trigger
   );
@@ -78,11 +82,29 @@ export default function TriggerCard({
     reset,
     setValue,
   } = useForm();
+  const [prevTriggerType, setPrevTriggerType] = useState<string | null>(null);
 
   watch("workflowType");
   watch("triggerType");
   watch("actionType");
-  console.log(getValues());
+
+  // update all the action nodes when trigger type changes
+  useEffect(() => {
+    if (prevTriggerType) {
+      dispatch(clearActions());
+      const updatedNodes = [...initialNodes];
+      updatedNodes[0] = {
+        ...updatedNodes[0],
+        data: {
+          ...updatedNodes[0].data,
+          label: triggerType,
+        },
+      };
+      setNodes(updatedNodes);
+      setEdges(initialEdges);
+    }
+    setPrevTriggerType(triggerType);
+  }, [triggerType]);
 
   // saving previous values of trigger fields
   useEffect(() => {
@@ -108,7 +130,6 @@ export default function TriggerCard({
       );
 
       if (existingAction && existingAction.actionType) {
-        setActionType(existingAction.actionType);
         setValue("actionType", existingAction.actionType);
 
         // Set other form values from the existing action
@@ -118,8 +139,6 @@ export default function TriggerCard({
           }
         });
       } else {
-        // Clear action type if no existing action
-        setActionType("");
         setValue("actionType", "");
       }
     }
@@ -170,7 +189,7 @@ export default function TriggerCard({
           return {
             ...node,
             data: {
-              label: triggerType,
+              label: getValues("triggerType"),
               type: "Trigger",
             },
           };
@@ -216,24 +235,26 @@ export default function TriggerCard({
     <Card
       className={`${
         showCard ? "absolute top-20 right-4 w-[450px] z-10" : "hidden"
-      } bg-white/80 backdrop-blur-md border-0 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_40px_rgb(0,0,0,0.16)] transition-all duration-300 rounded-2xl`}
+      } bg-white/95 backdrop-blur-xl border border-gray-100 shadow-2xl hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 rounded-2xl animate-in`}
     >
       <CardHeader className="relative pb-2 space-y-4">
         <button
-          className="absolute right-4 top-4 p-2 hover:bg-gray-100/80 rounded-full transition-all duration-200"
+          className="absolute right-4 top-4 p-2 hover:bg-gray-100/80 rounded-full transition-all duration-300 group"
           onClick={() => setShowCard(false)}
         >
-          <IoClose className="w-4 h-4 text-gray-500" />
+          <IoClose className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
         </button>
-        <CardTitle className="text-2xl font-semibold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+        <CardTitle className="text-2xl font-semibold">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-red-50 rounded-lg">
+            <div className="p-3 bg-gradient-to-br from-red-500/10 to-red-500/5 rounded-xl border border-red-500/10">
               <FaYoutube className="w-6 h-6 text-red-500" />
             </div>
-            YouTube Integration
+            <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
+              YouTube Integration
+            </span>
           </div>
         </CardTitle>
-        <Separator className="my-3 bg-gradient-to-r from-gray-200 to-transparent" />
+        <Separator className="my-3 bg-gradient-to-r from-gray-200 via-gray-100 to-transparent" />
       </CardHeader>
       <CardContent className="pt-2">
         {cardId === "1" ? (
@@ -413,16 +434,16 @@ export default function TriggerCard({
                           setIsSubscribed(false);
                         }}
                         placeholder="Enter title here..."
-                        className="h-11 px-4 bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                        className="h-12 px-4 bg-white hover:bg-gray-50/50 border border-gray-200 hover:border-gray-300 rounded-xl shadow-sm transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none"
                       />
                     )}
                   />
                   {errors.videoTitle?.type === "required" && (
                     <p
                       role="alert"
-                      className="text-red-500 text-sm mt-1.5 flex items-center gap-2"
+                      className="text-red-500 text-sm mt-2 flex items-center gap-2 bg-red-50/50 p-2 rounded-lg border border-red-100"
                     >
-                      <span className="p-1 bg-red-50 rounded-full">
+                      <span className="p-1 bg-red-100 rounded-full">
                         <FaExclamationCircle className="w-3 h-3" />
                       </span>
                       Please enter the required input

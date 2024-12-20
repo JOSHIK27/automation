@@ -25,7 +25,7 @@ export default function GenerateCaptions({
           name="captionsLanguage"
           rules={{ required: "This field is required" }}
           render={({ field }) => (
-            <Select {...field}>
+            <Select {...field} onValueChange={field.onChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Select Language" />
               </SelectTrigger>
