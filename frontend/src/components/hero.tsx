@@ -65,7 +65,7 @@ export default function Hero() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 z-20">
           <Button
-            className="z-20 px-8 py-6 text-lg font-medium bg-teal-600 text-white hover:bg-teal-700 transition-colors duration-200 w-full sm:w-auto"
+            className="z-20 px-8 py-6 text-lg font-medium bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 transition-all duration-300 w-full sm:w-auto shadow-sm"
             onClick={() => router.push("/workflow")}
           >
             Get Started for Free

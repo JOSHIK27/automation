@@ -131,7 +131,7 @@ export default function Flow() {
         id: "customWithHandle",
         position: {
           x: 588,
-          y: newnodeyposition + 175 + 250,
+          y: newnodeyposition + 200 + 250,
         },
         data: {
           label: "",
@@ -213,7 +213,7 @@ export default function Flow() {
         if (node.id === "customWithHandle") {
           return {
             ...node,
-            position: { x: node.position.x, y: maxnodeheight + 175 },
+            position: { x: node.position.x, y: maxnodeheight + 200 },
           };
         }
         return node;

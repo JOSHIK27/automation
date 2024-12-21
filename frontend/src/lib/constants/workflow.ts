@@ -25,7 +25,7 @@ export const initialNodes = [
   },
   {
     id: "customWithHandle",
-    position: { x: 588, y: 525 },
+    position: { x: 588, y: 550 },
     data: {
       label: "",
       type: "",

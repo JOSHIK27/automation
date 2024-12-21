@@ -9,7 +9,7 @@ import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
-
+import { toast } from "sonner";
 export default function CustomNode({
   data,
   id,
@@ -147,7 +147,14 @@ export default function CustomNode({
             <BeatLoader loading={true} size={8} color="#009688" />
           </div>
         ) : (
-          <button className="p-2.5 hover:bg-red-50 rounded-xl transition-all duration-200 group">
+          <button
+            onClick={() => {
+              if (id === "1" || id === "2") {
+                toast.error("You cannot delete the default tasks");
+              }
+            }}
+            className="p-2.5 hover:bg-red-50 rounded-xl transition-all duration-200 group"
+          >
             <RiDeleteBin6Line
               size={18}
               className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"

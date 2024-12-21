@@ -181,6 +181,7 @@ export default function TriggerCard({
           workflowType,
           videoTitle,
           channelId,
+          editable: false,
         })
       );
       const currentNodes = nodes;
@@ -203,7 +204,7 @@ export default function TriggerCard({
     } else {
       const { triggerType, workflowType, videoTitle, channelId, ...rest } =
         data;
-      dispatch(setAction({ cardId, ...rest }));
+      dispatch(setAction({ cardId, ...rest, editable: false }));
 
       const currentNodes = nodes;
       const updatedNodes = currentNodes.map((node: any) => {
@@ -489,6 +490,7 @@ export default function TriggerCard({
                   )}
                 </div>
               )}
+
             <AnimatedSubscribeButtonDemo
               disabled={false}
               isSubscribed={isSubscribed}
