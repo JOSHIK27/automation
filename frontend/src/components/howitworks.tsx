@@ -6,7 +6,7 @@ export default function HowItWorks() {
           How it works
         </h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Three simple steps to transform your content creation workflow
+          Build powerful content automation workflows in three simple steps
         </p>
       </div>
 
@@ -15,10 +15,10 @@ export default function HowItWorks() {
           <div className="w-20 h-20 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform group-hover:scale-110 transition-transform duration-300">
             <span className="text-white text-2xl font-bold">1</span>
           </div>
-          <h3 className="text-2xl font-bold mb-4">Create Content</h3>
+          <h3 className="text-2xl font-bold mb-4">Design Your Workflow</h3>
           <p className="text-gray-600 leading-relaxed">
-            Record or prepare your video content for upload to the platform.
-            Support for all major video formats.
+            Create custom workflows using our visual drag-and-drop builder.
+            Connect AI actions and set up triggers for automation.
           </p>
         </div>
 
@@ -26,10 +26,10 @@ export default function HowItWorks() {
           <div className="w-20 h-20 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform group-hover:scale-110 transition-transform duration-300">
             <span className="text-white text-2xl font-bold">2</span>
           </div>
-          <h3 className="text-2xl font-bold mb-4">Upload Video</h3>
+          <h3 className="text-2xl font-bold mb-4">Configure Actions</h3>
           <p className="text-gray-600 leading-relaxed">
-            Simply upload your video file through our intuitive drag-and-drop
-            interface. Fast and secure.
+            Customize each action in your workflow - from generating captions
+            and summaries to creating AI thumbnails.
           </p>
         </div>
 
@@ -37,10 +37,10 @@ export default function HowItWorks() {
           <div className="w-20 h-20 bg-gradient-to-br from-teal-600 to-teal-700 rounded-2xl flex items-center justify-center mb-6 shadow-lg transform group-hover:scale-110 transition-transform duration-300">
             <span className="text-white text-2xl font-bold">3</span>
           </div>
-          <h3 className="text-2xl font-bold mb-4">Auto-Generate Metadata</h3>
+          <h3 className="text-2xl font-bold mb-4">Run & Monitor</h3>
           <p className="text-gray-600 leading-relaxed">
-            Our AI automatically generates all the metadata you need to publish
-            your content with maximum impact.
+            Execute your workflow and track the progress of each automated task
+            in real-time through our dashboard.
           </p>
         </div>
       </div>
