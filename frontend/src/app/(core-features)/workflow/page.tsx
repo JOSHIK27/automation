@@ -28,6 +28,18 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -41,10 +53,15 @@ export default function Flow() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
-  const triggerState = useSelector((state: RootState) => state.trigger);
+  const { workflowType, triggerType, channelId, videoTitle, editable } =
+    useSelector((state: RootState) => state.trigger);
   const actionsList = useSelector((state: RootState) => state.actions);
   const taskStatus = useSelector((state: RootState) => {
     return state.taskstatus;
+  });
+  const [workflowDetails, setWorkflowDetails] = useState({
+    name: "",
+    description: "",
   });
 
   useEffect(() => {
@@ -325,7 +342,7 @@ export default function Flow() {
   };
 
   const handleTriggerWorkflow = async () => {
-    if (triggerState.triggerType === "") {
+    if (triggerType === "") {
       toast.error("Please select a trigger");
       return;
     }
@@ -347,10 +364,7 @@ export default function Flow() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            triggerState,
-            actionsList,
-          }),
+          body: JSON.stringify({}),
         }
       );
 
@@ -368,18 +382,111 @@ export default function Flow() {
     }
   };
 
+  const handleSaveWorkflow = async () => {
+    const resp = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/save-workflow`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nodes,
+          edges,
+        }),
+      }
+    );
+
+    // Add your save logic here
+    toast.success("Workflow saved successfully!");
+  };
+
   return (
     <div className="relative" style={{ height: "100dvh" }}>
-      <div className="absolute top-4 right-4 z-10">
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <Dialog>
+          <DialogTrigger>
+            <Button
+              className="inline-flex items-center justify-center px-4 py-2
+          bg-white/90 hover:bg-white text-gray-700 rounded-md
+          shadow-lg backdrop-blur-sm
+          font-medium text-sm
+          border border-gray-200/50
+          transition-all duration-200
+          hover:scale-105 active:scale-95"
+            >
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                />
+              </svg>
+              Save
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="bg-[#F7F5F1]/90 backdrop-blur-sm border border-gray-200/50">
+            <DialogHeader>
+              <DialogTitle className="text-gray-700">Save Workflow</DialogTitle>
+              <DialogDescription className="text-gray-500">
+                Enter the details of your workflow before saving.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <form onSubmit={handleSaveWorkflow}>
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-gray-700">
+                    Workflow Name
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="Enter workflow name"
+                    className="bg-white/80"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description" className="text-gray-700">
+                    Description
+                  </Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Enter workflow description (optional)"
+                    className="bg-white/80 min-h-[100px]"
+                  />
+                </div>
+              </form>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="bg-white/80 border-gray-200 text-gray-700 hover:bg-white"
+                >
+                  Cancel
+                </Button>
+              </DialogTrigger>
+              <Button className="bg-teal-600 hover:bg-teal-700 text-white">
+                Save Workflow
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         <button
           onClick={handleTriggerWorkflow}
-          className="inline-flex items-center justify-center px-5 py-2.5 
-          bg-teal-600 hover:bg-teal-700 text-white rounded-lg
-          shadow-sm hover:shadow-md transition-all duration-150 ease-in-out
-          font-semibold text-sm tracking-wide
-          border border-transparent hover:border-teal-700
-          active:transform active:scale-95
-          focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+          className="inline-flex items-center justify-center px-4 py-2
+          bg-teal-600/90 hover:bg-teal-600 text-white rounded-md
+          shadow-lg backdrop-blur-sm
+          font-medium text-sm
+          border border-transparent
+          transition-all duration-200
+          hover:scale-105 active:scale-95"
         >
           <svg
             className="w-4 h-4 mr-2"
@@ -400,7 +507,7 @@ export default function Flow() {
               d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          Start Workflow
+          Start
         </button>
       </div>
 

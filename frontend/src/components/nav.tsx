@@ -12,46 +12,52 @@ import {
 } from "@/components/ui/navigation-menu";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 export function Nav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const router = useRouter();
   return (
     <>
       {/* Desktop Navigation */}
-      <NavigationMenu className="p-4 hidden sm:block bg-white/80 backdrop-blur-md shadow-lg border-0 mx-auto rounded-2xl fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
-        <div className="flex justify-between items-center">
+      <NavigationMenu className="p-3 hidden sm:block bg-white/90 backdrop-blur-xl border border-gray-100/20 shadow-lg mx-auto rounded-2xl fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[70%] max-w-6xl">
+        <div className="flex justify-between items-center px-4">
           <NavigationMenuList>
             <NavigationMenuItem>
               <Link href="/">
                 <div className="flex items-center">
-                  <img src={logo.src} alt="logo" className="h-8 w-8 mr-2" />
-                  <h1 className="text-xl font-semibold tracking-tight text-gray-900">
+                  <img src={logo.src} alt="logo" className="h-8 w-8 mr-3" />
+                  <span className="font-semibold text-gray-800 text-lg">
                     Creator Stream
-                  </h1>
+                  </span>
                 </div>
               </Link>
             </NavigationMenuItem>
+          </NavigationMenuList>
 
-            {/* <NavigationMenuItem className="ml-10">
+          <NavigationMenuList className="space-x-2">
+            <NavigationMenuItem>
               <NavigationMenuLink
-                onClick={() => {
-                  window.scrollTo({
-                    top: 1400,
-                    behavior: "smooth",
-                  });
-                }}
-                className={`${navigationMenuTriggerStyle()} text-gray-600 hover:text-gray-900 font-medium cursor-pointer transition-colors`}
+                onClick={() =>
+                  window.scrollTo({ top: 1400, behavior: "smooth" })
+                }
+                className={`${navigationMenuTriggerStyle()} cursor-pointer text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 flex items-center gap-2 px-5 py-2 rounded-xl hover:bg-gray-50/80`}
               >
                 Pricing
               </NavigationMenuLink>
-            </NavigationMenuItem> */}
-          </NavigationMenuList>
+            </NavigationMenuItem>
 
-          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                onClick={() => router.push("/workflow-history")}
+                className={`${navigationMenuTriggerStyle()} cursor-pointer text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 flex items-center gap-2 px-5 py-2 rounded-xl hover:bg-gray-50/80`}
+              >
+                History
+              </NavigationMenuLink>
+            </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href="/docs" legacyBehavior passHref>
-                <NavigationMenuLink className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-6 py-2.5 rounded-lg font-medium hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                <NavigationMenuLink className="bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-600 hover:to-teal-500 text-white px-6 py-2.5 rounded-xl font-medium transition-all duration-300 shadow-md hover:shadow-lg">
                   Sign In
                 </NavigationMenuLink>
               </Link>
@@ -62,19 +68,19 @@ export function Nav() {
 
       {/* Mobile Navigation */}
       <div className="sm:hidden fixed top-0 left-0 w-full z-50">
-        <div className="bg-white/80 backdrop-blur-md shadow-lg p-4">
+        <div className="bg-white/95 backdrop-blur-xl border-b border-gray-100/20 shadow-sm p-4">
           <div className="flex justify-between items-center">
             <Link href="/">
               <div className="flex items-center">
-                <img src={logo.src} alt="logo" className="h-7 w-7 mr-2" />
-                <h1 className="text-lg font-semibold tracking-tight text-gray-900">
+                <img src={logo.src} alt="logo" className="h-8 w-8 mr-3" />
+                <h1 className="text-lg font-semibold text-gray-800">
                   Creator Stream
                 </h1>
               </div>
             </Link>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-gray-700 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="text-gray-700 p-2.5 hover:bg-gray-100/80 rounded-xl transition-all duration-300"
             >
               {isMobileMenuOpen ? (
                 <IoClose className="h-5 w-5" />
@@ -84,27 +90,29 @@ export function Nav() {
             </button>
           </div>
 
-          {isMobileMenuOpen && (
-            <div className="mt-4 space-y-2">
-              <div
-                onClick={() => {
-                  window.scrollTo({
-                    top: 1400,
-                    behavior: "smooth",
-                  });
-                  setIsMobileMenuOpen(false);
-                }}
-                className="block px-4 py-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg cursor-pointer font-medium transition-colors"
-              >
-                Pricing
-              </div>
-              <Link href="/docs">
-                <div className="block px-4 py-2.5 text-white bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 rounded-lg text-center font-medium shadow-sm transition-all duration-200">
-                  Sign In
-                </div>
-              </Link>
+          {/* Mobile Menu */}
+          <div
+            className={`mt-4 space-y-2 transition-all duration-300 ease-in-out ${
+              isMobileMenuOpen
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-4 pointer-events-none"
+            }`}
+          >
+            <div
+              onClick={() => {
+                window.scrollTo({ top: 1400, behavior: "smooth" });
+                setIsMobileMenuOpen(false);
+              }}
+              className="block px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50/80 rounded-xl cursor-pointer font-medium transition-all duration-300"
+            >
+              Pricing
             </div>
-          )}
+            <Link href="/docs">
+              <div className="block px-4 py-3 text-white bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-600 hover:to-teal-500 rounded-xl text-center font-medium transition-all duration-300 shadow-md">
+                Sign In
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </>
