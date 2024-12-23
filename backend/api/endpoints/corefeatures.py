@@ -7,6 +7,7 @@ from ...tasks import generate_thumbnail
 from ...tasks import generate_content_ideas
 from ...celery_config import celery_app
 from keybert import KeyBERT
+from ...schemas.users import Node, Edge
 router = APIRouter()
 
 api_key = os.getenv("DUMPLING_API_KEY")
@@ -100,4 +101,13 @@ def generatekeywords(textContent: str):
 
     return {
         "message": "Success"
+    }
+
+@router.post("/save-workflow", status_code=200)
+def saveworkflow(nodes: list[dict], edges: list[dict]):
+    
+    print(nodes, edges)
+
+    return {
+        "message": "Sucesss"
     }

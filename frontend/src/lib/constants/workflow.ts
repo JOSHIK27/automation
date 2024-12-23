@@ -1,6 +1,27 @@
 import { ConnectionLineType, MarkerType } from "@xyflow/react";
 
-export const initialNodes = [
+type Node = {
+  id: string;
+  position: { x: number; y: number };
+  data: {
+    label: string;
+    type: string;
+    selected: boolean;
+  };
+  type: string;
+  draggable: boolean;
+};
+
+type Edge = {
+  id: string;
+  source: string;
+  target: string;
+  type?: string;
+  animated: boolean;
+  markerEnd: any;
+};
+
+export const initialNodes: Node[] = [
   {
     id: "1",
     position: { x: 400, y: 100 },
@@ -36,7 +57,7 @@ export const initialNodes = [
   },
 ];
 
-export const initialEdges = [
+export const initialEdges: Edge[] = [
   {
     id: "1->2",
     source: "1",

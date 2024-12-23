@@ -40,8 +40,27 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 export default function Flow() {
+  const mutation = useMutation({
+    mutationKey: ["saveWorkflow"],
+    mutationFn: () => {
+      console.log(nodes, edges);
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/save-workflow`, {
+        method: "POST",
+        body: JSON.stringify({
+          nodes,
+          edges,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => resp.json())
+        .then((data) => data);
+    },
+  });
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [trigger, setTrigger] = useState("");
@@ -471,7 +490,15 @@ export default function Flow() {
                   Cancel
                 </Button>
               </DialogTrigger>
-              <Button className="bg-teal-600 hover:bg-teal-700 text-white">
+              <Button
+                onClick={() => {
+                  mutation.mutate();
+                  if (mutation.isPending) {
+                    toast.info("Pendinggg");
+                  }
+                }}
+                className="bg-teal-600 hover:bg-teal-700 text-white"
+              >
                 Save Workflow
               </Button>
             </div>

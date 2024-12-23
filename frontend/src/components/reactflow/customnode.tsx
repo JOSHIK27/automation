@@ -60,7 +60,7 @@ export default function CustomNode({
       }
       return data;
     } catch (error) {
-      console.error("Error checking status:", error);
+      toast.error("Error checking status: " + error);
     }
   };
 

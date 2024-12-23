@@ -7,8 +7,8 @@ from backend.api.endpoints.corefeatures import router as core_features
 from backend.db.db import engine
 from sqlmodel import SQLModel
 from backend.utils.jwt_utils import decode_jwe
+from pymongo import MongoClient
 import os
-
 app = FastAPI()
 
 origins = ["*"] 
@@ -20,6 +20,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+client = MongoClient(os.getenv("MONGO_URI"))
+
 
 
 # @app.middleware("http")
