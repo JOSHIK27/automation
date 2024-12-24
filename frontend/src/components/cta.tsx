@@ -17,7 +17,6 @@ export default function CTA() {
           transition={{ duration: 0.5 }}
           className="relative isolate overflow-hidden bg-gradient-to-r from-teal-600 to-teal-700 px-6 py-24 text-center shadow-2xl rounded-3xl sm:px-16"
         >
-          {/* Premium background effects */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)] bg-[size:24px_24px]" />
           <div className="absolute inset-0 bg-teal-500/10 backdrop-blur-[1px]" />
 
@@ -75,7 +74,6 @@ export default function CTA() {
             </div>
           </div>
 
-          {/* Enhanced background effects */}
           <div className="absolute -top-24 right-0 -z-10 transform-gpu blur-3xl">
             <div className="aspect-[1404/767] w-[87.75rem] bg-gradient-to-r from-teal-400 to-teal-500 opacity-25" />
           </div>

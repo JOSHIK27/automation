@@ -43,24 +43,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 export default function Flow() {
-  const mutation = useMutation({
-    mutationKey: ["saveWorkflow"],
-    mutationFn: () => {
-      console.log(nodes, edges);
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/save-workflow`, {
-        method: "POST",
-        body: JSON.stringify({
-          nodes,
-          edges,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((resp) => resp.json())
-        .then((data) => data);
-    },
-  });
+  const userId = useSelector((state: RootState) => state.user.user_id);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [trigger, setTrigger] = useState("");
@@ -82,7 +65,23 @@ export default function Flow() {
     name: "",
     description: "",
   });
-
+  const mutation = useMutation<
+    any,
+    Error,
+    {
+      user_id: string;
+      nodes: typeof nodes;
+      edges: typeof edges;
+    }
+  >({
+    mutationKey: ["saveWorkflow"],
+    mutationFn: (data) =>
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/save-workflow`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }).then((res) => res.json()),
+  });
   useEffect(() => {
     setIsSubscribed(false);
     setSelectValue("");
@@ -401,25 +400,6 @@ export default function Flow() {
     }
   };
 
-  const handleSaveWorkflow = async () => {
-    const resp = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/save-workflow`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nodes,
-          edges,
-        }),
-      }
-    );
-
-    // Add your save logic here
-    toast.success("Workflow saved successfully!");
-  };
-
   return (
     <div className="relative" style={{ height: "100dvh" }}>
       <div className="fixed top-4 right-4 z-50 flex gap-2">
@@ -458,28 +438,26 @@ export default function Flow() {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <form onSubmit={handleSaveWorkflow}>
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-gray-700">
-                    Workflow Name
-                  </Label>
-                  <Input
-                    id="name"
-                    placeholder="Enter workflow name"
-                    className="bg-white/80"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description" className="text-gray-700">
-                    Description
-                  </Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Enter workflow description (optional)"
-                    className="bg-white/80 min-h-[100px]"
-                  />
-                </div>
-              </form>
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-700">
+                  Workflow Name
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="Enter workflow name"
+                  className="bg-white/80"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description" className="text-gray-700">
+                  Description
+                </Label>
+                <Textarea
+                  id="description"
+                  placeholder="Enter workflow description (optional)"
+                  className="bg-white/80 min-h-[100px]"
+                />
+              </div>
             </div>
             <div className="flex justify-end space-x-2">
               <DialogTrigger asChild>
@@ -492,10 +470,12 @@ export default function Flow() {
               </DialogTrigger>
               <Button
                 onClick={() => {
-                  mutation.mutate();
-                  if (mutation.isPending) {
-                    toast.info("Pendinggg");
-                  }
+                  console.log(userId, nodes, edges);
+                  mutation.mutate({
+                    user_id: userId ?? "",
+                    nodes: nodes,
+                    edges: edges,
+                  });
                 }}
                 className="bg-teal-600 hover:bg-teal-700 text-white"
               >

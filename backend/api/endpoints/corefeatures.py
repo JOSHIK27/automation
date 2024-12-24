@@ -7,7 +7,10 @@ from ...tasks import generate_thumbnail
 from ...tasks import generate_content_ideas
 from ...celery_config import celery_app
 from keybert import KeyBERT
-from ...schemas.users import Node, Edge
+from ...schemas.users import WorkflowPayload
+from ...db.db import client
+from datetime import datetime
+
 router = APIRouter()
 
 api_key = os.getenv("DUMPLING_API_KEY")
@@ -104,10 +107,31 @@ def generatekeywords(textContent: str):
     }
 
 @router.post("/save-workflow", status_code=200)
-def saveworkflow(nodes: list[dict], edges: list[dict]):
+async def saveworkflow(request: WorkflowPayload):
+    print(f"user_id={request.user_id}", f"nodes={request.nodes}", f"edges={request.edges}")
     
-    print(nodes, edges)
+    db = client["core"]
+    workflows_collection = db["workflows"]
+    nodes_collection = db["nodes"]
+    edges_collection = db["edges"]
+    
+    workflow_doc = {
+        "user_id": request.user_id,
+        "created_at": datetime.utcnow()
+    }
+    
+    workflow_result = workflows_collection.insert_one(workflow_doc)
+    
 
+    if request.nodes:
+        nodes_data = [node.model_dump() for node in request.nodes]
+        nodes_collection.insert_many(nodes_data)
+    
+    if request.edges:
+        edges_data = [edge.model_dump() for edge in request.edges]
+        edges_collection.insert_many(edges_data)
+    
     return {
-        "message": "Sucesss"
+        "message": "Workflow saved successfully",
+        "workflow_id": str(workflow_result.inserted_id)
     }

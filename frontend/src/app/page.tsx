@@ -10,24 +10,15 @@ import { cookies } from "next/headers";
 import { sessionTokenName } from "@/lib/constants/common";
 import { setUserId } from "./store/slices/user-slice";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 export default async function Home() {
   const session = await auth();
   const sessionToken = await getSessionToken();
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-    method: "POST",
-    body: JSON.stringify(session?.user),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
-    },
-  });
-  const { user_id } = await response.json();
-
   return (
     <>
-      <Hero />
+      <Hero session={session} sessionToken={sessionToken ?? ""} />
       <HowItWorks />
       <Benifits />
       <Pricing session={session} />

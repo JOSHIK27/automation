@@ -1,4 +1,4 @@
-#!/Users/joshikroshannarayana/Desktop/Projects/ai_automation_tool/backend/.venv/bin/python
+#!/Users/joshikroshannarayana/Desktop/Projects/ai_automation_tool/backend/.venv/bin/python3.10
 # -*- coding: utf-8 -*-
 import re
 import sys
