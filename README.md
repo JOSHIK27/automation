@@ -1,4 +1,4 @@
-# AI Automation Tool
+# Creator Stream
 
 A modern web application for automating video content workflows using AI capabilities. Built with Next.js, FastAPI, and Celery.
 
