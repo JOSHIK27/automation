@@ -1,30 +1,32 @@
-from typing import Dict, List
+from typing import Dict, List, Optional, Any, Union
 from pydantic import BaseModel
 
 class User(BaseModel):
     name: str
     email: str
-    image: str | None = None
+    image: Optional[str] = None
 
 class Node(BaseModel):
     id: str
     position: Dict[str, float]
-    data: Dict[str, any]
+    data: Dict[str, Any]
     type: str
     draggable: bool = True
-    width: float | None = None
-    height: float | None = None
+    measured: Dict[str, int]
+    selected: Optional[bool] = False
 
 class Edge(BaseModel):
     id: str
     source: str
     target: str
-    type: str | None = None
+    type: Optional[str] = None
     animated: bool = False
-    markerEnd: Dict[str, str] | None = None
+    markerEnd: Optional[Dict[str, Union[str, int]]] = {}
 
 class WorkflowPayload(BaseModel):
     user_id: str
     nodes: List[Node]
     edges: List[Edge]
-    name: str | None = None
+    name: str
+    description: Optional[str] = None
+     

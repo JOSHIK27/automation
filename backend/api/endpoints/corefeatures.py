@@ -10,6 +10,7 @@ from keybert import KeyBERT
 from ...schemas.users import WorkflowPayload
 from ...db.db import client
 from datetime import datetime
+from fastapi import status
 
 router = APIRouter()
 
@@ -106,7 +107,7 @@ def generatekeywords(textContent: str):
         "message": "Success"
     }
 
-@router.post("/save-workflow", status_code=200)
+@router.post("/save-workflow", status_code=status.HTTP_201_CREATED)
 async def saveworkflow(request: WorkflowPayload):
     print(f"user_id={request.user_id}", f"nodes={request.nodes}", f"edges={request.edges}")
     
@@ -117,21 +118,61 @@ async def saveworkflow(request: WorkflowPayload):
     
     workflow_doc = {
         "user_id": request.user_id,
+        "name": request.name,
+        "description": request.description,
         "created_at": datetime.utcnow()
     }
     
     workflow_result = workflows_collection.insert_one(workflow_doc)
     
-
     if request.nodes:
         nodes_data = [node.model_dump() for node in request.nodes]
+        for node in nodes_data:
+            node["workflow_id"] = str(workflow_result.inserted_id)
         nodes_collection.insert_many(nodes_data)
-    
+
     if request.edges:
         edges_data = [edge.model_dump() for edge in request.edges]
+        for edge in edges_data:
+            edge["workflow_id"] = str(workflow_result.inserted_id)
         edges_collection.insert_many(edges_data)
     
     return {
         "message": "Workflow saved successfully",
         "workflow_id": str(workflow_result.inserted_id)
+    }
+
+@router.get("/workflow-history/{userId}", status_code = 200)
+def workflowhistory(userId: str):
+
+    db = client["core"]
+    workflows_collection = db["workflows"]
+    nodes_collection = db["nodes"]
+    edges_collection = db["edges"]
+
+    workflows = list(workflows_collection.find({"user_id": userId}))
+
+    workflow_history = []
+
+    for workflow in workflows:
+        workflow_id = str(workflow["_id"])
+        nodes = list(nodes_collection.find({"workflow_id": workflow_id}))
+        edges = list(edges_collection.find({"workflow_id": workflow_id}))
+
+        for node in nodes:
+            node["_id"] = str(node["_id"])
+        for edge in edges:
+            edge["_id"] = str(edge["_id"])  
+
+        workflow_history.append({
+            "name": workflow["name"],
+            "description": workflow["description"],
+            "created_at": workflow["created_at"],
+            "workflow_id": workflow_id,
+            "nodes": nodes,
+            "edges": edges
+        })
+
+    return {
+        "workflow_history": workflow_history
     }

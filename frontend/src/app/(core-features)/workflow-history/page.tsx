@@ -1,57 +1,66 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BsSearch, BsPlus, BsClock, BsPlayFill } from "react-icons/bs";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
+import { useRouter } from "next/navigation";
+import { HashLoader } from "react-spinners";
 
-// Sample workflow data
-const sampleWorkflows = [
-  {
-    id: 1,
-    name: "YouTube Video Publishing",
-    description:
-      "Automatically publish videos to YouTube with custom thumbnails and descriptions",
-    lastRun: "2 hours ago",
-    status: "active",
-    runs: 245,
-  },
-  {
-    id: 2,
-    name: "Blog Post Distribution",
-    description:
-      "Share blog posts across Medium, Dev.to, and social media platforms",
-    lastRun: "1 day ago",
-    status: "active",
-    runs: 189,
-  },
-  {
-    id: 3,
-    name: "Social Media Content",
-    description:
-      "Schedule and post content across Twitter, LinkedIn, and Instagram",
-    lastRun: "3 days ago",
-    status: "paused",
-    runs: 567,
-  },
-  {
-    id: 4,
-    name: "Newsletter Campaign",
-    description:
-      "Generate and send personalized newsletters to subscriber segments",
-    lastRun: "1 week ago",
-    status: "active",
-    runs: 89,
-  },
-];
+type Workflow = {
+  name: string;
+  description: string;
+  created_at: string;
+  workflow_id: string;
+  nodes: any[];
+  edges: any[];
+};
 
 export default function WorkflowsPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const userId = useSelector((state: RootState) => {
+    return state.user.user_id;
+  });
 
-  const filteredWorkflows = sampleWorkflows.filter(
-    (workflow) =>
+  if (!userId) {
+    router.push("/");
+    return;
+  }
+
+  const { data, isFetching, refetch } = useQuery({
+    queryKey: ["workflowhistory"],
+    queryFn: async () => {
+      const resp = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${userId}`,
+        {
+          method: "GET",
+        }
+      );
+      if (!resp.ok) throw new Error("Failed to fetch the history");
+      return resp.json();
+    },
+    enabled: false,
+  });
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  if (isFetching || !data)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <HashLoader color="#36d7b7" />
+      </div>
+    );
+
+  const filteredWorkflows = data.workflow_history.filter(
+    (workflow: Workflow) =>
       workflow.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       workflow.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -92,8 +101,8 @@ export default function WorkflowsPage() {
           <Separator className="my-6" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredWorkflows.map((workflow) => (
-              <WorkflowCard key={workflow.id} workflow={workflow} />
+            {filteredWorkflows.map((workflow: Workflow, index: number) => (
+              <WorkflowCard key={index} workflow={workflow} />
             ))}
           </div>
         </div>
@@ -102,7 +111,7 @@ export default function WorkflowsPage() {
   );
 }
 
-function WorkflowCard({ workflow }: { workflow: (typeof sampleWorkflows)[0] }) {
+function WorkflowCard({ workflow }: { workflow: Workflow }) {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-neutral-200 hover:border-teal-500 transition-all duration-300">
       <div className="flex justify-between items-start mb-4">
@@ -111,13 +120,13 @@ function WorkflowCard({ workflow }: { workflow: (typeof sampleWorkflows)[0] }) {
         </h3>
         <div
           className={cn(
-            "px-3 py-1 rounded-full text-sm",
-            workflow.status === "active"
-              ? "bg-teal-100 text-teal-700"
-              : "bg-neutral-100 text-neutral-700"
+            "px-3 py-1 rounded-full text-sm bg-neutral-100 text-neutral-700"
+            // workflow.status === "active"
+            //   ? "bg-teal-100 text-teal-700"
+            //   : "bg-neutral-100 text-neutral-700"
           )}
         >
-          {workflow.status}
+          {"Pending"}
         </div>
       </div>
       <p className="text-neutral-600 mb-6">{workflow.description}</p>
@@ -125,9 +134,9 @@ function WorkflowCard({ workflow }: { workflow: (typeof sampleWorkflows)[0] }) {
         <div className="flex items-center space-x-4">
           <div className="flex items-center text-sm text-neutral-500">
             <BsClock className="mr-2" />
-            {workflow.lastRun}
+            {workflow.created_at}
           </div>
-          <div className="text-sm text-neutral-500">{workflow.runs} runs</div>
+          <div className="text-sm text-neutral-500">{"0"} runs</div>
         </div>
         <Button
           variant="ghost"

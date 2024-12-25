@@ -2,9 +2,11 @@ import { Controller } from "react-hook-form";
 import { Input } from "../ui/input";
 
 export default function SwapFace({
+  setIsSubscribed,
   control,
   errors,
 }: {
+  setIsSubscribed: (isSubscribed: boolean) => void;
   control: any;
   errors: any;
 }) {
@@ -22,6 +24,7 @@ export default function SwapFace({
             <Input
               onChange={(e) => {
                 field.onChange(e.target.value);
+                setIsSubscribed(false);
               }}
             />
           )}
@@ -44,6 +47,7 @@ export default function SwapFace({
             <Input
               onChange={(e) => {
                 field.onChange(e.target.value);
+                setIsSubscribed(false);
               }}
             />
           )}

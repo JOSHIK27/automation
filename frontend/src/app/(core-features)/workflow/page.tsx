@@ -41,6 +41,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+
+type FormValues = {
+  name: string;
+  description: string;
+};
 
 export default function Flow() {
   const userId = useSelector((state: RootState) => state.user.user_id);
@@ -81,6 +87,12 @@ export default function Flow() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((res) => res.json()),
+  });
+  const form = useForm<FormValues>({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
   });
   useEffect(() => {
     setIsSubscribed(false);
@@ -437,51 +449,59 @@ export default function Flow() {
                 Enter the details of your workflow before saving.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-gray-700">
-                  Workflow Name
-                </Label>
-                <Input
-                  id="name"
-                  placeholder="Enter workflow name"
-                  className="bg-white/80"
-                />
+            <form
+              onSubmit={form.handleSubmit((data) => {
+                mutation.mutate({
+                  user_id: userId ?? "",
+                  nodes: nodes,
+                  edges: edges,
+                  ...data,
+                });
+              })}
+              className="space-y-4"
+            >
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-gray-700">
+                    Workflow Name
+                  </Label>
+                  <Input
+                    {...form.register("name", { required: true })}
+                    id="name"
+                    placeholder="Enter workflow name"
+                    className="bg-white/80"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description" className="text-gray-700">
+                    Description
+                  </Label>
+                  <Textarea
+                    {...form.register("description")}
+                    id="description"
+                    placeholder="Enter workflow description (optional)"
+                    className="bg-white/80 min-h-[100px]"
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="description" className="text-gray-700">
-                  Description
-                </Label>
-                <Textarea
-                  id="description"
-                  placeholder="Enter workflow description (optional)"
-                  className="bg-white/80 min-h-[100px]"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <DialogTrigger asChild>
+              <div className="flex justify-end space-x-2">
+                <DialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="bg-white/80 border-gray-200 text-gray-700 hover:bg-white"
+                  >
+                    Cancel
+                  </Button>
+                </DialogTrigger>
                 <Button
-                  variant="outline"
-                  className="bg-white/80 border-gray-200 text-gray-700 hover:bg-white"
+                  type="submit"
+                  className="bg-teal-600 hover:bg-teal-700 text-white"
                 >
-                  Cancel
+                  Save Workflow
                 </Button>
-              </DialogTrigger>
-              <Button
-                onClick={() => {
-                  console.log(userId, nodes, edges);
-                  mutation.mutate({
-                    user_id: userId ?? "",
-                    nodes: nodes,
-                    edges: edges,
-                  });
-                }}
-                className="bg-teal-600 hover:bg-teal-700 text-white"
-              >
-                Save Workflow
-              </Button>
-            </div>
+              </div>
+            </form>
           </DialogContent>
         </Dialog>
 

@@ -8,9 +8,11 @@ import {
 } from "../ui/select";
 
 export default function GenerateCaptions({
+  setIsSubscribed,
   control,
   errors,
 }: {
+  setIsSubscribed: (isSubscribed: boolean) => void;
   control: any;
   errors: any;
 }) {
@@ -25,7 +27,13 @@ export default function GenerateCaptions({
           name="captionsLanguage"
           rules={{ required: "This field is required" }}
           render={({ field }) => (
-            <Select {...field} onValueChange={field.onChange}>
+            <Select
+              {...field}
+              onValueChange={(value) => {
+                field.onChange(value);
+                setIsSubscribed(false);
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select Language" />
               </SelectTrigger>

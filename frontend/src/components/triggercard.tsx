@@ -530,6 +530,7 @@ export default function TriggerCard({
                     // value={actionType || ""}
                     onValueChange={(value) => {
                       field.onChange(value);
+                      setIsSubscribed(false);
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
@@ -647,6 +648,7 @@ export default function TriggerCard({
             </div>
             {getValues("actionType") === "Generate thumbnail" && (
               <GenerateThumbnail
+                setIsSubscribed={setIsSubscribed}
                 control={control}
                 errors={errors}
                 cardId={cardId}
@@ -654,13 +656,22 @@ export default function TriggerCard({
               />
             )}
             {getValues("actionType") === "Generate captions" && (
-              <GenerateCaptions control={control} errors={errors} />
+              <GenerateCaptions
+                setIsSubscribed={setIsSubscribed}
+                control={control}
+                errors={errors}
+              />
             )}
             {getValues("actionType") === "Swap face" && (
-              <SwapFace control={control} errors={errors} />
+              <SwapFace
+                setIsSubscribed={setIsSubscribed}
+                control={control}
+                errors={errors}
+              />
             )}
             {getValues("actionType") === "Generate summary" && (
               <GenerateSummary
+                setIsSubscribed={setIsSubscribed}
                 control={control}
                 errors={errors}
                 cardId={cardId}

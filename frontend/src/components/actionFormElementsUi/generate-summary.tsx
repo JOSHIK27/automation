@@ -8,11 +8,13 @@ import {
 } from "../ui/select";
 
 export default function GenerateSummary({
+  setIsSubscribed,
   control,
   errors,
   cardId,
   actionsList,
 }: {
+  setIsSubscribed: (isSubscribed: boolean) => void;
   control: any;
   errors: any;
   cardId: string;
@@ -31,7 +33,10 @@ export default function GenerateSummary({
           render={({ field }) => (
             <Select
               {...field}
-              onValueChange={field.onChange}
+              onValueChange={(value) => {
+                field.onChange(value);
+                setIsSubscribed(false);
+              }}
               defaultValue={
                 actionsList.find((action) => action.cardId === cardId)
                   ?.summaryLanguage

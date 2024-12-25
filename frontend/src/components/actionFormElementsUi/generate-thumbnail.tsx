@@ -7,11 +7,13 @@ export default function GenerateThumbnail({
   errors,
   cardId,
   actionsList,
+  setIsSubscribed,
 }: {
   control: any;
   errors: any;
   cardId: string;
   actionsList: any[];
+  setIsSubscribed: (isSubscribed: boolean) => void;
 }) {
   return (
     <>
@@ -25,7 +27,10 @@ export default function GenerateThumbnail({
           rules={{ required: "This field is required" }}
           render={({ field }) => (
             <Textarea
-              {...field}
+              onChange={(e) => {
+                field.onChange(e);
+                setIsSubscribed(false);
+              }}
               placeholder="Enter Prompt"
               defaultValue={
                 actionsList.find((action) => action.cardId === cardId)
