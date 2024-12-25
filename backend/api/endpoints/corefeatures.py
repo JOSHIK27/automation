@@ -11,13 +11,26 @@ from ...schemas.users import WorkflowPayload
 from ...db.db import client
 from datetime import datetime
 from fastapi import status
+from fastapi import Request
+from backend.dependencies import limiter
+
 
 router = APIRouter()
 
+
+@router.get("/")
+@limiter.limit("5/minute")
+def sample(request: Request):
+    return {
+        "message": "Hello"
+    }
+
 api_key = os.getenv("DUMPLING_API_KEY")
 
+
 @router.get("/generate-transcript")
-async def generatetranscript():
+@limiter.limit("5/minute")
+async def generatetranscript(request: Request):
 
     headers = {
         "Content-Type": "application/json",
@@ -95,7 +108,8 @@ async def get_result(task_id: str):
     
 
 @router.post("/generate-seo-optimised-keywords")
-def generatekeywords(textContent: str):
+@limiter.limit("5/minute")
+def generatekeywords(request: Request, textContent: str):
 
     kw_model = KeyBERT()
 

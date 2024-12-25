@@ -4,14 +4,24 @@ from fastapi.responses import JSONResponse
 from backend.api.endpoints.users import router as users_router
 from backend.api.endpoints.webhooks import router as webhooks_router
 from backend.api.endpoints.corefeatures import router as core_features
-from backend.db.db import engine
-from sqlmodel import SQLModel
 from backend.utils.jwt_utils import decode_jwe
 from pymongo import MongoClient
 import os
+from .dependencies import limiter
+from slowapi.errors import RateLimitExceeded  
+from slowapi import _rate_limit_exceeded_handler
+
 app = FastAPI()
 
+app.include_router(users_router)
+app.include_router(webhooks_router)
+app.include_router(core_features)
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 origins = ["*"] 
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -43,11 +53,6 @@ client = MongoClient(os.getenv("MONGO_URI"))
     
 
 
-app.include_router(users_router)
-app.include_router(webhooks_router)
-app.include_router(core_features)
 
-
-SQLModel.metadata.create_all(engine)
 
 

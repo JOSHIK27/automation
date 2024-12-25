@@ -8,10 +8,6 @@ from backend.tasks import generate_image_task
 from ...db.db import client
 router = APIRouter() 
 
-@router.get("/")
-def sample():
-    return {"message": "Hello World"}
-
 
 @router.post("/user")
 def addUser(user: User):
