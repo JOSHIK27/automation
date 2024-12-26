@@ -13,20 +13,27 @@ from datetime import datetime
 from fastapi import status
 from fastapi import Request
 from backend.dependencies import limiter
-
+import resend
+from typing import Dict
+from fastapi import FastAPI
 
 router = APIRouter()
 
+resend.api_key = os.getenv("RESEND_API_KEY")
 
-@router.get("/")
-@limiter.limit("5/minute")
-def sample(request: Request):
-    return {
-        "message": "Hello"
+@router.get("/send-mail")
+def send_mail() -> Dict:
+    params: resend.Emails.SendParams = {
+        "from": "creatorstream@resend.dev",
+        "to": ["joshikroshan4021@gmail.com"],
+        "subject": "Woahhh!! Here are your workflow results",
+        "html": "<strong>it works!</strong>",
     }
+    email: resend.Email = resend.Emails.send(params)
+    return email
+
 
 api_key = os.getenv("DUMPLING_API_KEY")
-
 
 @router.get("/generate-transcript")
 @limiter.limit("5/minute")
