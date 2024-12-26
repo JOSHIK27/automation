@@ -6,16 +6,13 @@ import Benifits from "@/components/benifits";
 import Faqs from "@/components/faqs";
 import { auth } from "../../auth";
 import CTA from "@/components/cta";
-import { cookies } from "next/headers";
-import { sessionTokenName } from "@/lib/constants/common";
 
 export default async function Home() {
   const session = await auth();
-  const sessionToken = await getSessionToken();
 
   return (
     <>
-      <Hero session={session} sessionToken={sessionToken ?? ""} />
+      <Hero session={session} />
       <HowItWorks />
       <Benifits />
       <Pricing session={session} />
@@ -24,12 +21,4 @@ export default async function Home() {
       <Footer />
     </>
   );
-}
-
-async function getSessionToken() {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore
-    .getAll()
-    .find((c) => c.name === sessionTokenName);
-  return sessionToken?.value;
 }

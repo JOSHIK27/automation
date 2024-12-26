@@ -7,7 +7,8 @@ import { BeatLoader } from "react-spinners";
 import { BiCaptions, BiSolidImage } from "react-icons/bi";
 import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
-import { MdOutlineStickyNote2 } from "react-icons/md";
+import { MdOutlineStickyNote2, MdFace, MdSummarize } from "react-icons/md";
+import { FaVideo, FaLightbulb, FaSearch, FaClock } from "react-icons/fa";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
 import { toast } from "sonner";
 export default function CustomNode({
@@ -72,15 +73,49 @@ export default function CustomNode({
   };
 
   const getIconForLabel = (label: string) => {
-    const iconProps = { className: "text-gray-400 text-[16px]" };
+    const iconProps = { className: "w-4 h-4 text-gray-600" };
 
+    // Trigger types
     switch (label) {
-      case "Generate Captions":
-        return <BiCaptions {...iconProps} />;
-      case "Generate a thumbnail":
-        return <BiSolidImage {...iconProps} />;
+      // Triggers
+      case "Plan a video":
+        return <FaVideo {...iconProps} className="w-4 h-4 text-blue-500" />;
+      case "Generate Content Ideas":
+        return (
+          <FaLightbulb {...iconProps} className="w-4 h-4 text-yellow-500" />
+        );
+      case "When a video is uploaded":
+        return (
+          <RiVideoUploadLine
+            {...iconProps}
+            className="w-4 h-4 text-green-500"
+          />
+        );
+
+      // Actions
+      case "Generate thumbnail":
+        return (
+          <BiSolidImage {...iconProps} className="w-4 h-4 text-purple-500" />
+        );
+      case "Generate captions":
+        return <BiCaptions {...iconProps} className="w-4 h-4 text-blue-500" />;
+      case "Generate SEO optimized title":
+      case "Generate SEO optimized keywords":
+        return <FaSearch {...iconProps} className="w-4 h-4 text-blue-500" />;
+      case "Generate summary":
+        return (
+          <MdSummarize {...iconProps} className="w-4 h-4 text-green-500" />
+        );
+      case "Generate timestamps":
+        return <FaClock {...iconProps} className="w-4 h-4 text-red-500" />;
+      case "Swap face":
+        return <MdFace {...iconProps} className="w-4 h-4 text-orange-500" />;
+      case "Analyse my channel videos and generate ideas":
+        return (
+          <FaLightbulb {...iconProps} className="w-4 h-4 text-yellow-500" />
+        );
       default:
-        return <RiVideoUploadLine {...iconProps} />;
+        return <MdOutlineStickyNote2 {...iconProps} />;
     }
   };
 
@@ -89,13 +124,13 @@ export default function CustomNode({
       className={`
         ${
           data.selected
-            ? "border-2 border-teal/40 ring-4 ring-teal/20"
+            ? "border-2 border-[#069494] ring-4 ring-[#069494]/20"
             : "border border-gray-200/60"
         }
-        bg-white/95 rounded-2xl w-[400px] p-7 relative
-        shadow-[0_8px_30px_rgb(0,0,0,0.04)]
-        hover:shadow-[0_16px_40px_rgb(0,0,0,0.06)]
-        hover:scale-[1.01]
+        bg-white/95 rounded-xl w-[400px] p-6 relative
+        shadow-[0_8px_30px_rgb(0,0,0,0.06)]
+        hover:shadow-[0_16px_40px_rgb(0,0,0,0.08)]
+        hover:scale-[1.02]
         transition-all duration-300 ease-out
         backdrop-blur-lg
       `}
@@ -106,37 +141,37 @@ export default function CustomNode({
           type="target"
           isConnectableStart
           position={Position.Top}
-          className="!w-6 !h-6 !border-[2px] !border-teal/60 !bg-white !rounded-full
-            before:content-[''] before:absolute before:w-2.5 before:h-2.5 
-            before:bg-gradient-to-br before:from-teal before:to-teal/80 
+          className="!w-5 !h-5 !border-[2px] !border-[#069494] !bg-white !rounded-full
+            before:content-[''] before:absolute before:w-2 before:h-2 
+            before:bg-gradient-to-br before:from-[#069494] before:to-[#40E0D0] 
             before:rounded-full before:top-1/2 before:left-1/2 
             before:-translate-x-1/2 before:-translate-y-1/2"
         />
       )}
 
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div
             className={`
-            flex items-center gap-2
-            ${
-              data.type === "Trigger"
-                ? "bg-gradient-to-br from-teal/10 to-teal/5"
-                : "bg-gradient-to-br from-gray-50 to-gray-100/50"
-            }
-            rounded-xl px-4 py-2.5
-            border border-gray-100
-            hover:translate-y-[-2px]
-            hover:shadow-lg hover:shadow-teal/5
-            transition-all duration-200
-          `}
+              flex items-center gap-2
+              ${
+                data.type === "Trigger"
+                  ? "bg-gradient-to-br from-[#069494]/10 to-[#40E0D0]/5"
+                  : "bg-gradient-to-br from-gray-50 to-gray-100/50"
+              }
+              rounded-lg px-4 py-2
+              border border-gray-100
+              hover:translate-y-[-2px]
+              hover:shadow-lg hover:shadow-[#069494]/10
+              transition-all duration-200
+            `}
           >
             {data.type !== "Trigger" ? (
               <MdOutlineStickyNote2 className="text-teal text-lg" />
             ) : (
               <IoPlayCircle className="text-teal text-lg" />
             )}
-            <span className="text-sm font-semibold bg-gradient-to-r from-gray-700 to-gray-600 bg-clip-text text-transparent">
+            <span className="text-sm font-medium bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
               {data.type}
             </span>
           </div>
@@ -163,7 +198,7 @@ export default function CustomNode({
         )}
       </div>
 
-      <Separator className="my-5 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100" />
+      <Separator className="my-4 bg-gradient-to-r from-[#069494]/10 via-[#40E0D0]/20 to-[#069494]/10" />
 
       <div className="px-1">
         {isPlaceholderLabel(data.label) ? (
@@ -174,18 +209,31 @@ export default function CustomNode({
         ) : (
           <div
             className={`
-            flex items-center gap-3
-            bg-gradient-to-br from-gray-50 via-white to-gray-50
-            border border-gray-200/60
-            w-fit py-3 px-5 rounded-xl
-            hover:border-teal/30 hover:from-teal/5 hover:to-white
-            hover:shadow-lg hover:shadow-teal/5
-            hover:scale-[1.02]
-            transition-all duration-200
-          `}
+              flex items-center gap-3
+              bg-gradient-to-br from-gray-50 via-white to-gray-50
+              border border-gray-200/60
+              w-fit py-2.5 px-4 rounded-lg
+              hover:border-[#069494]/30 hover:from-[#069494]/5 hover:to-white
+              hover:shadow-lg hover:shadow-[#069494]/5
+              hover:scale-[1.02]
+              transition-all duration-200
+              ${
+                data.type === "Trigger"
+                  ? "hover:from-blue-50/20 hover:to-white"
+                  : ""
+              }
+            `}
           >
-            {getIconForLabel(data.label)}
-            <span className="text-sm font-medium bg-gradient-to-r from-gray-700 to-gray-600 bg-clip-text text-transparent">
+            <div
+              className={`
+              p-2 rounded-lg
+              ${data.type === "Trigger" ? "bg-blue-50" : "bg-gray-50"}
+              transition-colors duration-200
+            `}
+            >
+              {getIconForLabel(data.label)}
+            </div>
+            <span className="text-sm font-medium text-gray-700">
               {data.label}
             </span>
           </div>
@@ -197,7 +245,7 @@ export default function CustomNode({
         type="source"
         isConnectableEnd
         position={Position.Bottom}
-        className="!w-4 !h-4 !border-[2px] !border-teal/60 !bg-white"
+        className="!w-4 !h-4 !border-[2px] !border-[#069494] !bg-white !rounded-full"
       />
 
       {false && (

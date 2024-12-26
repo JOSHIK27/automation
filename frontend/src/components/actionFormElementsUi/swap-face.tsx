@@ -32,7 +32,7 @@ export default function SwapFace({
                 field.onChange(e.target.value);
                 dispatch(
                   setIsSubscribed({
-                    cardId: Number(cardId),
+                    cardId: cardId,
                     isSubscribed: false,
                   })
                 );
@@ -61,7 +61,7 @@ export default function SwapFace({
                 field.onChange(e.target.value);
                 dispatch(
                   setIsSubscribed({
-                    cardId: Number(cardId),
+                    cardId: cardId,
                     isSubscribed: false,
                   })
                 );

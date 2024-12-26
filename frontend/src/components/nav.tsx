@@ -19,7 +19,6 @@ export function Nav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
   const session = useSession();
-  console.log(session);
 
   return (
     <>

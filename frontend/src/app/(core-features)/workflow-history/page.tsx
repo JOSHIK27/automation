@@ -11,6 +11,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { useRouter } from "next/navigation";
 import { HashLoader } from "react-spinners";
+import { useSession } from "next-auth/react";
+import { sessionTokenName } from "@/lib/constants/common";
+import Cookies from "js-cookie";
 
 type Workflow = {
   name: string;
@@ -24,26 +27,54 @@ type Workflow = {
 export default function WorkflowsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
-  const userId = useSelector((state: RootState) => {
-    return state.user.user_id;
-  });
+  const { data: session, status } = useSession();
 
-  if (!userId) {
-    router.push("/");
-    return;
+  const sessionToken = Cookies.get(sessionTokenName);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/");
+    }
+  }, [status]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <HashLoader color="#000000" />
+      </div>
+    );
+  }
+  if (!session) {
+    return null;
   }
 
   const { data, isFetching, refetch } = useQuery({
     queryKey: ["workflowhistory"],
     queryFn: async () => {
-      const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${userId}`,
+      const userResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/user`,
+        {
+          method: "POST",
+          body: JSON.stringify(session?.user),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
+          },
+        }
+      );
+      const { user_id } = await userResponse.json();
+
+      const workflowHistoryResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${
+          user_id ?? "notsignedin"
+        }`,
         {
           method: "GET",
         }
       );
-      if (!resp.ok) throw new Error("Failed to fetch the history");
-      return resp.json();
+      if (!workflowHistoryResponse.ok)
+        throw new Error("Failed to fetch the history");
+      return workflowHistoryResponse.json();
     },
     enabled: false,
   });

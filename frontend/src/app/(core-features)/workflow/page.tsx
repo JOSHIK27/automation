@@ -424,7 +424,7 @@ export default function Flow() {
       }
 
       const { response: data } = await response.json();
-      console.log(data);
+
       dispatch(setTasksStatus(data));
 
       toast.success("Workflow triggered successfully!");
@@ -437,15 +437,16 @@ export default function Flow() {
     <div className="relative" style={{ height: "100dvh" }}>
       <div className="fixed top-4 right-4 z-50 flex gap-2">
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button
+              type="button"
               className="inline-flex items-center justify-center px-4 py-2
-          bg-white/90 hover:bg-white text-gray-700 rounded-md
-          shadow-lg backdrop-blur-sm
-          font-medium text-sm
-          border border-gray-200/50
-          transition-all duration-200
-          hover:scale-105 active:scale-95"
+              bg-white/90 hover:bg-white text-gray-700 rounded-md
+              shadow-lg backdrop-blur-sm
+              font-medium text-sm
+              border border-gray-200/50
+              transition-all duration-200
+              hover:scale-105 active:scale-95"
             >
               <svg
                 className="w-4 h-4 mr-2"

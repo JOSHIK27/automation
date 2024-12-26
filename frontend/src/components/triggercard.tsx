@@ -288,18 +288,18 @@ export default function TriggerCard({
                     onValueChange={(value) => {
                       field.onChange(value);
                       dispatch(
-                        setIsSubscribed({ cardId: 1, isSubscribed: false })
+                        setIsSubscribed({ cardId: "1", isSubscribed: false })
                       );
                       setValue("triggerType", "");
                     }}
                   >
-                    <SelectTrigger className="w-full bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 h-11 rounded-lg shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                    <SelectTrigger className="w-full bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 h-11 rounded-xl shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                       <SelectValue
                         placeholder={dataModel.workflowTypes.placeholder}
                         className="text-gray-600 placeholder:text-gray-400"
                       />
                     </SelectTrigger>
-                    <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-lg overflow-hidden animate-in fade-in-0 zoom-in-95">
+                    <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95">
                       <div className="px-1 py-2">
                         <SelectItem
                           value="Pre Production"
@@ -361,7 +361,7 @@ export default function TriggerCard({
                       field.onChange(value);
                       setSelectValue(value);
                       dispatch(
-                        setIsSubscribed({ cardId: 1, isSubscribed: false })
+                        setIsSubscribed({ cardId: "1", isSubscribed: false })
                       );
                       if (value === "Plan a video") {
                         setValue("videoTitle", videoTitle);
@@ -370,13 +370,13 @@ export default function TriggerCard({
                       }
                     }}
                   >
-                    <SelectTrigger className="w-full bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 h-11 rounded-lg shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                    <SelectTrigger className="w-full bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 h-11 rounded-xl shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                       <SelectValue
                         placeholder={dataModel.triggerTypes.placeholder}
                         className="text-gray-600 placeholder:text-gray-400"
                       />
                     </SelectTrigger>
-                    <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-lg overflow-hidden animate-in fade-in-0 zoom-in-95">
+                    <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95">
                       {(getValues("workflowType") || workflowType) ===
                       "Pre Production"
                         ? [
@@ -396,11 +396,15 @@ export default function TriggerCard({
                             <SelectItem
                               key={option.label}
                               value={option.label}
-                              className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                              className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-blue-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
                             >
-                              <div className="flex items-center gap-2">
-                                {option.icon}
-                                {option.label}
+                              <div className="flex items-center gap-3">
+                                <div className="p-2 bg-blue-50 rounded-lg">
+                                  {option.icon}
+                                </div>
+                                <span className="font-medium text-gray-700">
+                                  {option.label}
+                                </span>
                               </div>
                             </SelectItem>
                           ))
@@ -415,11 +419,15 @@ export default function TriggerCard({
                             <SelectItem
                               key={option.label}
                               value={option.label}
-                              className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                              className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-green-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
                             >
-                              <div className="flex items-center gap-2">
-                                {option.icon}
-                                {option.label}
+                              <div className="flex items-center gap-3">
+                                <div className="p-2 bg-green-50 rounded-lg">
+                                  {option.icon}
+                                </div>
+                                <span className="font-medium text-gray-700">
+                                  {option.label}
+                                </span>
                               </div>
                             </SelectItem>
                           ))}
@@ -450,7 +458,10 @@ export default function TriggerCard({
                         onChange={(e) => {
                           field.onChange(e.target.value);
                           dispatch(
-                            setIsSubscribed({ cardId: 1, isSubscribed: false })
+                            setIsSubscribed({
+                              cardId: "1",
+                              isSubscribed: false,
+                            })
                           );
                         }}
                         placeholder="Enter title here..."
@@ -490,7 +501,10 @@ export default function TriggerCard({
                         onChange={(e) => {
                           field.onChange(e.target.value);
                           dispatch(
-                            setIsSubscribed({ cardId: 1, isSubscribed: false })
+                            setIsSubscribed({
+                              cardId: "1",
+                              isSubscribed: false,
+                            })
                           );
                         }}
                         placeholder="Enter channel ID here..."
@@ -562,19 +576,19 @@ export default function TriggerCard({
                       field.onChange(value);
                       dispatch(
                         setIsSubscribed({
-                          cardId: Number(cardId),
+                          cardId: cardId,
                           isSubscribed: false,
                         })
                       );
                     }}
                   >
-                    <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
-                      <SelectValue placeholder="Choose an action" />
+                    <SelectTrigger className="w-full bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 h-11 rounded-xl shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                      <SelectValue
+                        placeholder="Choose an action"
+                        className="text-gray-600 placeholder:text-gray-400"
+                      />
                     </SelectTrigger>
-                    <SelectContent
-                      id="action-types"
-                      className="bg-white border-gray-200 rounded-lg shadow-lg"
-                    >
+                    <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95">
                       {triggerType === "Plan a video" &&
                         [
                           {
@@ -593,11 +607,15 @@ export default function TriggerCard({
                           <SelectItem
                             key={option.label}
                             value={option.label}
-                            className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                            className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-purple-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
                           >
-                            <div className="flex items-center gap-2">
-                              {option.icon}
-                              {option.label}
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-purple-50 rounded-lg">
+                                {option.icon}
+                              </div>
+                              <span className="font-medium text-gray-700">
+                                {option.label}
+                              </span>
                             </div>
                           </SelectItem>
                         ))}
@@ -635,15 +653,18 @@ export default function TriggerCard({
                           <SelectItem
                             key={option.label}
                             value={option.label}
-                            className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                            className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-blue-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
                           >
-                            <div className="flex items-center gap-2">
-                              {option.icon}
-                              {option.label}
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-blue-50 rounded-lg">
+                                {option.icon}
+                              </div>
+                              <span className="font-medium text-gray-700">
+                                {option.label}
+                              </span>
                             </div>
                           </SelectItem>
                         ))}
-
                       {triggerType === "Generate Content Ideas" &&
                         [
                           {
@@ -663,11 +684,15 @@ export default function TriggerCard({
                           <SelectItem
                             key={option.label}
                             value={option.label}
-                            className="cursor-pointer py-2.5 px-4 outline-none hover:bg-gray-50 focus:bg-gray-50 data-[state=checked]:bg-gray-50 data-[highlighted]:bg-gray-50 transition-colors duration-200"
+                            className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-yellow-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
                           >
-                            <div className="flex items-center gap-2">
-                              {option.icon}
-                              {option.label}
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-yellow-50 rounded-lg">
+                                {option.icon}
+                              </div>
+                              <span className="font-medium text-gray-700">
+                                {option.label}
+                              </span>
                             </div>
                           </SelectItem>
                         ))}

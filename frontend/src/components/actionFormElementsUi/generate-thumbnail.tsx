@@ -34,7 +34,7 @@ export default function GenerateThumbnail({
                 field.onChange(e);
                 dispatch(
                   setIsSubscribed({
-                    cardId: Number(cardId),
+                    cardId: cardId,
                     isSubscribed: false,
                   })
                 );
