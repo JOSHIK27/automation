@@ -41,29 +41,29 @@ export default function Hero({
   const router = useRouter();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/user`,
-          {
-            method: "POST",
-            body: JSON.stringify(session?.user),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
-            },
-          }
-        );
-        const { user_id } = await response.json();
-        console.log(user_id);
-        dispatch(setUserId(user_id));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchUser();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.NEXT_PUBLIC_API_URL}/user`,
+  //         {
+  //           method: "POST",
+  //           body: JSON.stringify(session?.user),
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
+  //           },
+  //         }
+  //       );
+  //       const { user_id } = await response.json();
+  //       console.log(user_id);
+  //       dispatch(setUserId(user_id));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchUser();
+  // }, []);
 
   return (
     <section className="relative flex min-h-[calc(100vh-80px)] w-full items-center justify-center overflow-hidden bg-background px-4 sm:px-6 lg:px-8 mt-12">
