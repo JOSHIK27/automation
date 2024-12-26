@@ -51,6 +51,11 @@ import HashLoader from "react-spinners/HashLoader";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import {
+  addBtnStatus,
+  insertBtnStatusInBetween,
+  setIsSubscribed,
+} from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 
 type FormValues = {
   name: string;
@@ -74,7 +79,6 @@ export default function Flow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [showCard, setShowCard] = useState(false);
   const [cardId, setCardId] = useState<string>("");
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [, setSelectValue] = useState("");
 
   // Form handling
@@ -104,7 +108,7 @@ export default function Flow() {
       }).then((res) => res.json()),
   });
   useEffect(() => {
-    setIsSubscribed(false);
+    // dispatch(setIsSubscribed({ cardId: Number(cardId), isSubscribed: false }));
     setSelectValue("");
   }, [cardId, nodes.length]);
   useEffect(() => {
@@ -233,6 +237,9 @@ export default function Flow() {
           cardId: String(Number(source) + 1),
         })
       );
+      dispatch(
+        addBtnStatus({ cardId: Number(source) + 1, isSubscribed: false })
+      );
     } else {
       const currentNodes = nodes;
       const currentEdges = edges;
@@ -358,6 +365,11 @@ export default function Flow() {
       setEdges(newEdges);
       dispatch(
         insertActionInBetween({
+          cardId: String(Number(source) + 1),
+        })
+      );
+      dispatch(
+        insertBtnStatusInBetween({
           cardId: String(Number(source) + 1),
         })
       );
@@ -552,8 +564,6 @@ export default function Flow() {
         setShowCard={setShowCard}
         cardId={cardId}
         setSelectValue={setSelectValue}
-        isSubscribed={isSubscribed}
-        setIsSubscribed={setIsSubscribed}
         nodes={nodes}
         setNodes={setNodes}
         setEdges={setEdges}

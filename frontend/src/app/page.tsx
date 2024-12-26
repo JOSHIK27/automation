@@ -8,9 +8,6 @@ import { auth } from "../../auth";
 import CTA from "@/components/cta";
 import { cookies } from "next/headers";
 import { sessionTokenName } from "@/lib/constants/common";
-import { setUserId } from "./store/slices/user-slice";
-import { useDispatch } from "react-redux";
-import { toast } from "sonner";
 
 export default async function Home() {
   const session = await auth();

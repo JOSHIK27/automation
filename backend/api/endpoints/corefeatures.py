@@ -15,7 +15,6 @@ from fastapi import Request
 from backend.dependencies import limiter
 import resend
 from typing import Dict
-from fastapi import FastAPI
 
 router = APIRouter()
 

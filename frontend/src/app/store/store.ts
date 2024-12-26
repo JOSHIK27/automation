@@ -3,12 +3,15 @@ import triggerReducer from "./slices/trigger-card-slices/trigger-slice";
 import actionsReducer from "./slices/trigger-card-slices/actions-slice";
 import taskstatusReducer from "./slices/trigger-card-slices/task-status-slice";
 import userReducer from "./slices/user-slice";
+import updateBtnReducer from "./slices/trigger-card-slices/update-btn-slice";
+
 export const store = configureStore({
   reducer: {
     trigger: triggerReducer,
     actions: actionsReducer,
     taskstatus: taskstatusReducer,
     user: userReducer,
+    updateBtn: updateBtnReducer,
   },
 });
 

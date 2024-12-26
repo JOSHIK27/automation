@@ -1,15 +1,20 @@
 import { Controller } from "react-hook-form";
 import { Input } from "../ui/input";
+import { setIsSubscribed } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
+import { useDispatch } from "react-redux";
 
 export default function SwapFace({
-  setIsSubscribed,
+  isSubscribed,
   control,
   errors,
+  cardId,
 }: {
-  setIsSubscribed: (isSubscribed: boolean) => void;
+  isSubscribed: boolean;
   control: any;
   errors: any;
+  cardId: string;
 }) {
+  const dispatch = useDispatch();
   return (
     <>
       <div>
@@ -22,9 +27,15 @@ export default function SwapFace({
           rules={{ required: "This field is required" }}
           render={({ field }) => (
             <Input
+              disabled={isSubscribed}
               onChange={(e) => {
                 field.onChange(e.target.value);
-                setIsSubscribed(false);
+                dispatch(
+                  setIsSubscribed({
+                    cardId: Number(cardId),
+                    isSubscribed: false,
+                  })
+                );
               }}
             />
           )}
@@ -45,9 +56,15 @@ export default function SwapFace({
           rules={{ required: "This field is required" }}
           render={({ field }) => (
             <Input
+              disabled={isSubscribed}
               onChange={(e) => {
                 field.onChange(e.target.value);
-                setIsSubscribed(false);
+                dispatch(
+                  setIsSubscribed({
+                    cardId: Number(cardId),
+                    isSubscribed: false,
+                  })
+                );
               }}
             />
           )}

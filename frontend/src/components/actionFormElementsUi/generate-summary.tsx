@@ -6,20 +6,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { setIsSubscribed } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
+import { useDispatch } from "react-redux";
 
 export default function GenerateSummary({
-  setIsSubscribed,
+  isSubscribed,
   control,
   errors,
   cardId,
   actionsList,
 }: {
-  setIsSubscribed: (isSubscribed: boolean) => void;
+  isSubscribed: boolean;
   control: any;
   errors: any;
   cardId: string;
   actionsList: any[];
 }) {
+  const dispatch = useDispatch();
   return (
     <>
       <div>
@@ -33,9 +36,15 @@ export default function GenerateSummary({
           render={({ field }) => (
             <Select
               {...field}
+              disabled={isSubscribed}
               onValueChange={(value) => {
                 field.onChange(value);
-                setIsSubscribed(false);
+                dispatch(
+                  setIsSubscribed({
+                    cardId: Number(cardId),
+                    isSubscribed: false,
+                  })
+                );
               }}
               defaultValue={
                 actionsList.find((action) => action.cardId === cardId)

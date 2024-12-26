@@ -4,8 +4,6 @@ import "./globals.css";
 import { Nav } from "@/components/nav";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
-import { store } from "./store/store";
-import { Provider } from "react-redux";
 import Providers from "./providers";
 
 const geistSans = localFont({

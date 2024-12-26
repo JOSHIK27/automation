@@ -10,6 +10,7 @@ import {
   setAction,
   clearActions,
 } from "@/app/store/slices/trigger-card-slices/actions-slice";
+import { setIsSubscribed } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 
 // UI Components
 import { Separator } from "@radix-ui/react-separator";
@@ -57,8 +58,6 @@ export default function TriggerCard({
   setShowCard,
   cardId,
   setSelectValue,
-  isSubscribed,
-  setIsSubscribed,
   nodes,
   setNodes,
   setEdges,
@@ -67,8 +66,6 @@ export default function TriggerCard({
   setShowCard: (show: boolean) => void;
   cardId: string;
   setSelectValue: (value: string) => void;
-  isSubscribed: boolean;
-  setIsSubscribed: (isSubscribed: boolean) => void;
   nodes: any;
   setNodes: any;
   setEdges: any;
@@ -90,6 +87,7 @@ export default function TriggerCard({
     setValue,
   } = useForm();
   const [prevTriggerType, setPrevTriggerType] = useState<string | null>(null);
+  const updateBtnState = useSelector((state: RootState) => state.updateBtn);
 
   watch("workflowType");
   watch("triggerType");
@@ -225,7 +223,7 @@ export default function TriggerCard({
       });
       setNodes(updatedNodes);
     }
-    setIsSubscribed(true);
+    dispatch(setIsSubscribed({ cardId, isSubscribed: true }));
   };
 
   let firstCardIdWithEmptyFields = "10000000";
@@ -239,10 +237,14 @@ export default function TriggerCard({
     }
   });
 
+  const isSubscribed = updateBtnState.find(
+    (state) => state.cardId === cardId
+  )?.isSubscribed;
+
   return (
     <Card
       className={`${
-        showCard ? "absolute top-20 right-4 w-[450px] z-10" : "hidden"
+        showCard ? "absolute top-28 right-4 w-[450px] z-10" : "hidden"
       } bg-white/95 backdrop-blur-xl border border-gray-100 shadow-2xl hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 rounded-2xl animate-in`}
     >
       <CardHeader className="relative pb-2 space-y-4">
@@ -281,10 +283,13 @@ export default function TriggerCard({
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
                   <Select
+                    disabled={isSubscribed}
                     defaultValue={workflowType}
                     onValueChange={(value) => {
                       field.onChange(value);
-                      setIsSubscribed(false);
+                      dispatch(
+                        setIsSubscribed({ cardId: 1, isSubscribed: false })
+                      );
                       setValue("triggerType", "");
                     }}
                   >
@@ -350,11 +355,14 @@ export default function TriggerCard({
                 name="triggerType"
                 render={({ field }) => (
                   <Select
+                    disabled={isSubscribed}
                     defaultValue={triggerType}
                     onValueChange={(value) => {
                       field.onChange(value);
                       setSelectValue(value);
-                      setIsSubscribed(false);
+                      dispatch(
+                        setIsSubscribed({ cardId: 1, isSubscribed: false })
+                      );
                       if (value === "Plan a video") {
                         setValue("videoTitle", videoTitle);
                       } else {
@@ -437,10 +445,13 @@ export default function TriggerCard({
                     name="videoTitle"
                     render={({ field }) => (
                       <Textarea
+                        disabled={isSubscribed}
                         defaultValue={videoTitle}
                         onChange={(e) => {
                           field.onChange(e.target.value);
-                          setIsSubscribed(false);
+                          dispatch(
+                            setIsSubscribed({ cardId: 1, isSubscribed: false })
+                          );
                         }}
                         placeholder="Enter title here..."
                         className="h-12 px-4 bg-white hover:bg-gray-50/50 border border-gray-200 hover:border-gray-300 rounded-xl shadow-sm transition-all duration-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none"
@@ -474,10 +485,13 @@ export default function TriggerCard({
                     name="channelId"
                     render={({ field }) => (
                       <Textarea
+                        disabled={isSubscribed}
                         defaultValue={channelId}
                         onChange={(e) => {
                           field.onChange(e.target.value);
-                          setIsSubscribed(false);
+                          dispatch(
+                            setIsSubscribed({ cardId: 1, isSubscribed: false })
+                          );
                         }}
                         placeholder="Enter channel ID here..."
                         className="h-11 px-4 bg-white/50 hover:bg-white border border-gray-200 hover:border-gray-300 rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
@@ -498,12 +512,27 @@ export default function TriggerCard({
                 </div>
               )}
 
-            <AnimatedSubscribeButtonDemo
-              disabled={false}
-              isSubscribed={isSubscribed}
-              t1="Submit"
-              t2="Submitted"
-            />
+            <div className="flex flex-col gap-2">
+              <AnimatedSubscribeButtonDemo
+                disabled={false}
+                isSubscribed={isSubscribed || false}
+                t1="Submit"
+                t2="Submitted"
+              />
+              {isSubscribed && (
+                <button
+                  onClick={() =>
+                    dispatch(
+                      setIsSubscribed({ cardId: cardId, isSubscribed: false })
+                    )
+                  }
+                  className="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200 font-medium"
+                  type="button"
+                >
+                  Update
+                </button>
+              )}
+            </div>
           </form>
         ) : (
           <form
@@ -522,6 +551,7 @@ export default function TriggerCard({
                 render={({ field }) => (
                   <Select
                     disabled={
+                      isSubscribed ||
                       Number(cardId) > Number(firstCardIdWithEmptyFields)
                     }
                     defaultValue={
@@ -530,7 +560,12 @@ export default function TriggerCard({
                     }
                     onValueChange={(value) => {
                       field.onChange(value);
-                      setIsSubscribed(false);
+                      dispatch(
+                        setIsSubscribed({
+                          cardId: Number(cardId),
+                          isSubscribed: false,
+                        })
+                      );
                     }}
                   >
                     <SelectTrigger className="w-full border border-gray-200 bg-white hover:border-gray-300 transition-all duration-200 h-10 rounded-lg">
@@ -648,7 +683,7 @@ export default function TriggerCard({
             </div>
             {getValues("actionType") === "Generate thumbnail" && (
               <GenerateThumbnail
-                setIsSubscribed={setIsSubscribed}
+                isSubscribed={isSubscribed || false}
                 control={control}
                 errors={errors}
                 cardId={cardId}
@@ -657,21 +692,23 @@ export default function TriggerCard({
             )}
             {getValues("actionType") === "Generate captions" && (
               <GenerateCaptions
-                setIsSubscribed={setIsSubscribed}
+                isSubscribed={isSubscribed || false}
                 control={control}
                 errors={errors}
+                cardId={cardId}
               />
             )}
             {getValues("actionType") === "Swap face" && (
               <SwapFace
-                setIsSubscribed={setIsSubscribed}
+                isSubscribed={isSubscribed || false}
                 control={control}
                 errors={errors}
+                cardId={cardId}
               />
             )}
             {getValues("actionType") === "Generate summary" && (
               <GenerateSummary
-                setIsSubscribed={setIsSubscribed}
+                isSubscribed={isSubscribed || false}
                 control={control}
                 errors={errors}
                 cardId={cardId}
@@ -680,12 +717,30 @@ export default function TriggerCard({
             )}
             {getValues("actionType") === "Generate timestamps" && <></>}
 
-            <AnimatedSubscribeButtonDemo
-              disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
-              isSubscribed={isSubscribed}
-              t1="Submit"
-              t2="Submitted"
-            />
+            <div className="flex flex-col gap-2">
+              <AnimatedSubscribeButtonDemo
+                disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
+                isSubscribed={isSubscribed || false}
+                t1="Submit"
+                t2="Submitted"
+              />
+              {isSubscribed && (
+                <button
+                  onClick={() =>
+                    dispatch(
+                      setIsSubscribed({
+                        cardId: cardId,
+                        isSubscribed: false,
+                      })
+                    )
+                  }
+                  className="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200 font-medium"
+                  type="button"
+                >
+                  Update
+                </button>
+              )}
+            </div>
           </form>
         )}
       </CardContent>

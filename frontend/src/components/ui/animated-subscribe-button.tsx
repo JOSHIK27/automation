@@ -35,7 +35,7 @@ export const AnimatedSubscribeButton: React.FC<
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           type="submit"
-          disabled={disabled}
+          disabled={true}
         >
           <motion.span
             key="action"

@@ -1,20 +1,22 @@
 import { Controller } from "react-hook-form";
-import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { setIsSubscribed } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
+import { useDispatch } from "react-redux";
 
 export default function GenerateThumbnail({
   control,
   errors,
   cardId,
   actionsList,
-  setIsSubscribed,
+  isSubscribed,
 }: {
   control: any;
   errors: any;
   cardId: string;
   actionsList: any[];
-  setIsSubscribed: (isSubscribed: boolean) => void;
+  isSubscribed: boolean;
 }) {
+  const dispatch = useDispatch();
   return (
     <>
       <div>
@@ -27,9 +29,15 @@ export default function GenerateThumbnail({
           rules={{ required: "This field is required" }}
           render={({ field }) => (
             <Textarea
+              disabled={isSubscribed}
               onChange={(e) => {
                 field.onChange(e);
-                setIsSubscribed(false);
+                dispatch(
+                  setIsSubscribed({
+                    cardId: Number(cardId),
+                    isSubscribed: false,
+                  })
+                );
               }}
               placeholder="Enter Prompt"
               defaultValue={

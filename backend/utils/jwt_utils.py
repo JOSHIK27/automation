@@ -1,4 +1,4 @@
-from jose.jwe import decrypt, encrypt
+from jose.jwe import decrypt
 from hkdf import Hkdf
 import json
 

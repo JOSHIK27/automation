@@ -6,16 +6,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { setIsSubscribed } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
+import { useDispatch } from "react-redux";
 
 export default function GenerateCaptions({
-  setIsSubscribed,
+  isSubscribed,
   control,
   errors,
+  cardId,
 }: {
-  setIsSubscribed: (isSubscribed: boolean) => void;
+  isSubscribed: boolean;
   control: any;
   errors: any;
+  cardId: string;
 }) {
+  const dispatch = useDispatch();
   return (
     <>
       <div>
@@ -31,8 +36,14 @@ export default function GenerateCaptions({
               {...field}
               onValueChange={(value) => {
                 field.onChange(value);
-                setIsSubscribed(false);
+                dispatch(
+                  setIsSubscribed({
+                    cardId: Number(cardId),
+                    isSubscribed: false,
+                  })
+                );
               }}
+              disabled={isSubscribed}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Language" />
