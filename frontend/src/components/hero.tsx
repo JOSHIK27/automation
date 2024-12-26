@@ -16,10 +16,10 @@ import { setUserId } from "@/app/store/slices/user-slice";
 
 export function AnimatedShinyTextDemo() {
   return (
-    <div className="z-10 flex items-center justify-center mb-6">
+    <div className="z-10 flex items-center justify-center mb-6 animate-fade-in">
       <div
         className={cn(
-          "group rounded-full border border-black/10 bg-teal-50/80 text-base text-white backdrop-blur-sm transition-all ease-in hover:cursor-pointer hover:bg-teal-50/90 dark:border-white/5 dark:bg-neutral-900/80 dark:hover:bg-neutral-800/90"
+          "group rounded-full border border-black/10 bg-teal-50/80 text-base text-white backdrop-blur-sm transition-all duration-300 ease-in hover:cursor-pointer hover:bg-teal-50/90 hover:scale-105 hover:shadow-lg dark:border-white/5 dark:bg-neutral-900/80 dark:hover:bg-neutral-800/90"
         )}
       >
         <AnimatedShinyText className="inline-flex items-center w-fit justify-center px-6 py-2 text-sm font-medium transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
@@ -41,29 +41,29 @@ export default function Hero({
   const router = useRouter();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/user`,
-          {
-            method: "POST",
-            body: JSON.stringify(session?.user),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
-            },
-          }
-        );
-        const { user_id } = await response.json();
-        console.log(user_id);
-        dispatch(setUserId(user_id));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchUser();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.NEXT_PUBLIC_API_URL}/user`,
+  //         {
+  //           method: "POST",
+  //           body: JSON.stringify(session?.user),
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
+  //           },
+  //         }
+  //       );
+  //       const { user_id } = await response.json();
+  //       console.log(user_id);
+  //       dispatch(setUserId(user_id));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchUser();
+  // }, []);
 
   return (
     <section className="relative flex min-h-[calc(100vh-80px)] w-full items-center justify-center overflow-hidden bg-background px-4 sm:px-6 lg:px-8 mt-12">
@@ -91,14 +91,18 @@ export default function Hero({
           />
         </div>
 
-        <h3 className="text-xl sm:text-2xl z-20 font-medium mt-8 mx-auto max-w-2xl leading-relaxed text-center text-neutral-600 dark:text-neutral-400">
+        <h3 className="text-xl sm:text-2xl z-20 font-medium mt-8 mx-auto max-w-2xl leading-relaxed text-center text-neutral-600 dark:text-neutral-400 animate-fade-in">
           Focus on creating content, not managing uploads. Streamline your
-          workflow and boost productivity.
+          workflow and{" "}
+          <span className="text-teal-600 font-semibold">
+            boost productivity by 10x
+          </span>
+          .
         </h3>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 z-20">
           <Button
-            className="z-20 px-8 py-6 text-lg font-medium bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 transition-all duration-300 w-full sm:w-auto shadow-sm"
+            className="z-20 px-8 py-6 text-lg font-medium bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 transition-all duration-300 w-full sm:w-auto shadow-md hover:shadow-xl hover:scale-105"
             onClick={() => router.push("/workflow")}
           >
             Get Started for Free
@@ -131,11 +135,11 @@ export default function Hero({
 
       <AnimatedGridPattern
         numSquares={30}
-        maxOpacity={0.08}
-        duration={1.5}
-        repeatDelay={1}
+        maxOpacity={0.1}
+        duration={2}
+        repeatDelay={0.5}
         className={cn(
-          "[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
+          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]",
           "absolute inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
         )}
       />
