@@ -5,39 +5,20 @@ import { AnimatedSubscribeButton } from "./animated-subscribe-button";
 export function AnimatedSubscribeButtonDemo({
   t1,
   t2,
-  nodes,
-  setNodes,
-  trigger,
-  cardId,
-  actions,
   isSubscribed,
-  setIsSubscribed,
   disabled,
 }: {
   t1: string;
   t2: string;
-  nodes: Node[];
-  setNodes: any;
-  trigger: string;
-  cardId: string;
-  actions: any[];
   isSubscribed: boolean;
-  setIsSubscribed: any;
   disabled: boolean;
 }) {
   return (
     <AnimatedSubscribeButton
       buttonColor={disabled ? "#e5e7eb" : "teal"}
       buttonTextColor={disabled ? "#6b7280" : "white"}
-      subscribeStatus={false}
       disabled={disabled}
-      nodes={nodes}
-      setNodes={setNodes}
-      trigger={trigger}
-      cardId={cardId}
-      actions={actions}
       isSubscribed={isSubscribed}
-      setIsSubscribed={setIsSubscribed}
       initialText={
         <span className="group inline-flex items-center">
           {t1}

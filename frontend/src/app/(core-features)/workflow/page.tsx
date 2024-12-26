@@ -1,33 +1,37 @@
 "use client";
+
+// React and Next.js imports
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+
+// XYFlow imports
 import {
   addEdge,
+  Background,
+  BackgroundVariant,
+  ConnectionLineType,
   MarkerType,
   ReactFlow,
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Background } from "@xyflow/react";
-import { BackgroundVariant } from "@xyflow/react";
-import { useCallback, useEffect, useState } from "react";
-import CustomNode from "@/components/reactflow/customnode";
-import CustomEdge from "@/components/reactflow/customedge";
-import { ConnectionLineType } from "@xyflow/react";
-import { useSession } from "next-auth/react";
-import { initialEdges, initialNodes } from "@/lib/constants/workflow";
-import TriggerCard from "@/components/triggercard";
-import { useRouter } from "next/navigation";
-import HashLoader from "react-spinners/HashLoader";
-import CustomNodeWithHandle from "@/components/customnodehandle";
-import { toast } from "sonner";
-import { useDispatch } from "react-redux";
+
+// Redux imports
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 import {
   addAction,
   insertActionInBetween,
 } from "@/app/store/slices/trigger-card-slices/actions-slice";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/store/store";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
+
+// Component imports
+import CustomNode from "@/components/reactflow/customnode";
+import CustomEdge from "@/components/reactflow/customedge";
+import CustomNodeWithHandle from "@/components/customnodehandle";
+import TriggerCard from "@/components/triggercard";
 import {
   Dialog,
   DialogContent,
@@ -40,7 +44,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useQuery, useMutation } from "@tanstack/react-query";
+
+// Other imports
+import { initialEdges, initialNodes } from "@/lib/constants/workflow";
+import HashLoader from "react-spinners/HashLoader";
+import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 type FormValues = {
@@ -49,28 +58,34 @@ type FormValues = {
 };
 
 export default function Flow() {
-  const userId = useSelector((state: RootState) => state.user.user_id);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [trigger, setTrigger] = useState("");
-  const [showCard, setShowCard] = useState(false);
-  const [cardId, setCardId] = useState<string>("");
-  const [actions, setActions] = useState<any[]>([]);
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
-  const [selectValue, setSelectValue] = useState("");
-  const { data: session, status } = useSession();
+  // Router and authentication
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // Redux hooks and state
   const dispatch = useDispatch();
+  const userId = useSelector((state: RootState) => state.user.user_id);
   const { workflowType, triggerType, channelId, videoTitle, editable } =
     useSelector((state: RootState) => state.trigger);
   const actionsList = useSelector((state: RootState) => state.actions);
-  const taskStatus = useSelector((state: RootState) => {
-    return state.taskstatus;
+
+  // Local state
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [showCard, setShowCard] = useState(false);
+  const [cardId, setCardId] = useState<string>("");
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [, setSelectValue] = useState("");
+
+  // Form handling
+  const form = useForm<FormValues>({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
   });
-  const [workflowDetails, setWorkflowDetails] = useState({
-    name: "",
-    description: "",
-  });
+
+  // API mutations
   const mutation = useMutation<
     any,
     Error,
@@ -87,12 +102,6 @@ export default function Flow() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((res) => res.json()),
-  });
-  const form = useForm<FormValues>({
-    defaultValues: {
-      name: "",
-      description: "",
-    },
   });
   useEffect(() => {
     setIsSubscribed(false);
@@ -542,14 +551,12 @@ export default function Flow() {
         showCard={showCard}
         setShowCard={setShowCard}
         cardId={cardId}
-        trigger={trigger}
         setSelectValue={setSelectValue}
         isSubscribed={isSubscribed}
         setIsSubscribed={setIsSubscribed}
         nodes={nodes}
         setNodes={setNodes}
         setEdges={setEdges}
-        actions={actions}
       />
 
       <ReactFlow

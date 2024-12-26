@@ -1,5 +1,20 @@
+// React and hooks
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
+import { setTriggerState } from "@/app/store/slices/trigger-card-slices/trigger-slice";
+import {
+  setAction,
+  clearActions,
+} from "@/app/store/slices/trigger-card-slices/actions-slice";
+
+// UI Components
 import { Separator } from "@radix-ui/react-separator";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Textarea } from "./ui/textarea";
 import {
   Select,
   SelectTrigger,
@@ -8,6 +23,8 @@ import {
   SelectItem,
 } from "./ui/select";
 import { AnimatedSubscribeButtonDemo } from "./ui/animated-button";
+
+// Icons
 import {
   FaYoutube,
   FaVideo,
@@ -21,50 +38,40 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/store/store";
-import { dataModel } from "@/data/selectDependencies";
-import { setTriggerState } from "@/app/store/slices/trigger-card-slices/trigger-slice";
-import { setAction } from "@/app/store/slices/trigger-card-slices/actions-slice";
-import { actionItemType } from "@/types";
-import { useEffect, useState } from "react";
+import { MdFace, MdSummarize } from "react-icons/md";
+
+// Action Components
 import GenerateThumbnail from "./actionFormElementsUi/generate-thumbnail";
 import GenerateCaptions from "./actionFormElementsUi/generate-captions";
 import SwapFace from "./actionFormElementsUi/swap-face";
 import GenerateSummary from "./actionFormElementsUi/generate-summary";
+
+// Other imports
+import { actionItemType } from "@/types";
+import { dataModel } from "@/data/selectDependencies";
+import { initialNodes, initialEdges } from "@/lib/constants/workflow";
 import { toast } from "sonner";
-import { MdFace, MdSummarize } from "react-icons/md";
-import { Textarea } from "./ui/textarea";
-import { clearActions } from "@/app/store/slices/trigger-card-slices/actions-slice";
-import { initialNodes } from "@/lib/constants/workflow";
-import { initialEdges } from "@/lib/constants/workflow";
 
 export default function TriggerCard({
   showCard,
   setShowCard,
   cardId,
-  trigger,
   setSelectValue,
   isSubscribed,
   setIsSubscribed,
   nodes,
   setNodes,
   setEdges,
-  actions,
 }: {
   showCard: boolean;
   setShowCard: (show: boolean) => void;
   cardId: string;
-  trigger: string;
   setSelectValue: (value: string) => void;
   isSubscribed: boolean;
   setIsSubscribed: (isSubscribed: boolean) => void;
   nodes: any;
   setNodes: any;
   setEdges: any;
-  actions: any;
 }) {
   const dispatch = useDispatch();
   const { triggerType, workflowType, videoTitle, channelId } = useSelector(
@@ -494,14 +501,8 @@ export default function TriggerCard({
             <AnimatedSubscribeButtonDemo
               disabled={false}
               isSubscribed={isSubscribed}
-              setIsSubscribed={setIsSubscribed}
-              nodes={nodes as any}
-              setNodes={setNodes as any}
-              trigger={getValues("triggerType")}
-              cardId={cardId}
               t1="Submit"
               t2="Submitted"
-              actions={actions}
             />
           </form>
         ) : (
@@ -527,7 +528,6 @@ export default function TriggerCard({
                       actionsList.find((action) => action.cardId === cardId)
                         ?.actionType
                     }
-                    // value={actionType || ""}
                     onValueChange={(value) => {
                       field.onChange(value);
                       setIsSubscribed(false);
@@ -683,14 +683,8 @@ export default function TriggerCard({
             <AnimatedSubscribeButtonDemo
               disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
               isSubscribed={isSubscribed}
-              setIsSubscribed={setIsSubscribed}
-              nodes={nodes as any}
-              setNodes={setNodes as any}
-              trigger={trigger}
-              cardId={cardId}
               t1="Submit"
               t2="Submitted"
-              actions={actions}
             />
           </form>
         )}

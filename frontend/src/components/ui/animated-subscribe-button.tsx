@@ -6,16 +6,9 @@ import { AnimatePresence, motion } from "framer-motion";
 interface AnimatedSubscribeButtonProps {
   buttonColor: string;
   buttonTextColor?: string;
-  subscribeStatus: boolean;
   initialText: React.ReactElement | string;
   changeText: React.ReactElement | string;
-  nodes: any;
-  setNodes: any;
-  trigger: string;
-  cardId: string;
-  actions: any[];
   isSubscribed: boolean;
-  setIsSubscribed: any;
   disabled: boolean;
 }
 
@@ -23,17 +16,10 @@ export const AnimatedSubscribeButton: React.FC<
   AnimatedSubscribeButtonProps
 > = ({
   buttonColor,
-  subscribeStatus,
   buttonTextColor,
   changeText,
   initialText,
-  nodes,
-  setNodes,
-  trigger,
-  cardId,
-  actions,
   isSubscribed,
-  setIsSubscribed,
   disabled,
 }) => {
   return (
