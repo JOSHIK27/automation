@@ -11,8 +11,7 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { FadeText } from "./ui/fade-text";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setUserId } from "@/app/store/slices/user-slice";
+import { toast } from "sonner";
 
 export function AnimatedShinyTextDemo() {
   return (
@@ -38,31 +37,31 @@ export default function Hero({ session }: { session: any }) {
     <section className="relative flex min-h-[calc(100vh-80px)] w-full items-center justify-center overflow-hidden bg-background px-4 sm:px-6 lg:px-8 mt-12">
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <AnimatedShinyTextDemo />
-        <div className="flex justify-center">
+        <div className="flex justify-center mb-4">
           <FadeText
-            className="text-[48px] sm:text-[72px] lg:text-[86px] z-20 font-[700] leading-[1.1] text-center bg-gradient-to-b from-neutral-900 to-neutral-600 bg-clip-text text-transparent"
+            className="tracking-tighter text-[4rem] sm:text-[72px] lg:text-[86px] z-20 font-semibold leading-[1.15] text-center bg-gradient-to-b from-neutral-900 to-neutral-600 bg-clip-text text-transparent"
             direction="up"
             framerProps={{
               show: { transition: { delay: 0.1 } },
             }}
-            text="Automate your"
+            text={session ? "Welcome Back to" : "Automate Your"}
           />
         </div>
 
         <div className="flex items-center justify-center">
           <FadeText
-            className="text-[48px] sm:text-[72px] lg:text-[86px] z-20 font-[700] leading-[1.1] text-center bg-gradient-to-r from-teal-500 to-teal-700 bg-clip-text text-transparent"
+            className="tracking-tighter text-[4rem] sm:text-[72px] lg:text-[86px] z-20 font-semibold leading-[64px] text-center bg-gradient-to-r from-teal-500 to-teal-700 bg-clip-text text-transparent"
             direction="up"
             framerProps={{
               show: { transition: { delay: 0.3 } },
             }}
-            text="Content Creation"
+            text={session ? "Creator Stream" : "Content Creation"}
           />
         </div>
 
         <h3 className="text-xl sm:text-2xl z-20 font-medium mt-8 mx-auto max-w-2xl leading-relaxed text-center text-neutral-600 dark:text-neutral-400 animate-fade-in">
           Focus on creating content, not managing uploads. Streamline your
-          workflow and{" "}
+          workflow and
           <span className="text-teal-600 font-semibold">
             boost productivity by 10x
           </span>
@@ -76,18 +75,7 @@ export default function Hero({ session }: { session: any }) {
           >
             Get Started for Free
           </Button>
-          {session ? (
-            <RainbowButton
-              className={`${cn(
-                buttonVariants({
-                  variant: "rainbow-outline",
-                })
-              )} z-20 px-8 py-6 text-lg font-medium w-full sm:w-auto`}
-              onClick={() => signOut()}
-            >
-              Sign Out
-            </RainbowButton>
-          ) : (
+          {!session && (
             <RainbowButton
               className={`${cn(
                 buttonVariants({

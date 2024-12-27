@@ -16,7 +16,7 @@ export function AnimatedSubscribeButtonDemo({
   return (
     <AnimatedSubscribeButton
       buttonColor={disabled ? "#e5e7eb" : "teal"}
-      buttonTextColor={disabled ? "#6b7280" : "white"}
+      buttonTextColor={disabled ? "#9ca3af" : "white"}
       disabled={disabled}
       isSubscribed={isSubscribed}
       initialText={

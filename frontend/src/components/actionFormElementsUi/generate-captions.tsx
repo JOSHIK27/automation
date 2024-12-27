@@ -33,7 +33,6 @@ export default function GenerateCaptions({
           rules={{ required: "This field is required" }}
           render={({ field }) => (
             <Select
-              {...field}
               onValueChange={(value) => {
                 field.onChange(value);
                 dispatch(

@@ -8,6 +8,7 @@ export async function POST(request: Request) {
 
   try {
     const session = await stripe.checkout.sessions.create({
+      mode: "payment",
       payment_method_types: ["card"],
       line_items: [
         {
@@ -21,7 +22,6 @@ export async function POST(request: Request) {
           quantity: quantity,
         },
       ],
-      mode: "payment",
       success_url: process.env.NEXT_PUBLIC_URL + "/success",
       cancel_url: process.env.NEXT_PUBLIC_URL + "/cancel",
     });

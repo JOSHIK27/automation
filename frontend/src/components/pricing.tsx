@@ -65,7 +65,7 @@ type PricingCardProps = {
 };
 
 const PricingCard = ({ plan, session, isPremium }: PricingCardProps) => (
-  <Card className="p-8">
+  <Card className="py-12 px-12">
     <CardHeader>
       <div className="mb-4">
         <span
@@ -113,7 +113,7 @@ export default function Pricing({ session }: { session: Session | null }) {
   return (
     <section className="mb-20" id="pricing">
       <h2 className="text-center text-4xl font-bold mb-8">Pricing</h2>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mx-4 sm:mx-60">
+      <div className="flex gap-4 justify-center flex-wrap sm:gap-8">
         <PricingCard plan={PRICING_PLANS.starter} session={session} />
         <PricingCard plan={PRICING_PLANS.premium} session={session} isPremium />
       </div>

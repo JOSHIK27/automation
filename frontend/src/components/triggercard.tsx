@@ -378,59 +378,59 @@ export default function TriggerCard({
                     </SelectTrigger>
                     <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in-0 zoom-in-95">
                       {(getValues("workflowType") || workflowType) ===
-                      "Pre Production"
-                        ? [
-                            {
-                              label: "Plan a video",
-                              icon: (
-                                <FaVideo className="w-4 h-4 text-blue-500" />
-                              ),
-                            },
-                            {
-                              label: "Generate Content Ideas",
-                              icon: (
-                                <FaLightbulb className="w-4 h-4 text-yellow-500" />
-                              ),
-                            },
-                          ].map((option) => (
-                            <SelectItem
-                              key={option.label}
-                              value={option.label}
-                              className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-blue-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-50 rounded-lg">
-                                  {option.icon}
-                                </div>
-                                <span className="font-medium text-gray-700">
-                                  {option.label}
-                                </span>
+                        "Pre Production" &&
+                        [
+                          {
+                            label: "Plan a video",
+                            icon: <FaVideo className="w-4 h-4 text-blue-500" />,
+                          },
+                          {
+                            label: "Generate Content Ideas",
+                            icon: (
+                              <FaLightbulb className="w-4 h-4 text-yellow-500" />
+                            ),
+                          },
+                        ].map((option) => (
+                          <SelectItem
+                            key={option.label}
+                            value={option.label}
+                            className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-blue-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-blue-50 rounded-lg">
+                                {option.icon}
                               </div>
-                            </SelectItem>
-                          ))
-                        : [
-                            {
-                              label: "When a video is uploaded",
-                              icon: (
-                                <FaUpload className="w-4 h-4 text-green-500" />
-                              ),
-                            },
-                          ].map((option) => (
-                            <SelectItem
-                              key={option.label}
-                              value={option.label}
-                              className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-green-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="p-2 bg-green-50 rounded-lg">
-                                  {option.icon}
-                                </div>
-                                <span className="font-medium text-gray-700">
-                                  {option.label}
-                                </span>
+                              <span className="font-medium text-gray-700">
+                                {option.label}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      {(getValues("workflowType") || workflowType) ===
+                        "Post Production" &&
+                        [
+                          {
+                            label: "When a video is uploaded",
+                            icon: (
+                              <FaUpload className="w-4 h-4 text-green-500" />
+                            ),
+                          },
+                        ].map((option) => (
+                          <SelectItem
+                            key={option.label}
+                            value={option.label}
+                            className="relative flex items-center cursor-pointer py-2.5 px-4 rounded-lg outline-none hover:bg-gray-50/80 focus:bg-gray-50/80 data-[state=checked]:bg-green-50/50 data-[highlighted]:bg-gray-50/80 transition-all duration-200"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-green-50 rounded-lg">
+                                {option.icon}
                               </div>
-                            </SelectItem>
-                          ))}
+                              <span className="font-medium text-gray-700">
+                                {option.label}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 )}

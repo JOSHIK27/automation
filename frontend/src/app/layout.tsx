@@ -5,16 +5,11 @@ import { Nav } from "@/components/nav";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
 import Providers from "./providers";
+import { AuthToast } from "@/components/auth-toast";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const parkinsans = localFont({
+  src: "./fonts/Parkinsans-VariableFont_wght.ttf",
+  variable: "--font-parkinsans",
 });
 
 export const metadata: Metadata = {
@@ -29,11 +24,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${parkinsans.variable} font-parkinsans antialiased`}>
         <SessionProvider>
           <Providers>
+            <AuthToast />
             <Nav />
             {children}
           </Providers>

@@ -26,13 +26,13 @@ export const AnimatedSubscribeButton: React.FC<
     <AnimatePresence mode="wait">
       {isSubscribed ? (
         <motion.button
-          className="relative flex w-full cursor-pointer items-center justify-center rounded-md border-none py-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-400 disabled:text-gray-600"
+          className={`relative flex w-full items-center justify-center rounded-md border-none py-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-400 disabled:text-gray-600`}
           style={{
             backgroundColor: buttonColor,
             color: buttonTextColor,
           }}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 0.6 }}
           exit={{ opacity: 0 }}
           type="submit"
           disabled={true}

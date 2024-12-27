@@ -12,7 +12,7 @@ import {
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { Button } from "@/components/ui/button";
 export function Nav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
@@ -42,7 +42,7 @@ export function Nav() {
                     className="h-10 w-10 mr-4 drop-shadow-sm"
                   />
                   <span className="font-bold text-xl text-gray-800">
-                    Creator Stream
+                    CreatorStream
                   </span>
                 </div>
               </Link>
@@ -93,6 +93,12 @@ export function Nav() {
                     <DropdownMenuItem className="cursor-pointer">
                       Subscription
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => signOut()}
+                      className="cursor-pointer"
+                    >
+                      Sign Out
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </NavigationMenuItem>
@@ -127,10 +133,10 @@ export function Nav() {
 
           {/* Mobile Menu */}
           <div
-            className={`mt-4 space-y-2 transition-all duration-300 ease-in-out ${
+            className={` mt-4 space-y-2 transition-all duration-300 ease-in-out ${
               isMobileMenuOpen
                 ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-4 pointer-events-none"
+                : "hidden opacity-0 -translate-y-4 pointer-events-none"
             }`}
           >
             <div

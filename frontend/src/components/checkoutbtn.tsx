@@ -2,6 +2,7 @@
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
 );
@@ -25,10 +26,26 @@ export default function CheckoutBtn({
           "Content-Type": "application/json",
         },
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to create checkout session");
+      }
+
       const data = await response.json();
-      await stripe?.redirectToCheckout({ sessionId: data.sessionId });
+
+      if (!data.sessionId) {
+        throw new Error("No session ID returned from server");
+      }
+
+      const result = await stripe?.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
+
+      if (result?.error) {
+        throw new Error(result.error.message);
+      }
     } catch (error) {
-      console.error("Error during checkout:", error);
+      toast.error("Error during checkout");
     }
   };
   return (
