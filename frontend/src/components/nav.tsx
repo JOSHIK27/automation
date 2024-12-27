@@ -13,7 +13,14 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Nav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -64,11 +71,30 @@ export function Nav() {
             </NavigationMenuItem>
             {session.data?.user && (
               <NavigationMenuItem>
-                <img
-                  src={session.data?.user?.image ?? ""}
-                  alt="Profile"
-                  className="h-10 w-10 rounded-full border-2 border-gray-100 shadow-sm transition-transform duration-300 hover:scale-110"
-                />
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <img
+                      src={session.data?.user?.image ?? ""}
+                      alt="Profile"
+                      className="h-10 w-10 rounded-full border-2 border-gray-100 shadow-sm transition-transform duration-300 hover:scale-110"
+                    />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <Link href="/profile">
+                      <DropdownMenuItem className="cursor-pointer">
+                        Profile
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuItem className="cursor-pointer">
+                      Billing
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      Subscription
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </NavigationMenuItem>
             )}
           </NavigationMenuList>
