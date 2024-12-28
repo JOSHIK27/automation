@@ -50,7 +50,7 @@ export default function CheckoutBtn({
   };
   return (
     <Button
-      className="w-full rounded-full py-4 bg-teal text-white hover:bg-teal/80"
+      className="w-full bg-gray-100 text-black hover:bg-white/80 rounded-full py-4"
       onClick={handleCheckout}
     >
       Purchase

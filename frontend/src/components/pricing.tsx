@@ -29,19 +29,20 @@ const PRICING_PLANS = {
     ],
   },
   premium: {
-    name: "Premium",
+    name: "Pro",
     price: "£20",
     period: "/ month",
     description: "Perfect for professional content creators",
-    badgeColor: "bg-teal-100 text-teal",
-    checkColor: "text-teal",
+    badgeColor: "bg-white/20 text-white",
+    checkColor: "text-white",
     features: [
+      "Everything in Starter plan",
       "Unlimited workflow automations",
       "Advanced AI content generation",
       "Priority video processing",
       "Priority email & chat support",
       "Advanced analytics & reporting",
-      "Custom workflow templates",
+      "Multi-language caption generation",
     ],
   },
 };
@@ -65,7 +66,11 @@ type PricingCardProps = {
 };
 
 const PricingCard = ({ plan, session, isPremium }: PricingCardProps) => (
-  <Card className="py-12 px-12">
+  <Card
+    className={`py-12 px-12 ${
+      isPremium ? "bg-gradient-to-r from-teal-500 to-teal-600 text-white" : ""
+    }`}
+  >
     <CardHeader>
       <div className="mb-4">
         <span
@@ -76,10 +81,16 @@ const PricingCard = ({ plan, session, isPremium }: PricingCardProps) => (
       </div>
       <CardTitle className="text-4xl">
         {plan.price}{" "}
-        <span className="text-sm text-gray-500">{plan.period}</span>
+        <span
+          className={`text-sm ${isPremium ? "text-gray-200" : "text-gray-500"}`}
+        >
+          {plan.period}
+        </span>
       </CardTitle>
-      <CardDescription>{plan.description}</CardDescription>
-      <Separator className="my-20" />
+      <CardDescription className={isPremium ? "text-gray-200" : ""}>
+        {plan.description}
+      </CardDescription>
+      <Separator className={`my-20 ${isPremium ? "bg-white/20" : ""}`} />
     </CardHeader>
     <CardContent>
       {plan.features.map((feature, index) => (
@@ -98,7 +109,7 @@ const PricingCard = ({ plan, session, isPremium }: PricingCardProps) => (
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className={`w-full rounded-full py-4 ${
             isPremium
-              ? "bg-teal text-white hover:bg-teal/80"
+              ? "bg-gray-100 text-black hover:bg-white/80"
               : "bg-white text-black border border-gray-300 hover:bg-gray-100"
           }`}
         >
@@ -113,7 +124,7 @@ export default function Pricing({ session }: { session: Session | null }) {
   return (
     <section className="mb-20" id="pricing">
       <h2 className="text-center text-4xl font-bold mb-8">Pricing</h2>
-      <div className="flex gap-4 justify-center flex-wrap sm:gap-8">
+      <div className="flex gap-4 justify-center flex-wrap sm:gap-8 items-center">
         <PricingCard plan={PRICING_PLANS.starter} session={session} />
         <PricingCard plan={PRICING_PLANS.premium} session={session} isPremium />
       </div>
