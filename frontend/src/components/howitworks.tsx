@@ -1,6 +1,6 @@
 export default function HowItWorks() {
   return (
-    <section className="relative py-32 px-4 overflow-hidden">
+    <section className="relative py-32 px-4 overflow-hidden mt-20">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white/95 -z-10" />
       <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] -z-10 opacity-50" />

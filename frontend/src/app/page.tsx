@@ -6,6 +6,7 @@ import Benifits from "@/components/benifits";
 import Faqs from "@/components/faqs";
 import { auth } from "../../auth";
 import CTA from "@/components/cta";
+import HIWS from "@/components/htw";
 
 export default async function Home() {
   const session = await auth();
@@ -13,7 +14,7 @@ export default async function Home() {
   return (
     <>
       <Hero session={session} />
-      <HowItWorks />
+      <HIWS />
       <Benifits />
       <Pricing session={session} />
       <Faqs />
