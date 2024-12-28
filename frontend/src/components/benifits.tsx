@@ -1,8 +1,5 @@
-import { AiOutlineClockCircle } from "react-icons/ai";
-import { BsPiggyBank } from "react-icons/bs";
 import { RiRobot2Line } from "react-icons/ri";
-import { BoltIcon } from "@heroicons/react/24/outline";
-import { SparklesIcon } from "@heroicons/react/24/outline";
+import { BoltIcon, SparklesIcon } from "@heroicons/react/24/outline";
 
 const benefits = [
   {
@@ -10,84 +7,111 @@ const benefits = [
     description:
       "Create complex automation workflows with our intuitive drag-and-drop interface. Connect different AI actions and customize their behavior visually.",
     icon: RiRobot2Line,
+    gradient: "from-teal-500 to-teal-600",
   },
   {
     title: "AI-Powered Content Generation",
     description:
       "Leverage advanced AI to automatically generate video captions, create engaging thumbnails, and produce content summaries.",
     icon: SparklesIcon,
+    gradient: "from-teal-400 to-teal-500",
   },
   {
     title: "Customizable Triggers",
     description:
       "Set up automated workflows that respond to various triggers. Schedule actions or respond to events in real-time.",
     icon: BoltIcon,
+    gradient: "from-teal-600 to-teal-700",
   },
-  // Add more benefits...
 ];
 
 export default function Benefits() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-y-0 right-1/2 -z-10 mr-16 w-[200%] origin-bottom-left skew-x-[-30deg] bg-gradient-to-tr from-teal-50 to-white opacity-30 sm:mr-28 lg:mr-0 xl:mr-16 xl:origin-center" />
-        <div
-          className="absolute top-0 left-0 -translate-y-12 transform-gpu blur-3xl"
-          aria-hidden="true"
-        >
-          <div className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-teal-100 to-teal-50 opacity-20" />
-        </div>
+    <section className="relative py-24 sm:py-32 bg-[#F7F5F1] mb-20">
+      {/* Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute w-[500px] h-[500px] -top-32 -left-40 bg-teal-100/30 rounded-full blur-3xl" />
+        <div className="absolute w-[500px] h-[500px] -bottom-32 -right-40 bg-teal-100/30 rounded-full blur-3xl" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            <span className="inline-block bg-gradient-to-r from-teal-600 to-teal-800 bg-clip-text text-transparent pb-2">
-              Why Choose Creator Stream?
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="max-w-2xl mx-auto text-center mb-20">
+          <p className="text-base font-semibold text-teal-600 mb-3">
+            POWERFUL FEATURES
+          </p>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-6">
+            Why Choose{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-500">
+              Creator Stream
             </span>
-            <div className="mt-1 h-1 w-24 bg-gradient-to-r from-teal-600 to-teal-800 mx-auto rounded-full" />
+            ?
           </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
-            Streamline your workflow with powerful automation tools designed for
-            modern businesses
+          <p className="text-lg text-gray-600">
+            Streamline your content creation with powerful automation tools
+            designed for modern creators
           </p>
         </div>
 
-        <div className="mx-auto mt-16 max-w-7xl sm:mt-20 lg:mt-24">
-          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-3">
-            {benefits.map((benefit, index) => (
+        {/* Benefits Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {benefits.map((benefit, index) => (
+            <div
+              key={index}
+              className="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 
+              shadow-sm border border-gray-200/50 hover:border-teal-500/20
+              transition-all duration-300 hover:-translate-y-1"
+            >
+              {/* Gradient Background */}
+              <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+
+              {/* Icon */}
               <div
-                key={index}
-                className="group relative p-8 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200/50 
-                hover:shadow-xl hover:-translate-y-1 transition-all duration-300 
-                bg-gradient-to-b from-white to-teal-50/20"
+                className={`relative w-14 h-14 rounded-xl bg-gradient-to-r ${benefit.gradient} 
+                p-4 text-white shadow-md group-hover:scale-110 transition-transform duration-300`}
               >
-                <div
-                  className="flex h-12 w-12 items-center justify-center rounded-xl 
-                  bg-gradient-to-br from-teal-500 to-teal-600 
-                  group-hover:scale-110 transition-transform duration-300"
-                >
-                  <benefit.icon className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="mt-6 text-xl font-semibold leading-7 text-gray-900">
+                <benefit.icon className="w-full h-full" />
+              </div>
+
+              {/* Content */}
+              <div className="mt-6 relative">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
                   {benefit.title}
                 </h3>
-                <p className="mt-4 text-base leading-7 text-gray-600">
+                <p className="text-gray-600 leading-relaxed">
                   {benefit.description}
                 </p>
               </div>
-            ))}
-          </div>
+
+              {/* Hover Effect */}
+              <div className="absolute inset-0 border-2 border-transparent group-hover:border-teal-500/20 rounded-2xl transition-colors duration-300" />
+            </div>
+          ))}
         </div>
 
+        {/* CTA Button */}
         <div className="mt-16 text-center">
           <button
-            className="inline-flex items-center px-6 py-3 rounded-full 
-            bg-gradient-to-r from-teal-600 to-teal-700 text-white font-semibold
-            hover:from-teal-500 hover:to-teal-600 transition-all duration-300
-            shadow-md hover:shadow-xl hover:-translate-y-0.5"
+            className="inline-flex items-center px-8 py-4 rounded-full 
+            bg-gradient-to-r from-teal-600 to-teal-500 text-white font-semibold
+            hover:from-teal-500 hover:to-teal-400 transition-all duration-300
+            shadow-sm hover:shadow-md hover:-translate-y-0.5 
+            focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
           >
-            Explore All Features
+            Start Creating
+            <svg
+              className="ml-2 w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
           </button>
         </div>
       </div>
