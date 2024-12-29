@@ -34,7 +34,7 @@ export default function Hero({ session }: { session: any }) {
   const router = useRouter();
 
   return (
-    <section className="relative flex min-h-[calc(100vh-80px)] w-full items-center justify-center overflow-hidden bg-background px-4 sm:px-6 lg:px-8 mt-12">
+    <section className="relative flex min-h-[calc(100vh-80px)] w-full items-center justify-center overflow-hidden bg-background px-4 sm:px-6 lg:px-8 mt-20 sm:mt-12">
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <AnimatedShinyTextDemo />
         <div className="flex justify-center mb-4">

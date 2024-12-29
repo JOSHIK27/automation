@@ -7,7 +7,7 @@ import { Button } from "./ui/button";
 export default function HowItWorks() {
   return (
     <section className="mt-24 px-4 md:px-6 lg:px-8">
-      <div className="mb-16 flex justify-center items-center gap-4">
+      <div className="mb-16 flex flex-col md:flex-row justify-center items-center gap-4">
         <div className="max-w-[450px]">
           <span className="text-black-600 rounded-full px-4 py-1.5 text-sm font-medium border border-black-600">
             How It Works

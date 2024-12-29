@@ -36,7 +36,7 @@ export default function Benefits() {
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-2xl mx-auto text-center mb-20">
+        <div className="max-w-3xl mx-auto text-center mb-20">
           <p className="text-base font-semibold text-teal-600 mb-3">
             POWERFUL FEATURES
           </p>

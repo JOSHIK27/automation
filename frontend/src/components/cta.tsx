@@ -69,14 +69,6 @@ export default function CTA() {
                   </Button>
                 </Link>
               )}
-              <Link
-                href="#pricing"
-                className="text-sm font-semibold leading-6 text-white relative after:absolute 
-                  after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white 
-                  hover:after:w-full after:transition-all after:duration-300"
-              >
-                View Pricing <span aria-hidden="true">→</span>
-              </Link>
             </div>
           </div>
 

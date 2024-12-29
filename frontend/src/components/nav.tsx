@@ -52,12 +52,24 @@ export function Nav() {
           <NavigationMenuList className="space-x-4">
             <NavigationMenuItem>
               <NavigationMenuLink
-                onClick={() =>
-                  window.scrollTo({ top: 1400, behavior: "smooth" })
-                }
+                onClick={() => {
+                  const pricingSection = document.getElementById("pricing");
+                  pricingSection?.scrollIntoView({ behavior: "smooth" });
+                }}
                 className={`${navigationMenuTriggerStyle()} cursor-pointer text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-gray-50/80 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-gray-800 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300`}
               >
                 Pricing
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                onClick={() => {
+                  const faqsSection = document.getElementById("faqs");
+                  faqsSection?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className={`${navigationMenuTriggerStyle()} cursor-pointer text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-gray-50/80 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-gray-800 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300`}
+              >
+                FAQs
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -141,7 +153,8 @@ export function Nav() {
           >
             <div
               onClick={() => {
-                window.scrollTo({ top: 1400, behavior: "smooth" });
+                const pricingSection = document.getElementById("pricing");
+                pricingSection?.scrollIntoView({ behavior: "smooth" });
                 setIsMobileMenuOpen(false);
               }}
               className="block px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50/80 rounded-xl cursor-pointer font-medium transition-all duration-300"

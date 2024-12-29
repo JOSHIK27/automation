@@ -14,7 +14,7 @@ export default function Footer() {
         <FaGithub className="text-2xl" />
       </div>
       <div className="text-sm text-muted-foreground pb-8 mt-20">
-        © {new Date().getFullYear()} Automation. All rights reserved.
+        © {new Date().getFullYear()} Creator Stream. All rights reserved.
       </div>
     </footer>
   );

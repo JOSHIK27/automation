@@ -16,8 +16,8 @@ import { Session } from "next-auth";
 const PRICING_PLANS = {
   starter: {
     name: "Starter",
-    price: "£0",
-    period: "",
+    price: "$0",
+    period: "/ month",
     description: "Perfect for trying out our automation features",
     badgeColor: "bg-gray-100 text-black",
     checkColor: "text-black",
@@ -30,7 +30,7 @@ const PRICING_PLANS = {
   },
   premium: {
     name: "Pro",
-    price: "£20",
+    price: "$10",
     period: "/ month",
     description: "Perfect for professional content creators",
     badgeColor: "bg-white/20 text-white",
@@ -67,22 +67,24 @@ type PricingCardProps = {
 
 const PricingCard = ({ plan, session, isPremium }: PricingCardProps) => (
   <Card
-    className={`py-12 px-12 ${
+    className={`py-10 px-10 rounded-3xl ${
       isPremium ? "bg-gradient-to-r from-teal-500 to-teal-600 text-white" : ""
     }`}
   >
     <CardHeader>
       <div className="mb-4">
         <span
-          className={`${plan.badgeColor} text-xs font-medium px-2.5 py-0.5 rounded`}
+          className={`${plan.badgeColor} text-[12px] font-medium px-2.5 py-0.5 rounded`}
         >
           {plan.name}
         </span>
       </div>
-      <CardTitle className="text-4xl">
-        {plan.price}{" "}
+      <CardTitle className="text-[64px]">
+        {plan.price}
         <span
-          className={`text-sm ${isPremium ? "text-gray-200" : "text-gray-500"}`}
+          className={`text-[16px] ${
+            isPremium ? "text-gray-200" : "text-gray-500"
+          }`}
         >
           {plan.period}
         </span>
@@ -122,12 +124,18 @@ const PricingCard = ({ plan, session, isPremium }: PricingCardProps) => (
 
 export default function Pricing({ session }: { session: Session | null }) {
   return (
-    <section className="mb-20" id="pricing">
-      <h2 className="text-center text-4xl font-bold mb-8">Pricing</h2>
-      <div className="flex gap-4 justify-center flex-wrap sm:gap-8 items-center">
-        <PricingCard plan={PRICING_PLANS.starter} session={session} />
-        <PricingCard plan={PRICING_PLANS.premium} session={session} isPremium />
-      </div>
-    </section>
+    <div id="pricing">
+      <section className="mb-20">
+        <h2 className="text-center text-4xl font-bold mb-8">Pricing</h2>
+        <div className="flex px-4 gap-4 justify-center flex-wrap sm:gap-8 sm:px-0 items-center">
+          <PricingCard plan={PRICING_PLANS.starter} session={session} />
+          <PricingCard
+            plan={PRICING_PLANS.premium}
+            session={session}
+            isPremium
+          />
+        </div>
+      </section>
+    </div>
   );
 }

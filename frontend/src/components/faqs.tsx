@@ -34,24 +34,26 @@ const faqs = [
 
 export default function Faqs() {
   return (
-    <section>
-      <h2 className="text-center text-4xl font-bold mb-8">Questions ?</h2>
-      <Accordion className="mx-4 sm:mx-80 " type="single" collapsible>
-        {faqs.map((faq) => (
-          <AccordionItem
-            key={faq.question}
-            value={faq.question}
-            className="data-[state=closed]:rounded-[2.5rem] data-[state=open]:rounded-[2.5rem] data-[state=open]:bg-gradient-to-br data-[state=open]:from-teal-400 data-[state=open]:to-teal-600 data-[state=open]:text-white transition-transform duration-200 px-6 py-2 bg-gray-100 mb-2"
-          >
-            <AccordionTrigger className="text-lg font-medium">
-              {faq.question}
-            </AccordionTrigger>
-            <AccordionContent className="data-[state=open]:text-white">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </section>
+    <div id="faqs">
+      <section>
+        <h2 className="text-center text-4xl font-bold mb-8">Questions ?</h2>
+        <Accordion className="mx-4 sm:mx-80 " type="single" collapsible>
+          {faqs.map((faq) => (
+            <AccordionItem
+              key={faq.question}
+              value={faq.question}
+              className="data-[state=closed]:rounded-[2.5rem] data-[state=open]:rounded-[2.5rem] data-[state=open]:bg-gradient-to-br data-[state=open]:from-teal-400 data-[state=open]:to-teal-600 data-[state=open]:text-white transition-transform duration-200 px-6 py-2 bg-gray-100 mb-2"
+            >
+              <AccordionTrigger className="text-lg font-medium">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="data-[state=open]:text-white">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </section>
+    </div>
   );
 }
