@@ -1,9 +1,9 @@
 export default function Cancel() {
   return (
-    <div className="mt-10 flex justify-center items-center  p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-2xl p-8 text-center transform transition-all hover:scale-[1.02] border border-gray-100">
-        <div className="mb-6 animate-bounce">
-          <div className="bg-red-50 rounded-full p-3 w-16 h-16 mx-auto">
+    <div className="min-h-screen bg-[#F7F5F1] flex justify-center items-center">
+      <div className="max-w-md w-full bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200/50 p-8 text-center">
+        <div className="mb-8">
+          <div className="bg-red-50 rounded-full p-4 w-20 h-20 mx-auto flex items-center justify-center">
             <svg
               className="h-10 w-10 text-red-500"
               fill="none"
@@ -29,7 +29,12 @@ export default function Cancel() {
         </p>
         <a
           href="/"
-          className="inline-block bg-gray-900 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 hover:bg-gray-800 hover:shadow-lg transform hover:-translate-y-0.5"
+          className="inline-flex items-center justify-center px-8 py-3 
+            bg-teal-600 hover:bg-teal-700 text-white rounded-xl
+            font-medium text-sm
+            shadow-sm hover:shadow-md
+            transition-all duration-200
+            hover:scale-105 active:scale-95"
         >
           Return to Home
         </a>

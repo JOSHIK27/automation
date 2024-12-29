@@ -32,18 +32,19 @@ export default function Page() {
     enabled: !!session,
   });
 
-  if (status === "loading" || isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <HashLoader color="#008080" />
-      </div>
-    );
-  }
+  // if (status === "loading" || isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <HashLoader color="#008080" />
+  //     </div>
+  //   );
+  // }
 
-  if (!session) {
-    router.push("/");
-    return null;
-  }
+  // if (!session) {
+  //   router.push("/");
+  //   return null;
+  // }
+  if (!session) return <></>;
 
   return (
     <div className="min-h-screen bg-[#F7F5F1] pt-32 px-4 sm:px-6 lg:px-8">

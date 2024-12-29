@@ -31,21 +31,12 @@ export default function WorkflowsPage() {
 
   const sessionToken = Cookies.get(sessionTokenName);
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/");
-    }
-  }, [status]);
-
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center h-screen">
         <HashLoader color="#000000" />
       </div>
     );
-  }
-  if (!session) {
-    return null;
   }
 
   const { data, isFetching, refetch } = useQuery({

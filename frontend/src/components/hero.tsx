@@ -4,14 +4,11 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { signIn, useSession } from "next-auth/react";
-import { signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import AnimatedShinyText from "./ui/animated-shiny-text";
 import { BsLightningChargeFill } from "react-icons/bs";
 import { FadeText } from "./ui/fade-text";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { toast } from "sonner";
 
 export function AnimatedShinyTextDemo() {
   return (
@@ -61,7 +58,7 @@ export default function Hero({ session }: { session: any }) {
 
         <h3 className="text-xl sm:text-2xl z-20 font-medium mt-8 mx-auto max-w-2xl leading-relaxed text-center text-neutral-600 dark:text-neutral-400 animate-fade-in">
           Focus on creating content, not managing uploads. Streamline your
-          workflow and
+          workflow and{" "}
           <span className="text-teal-600 font-semibold">
             boost productivity by 10x
           </span>

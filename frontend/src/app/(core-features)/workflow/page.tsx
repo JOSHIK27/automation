@@ -72,7 +72,6 @@ type FormValues = {
 export default function Flow() {
   // Router and authentication
   const router = useRouter();
-  const { data: session, status } = useSession();
 
   // Redux hooks and state
   const dispatch = useDispatch();
@@ -161,9 +160,6 @@ export default function Flow() {
         <HashLoader color="#000000" />
       </div>
     );
-  }
-  if (!session) {
-    return null;
   }
 
   const onEdgeClick = (event: any, edge: any) => {
