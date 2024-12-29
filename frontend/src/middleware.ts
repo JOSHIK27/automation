@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { sessionTokenName } from "./lib/constants/common";
 
 export async function middleware(request: NextRequest) {
-  const authCookie = request.cookies.get("authjs.session-token");
+  const authCookie = request.cookies.get(sessionTokenName);
 
   if (!authCookie) {
     return NextResponse.redirect(new URL("/api/auth/signin", request.url));
