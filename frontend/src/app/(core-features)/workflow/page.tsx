@@ -70,8 +70,8 @@ type FormValues = {
 };
 
 export default function Flow() {
-  // Router and authentication
-  const router = useRouter();
+  // Authentication
+  const { status } = useSession();
 
   // Redux hooks and state
   const dispatch = useDispatch();
@@ -147,12 +147,6 @@ export default function Flow() {
     },
     [setEdges]
   );
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/");
-    }
-  }, [status]);
 
   if (status === "loading") {
     return (
