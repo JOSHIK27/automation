@@ -31,7 +31,7 @@ import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-stat
 import CustomNode from "@/components/reactflow/customnode";
 import CustomEdge from "@/components/reactflow/customedge";
 import CustomNodeWithHandle from "@/components/customnodehandle";
-import TriggerCard from "@/components/triggercard";
+import TriggerForm from "@/components/triggerform";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +44,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 // Other imports
 import { initialEdges, initialNodes } from "@/lib/constants/workflow";
@@ -560,15 +567,22 @@ export default function Flow() {
         </button>
       </div>
 
-      <TriggerCard
-        showCard={showCard}
-        setShowCard={setShowCard}
-        cardId={cardId}
-        setSelectValue={setSelectValue}
-        nodes={nodes}
-        setNodes={setNodes}
-        setEdges={setEdges}
-      />
+      <Sheet open={showCard} onOpenChange={setShowCard}>
+        <SheetContent className="w-[600px] sm:w-[600px] bg-white">
+          <SheetHeader>
+            <SheetTitle>Configure Workflow Action</SheetTitle>
+          </SheetHeader>
+          <TriggerForm
+            showCard={showCard}
+            setShowCard={setShowCard}
+            cardId={cardId}
+            setSelectValue={setSelectValue}
+            nodes={nodes}
+            setNodes={setNodes}
+            setEdges={setEdges}
+          />
+        </SheetContent>
+      </Sheet>
 
       <ReactFlow
         nodes={nodes}
