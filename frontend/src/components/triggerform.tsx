@@ -186,7 +186,6 @@ export default function TriggerForm({
           workflowType,
           videoTitle,
           channelId,
-          editable: false,
         })
       );
       const currentNodes = nodes;
@@ -209,7 +208,7 @@ export default function TriggerForm({
     } else {
       const { triggerType, workflowType, videoTitle, channelId, ...rest } =
         data;
-      dispatch(setAction({ cardId, ...rest, editable: false }));
+      dispatch(setAction({ cardId, ...rest }));
 
       const currentNodes = nodes;
       const updatedNodes = currentNodes.map((node: any) => {

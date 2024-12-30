@@ -24,46 +24,46 @@ export default function CustomNode({
   id: string;
 }) {
   const dispatch = useDispatch();
-  const taskStatus = useSelector((state: RootState) => state.taskstatus);
-  const currentTaskStatus = taskStatus.find((task) => task.cardId === id);
+  // const taskStatus = useSelector((state: RootState) => state.taskstatus);
+  // const currentTaskStatus = taskStatus.find((task) => task.cardId === id);
 
-  useEffect(() => {
-    let timerId: ReturnType<typeof setInterval>;
-    if (currentTaskStatus && currentTaskStatus.status === "PENDING") {
-      try {
-        timerId = setInterval(() => {
-          checkStatus();
-        }, 2000);
-      } catch (error) {
-        console.error("Error setting up interval:", error);
-      }
-    }
+  // useEffect(() => {
+  //   let timerId: ReturnType<typeof setInterval>;
+  //   if (currentTaskStatus && currentTaskStatus.status === "PENDING") {
+  //     try {
+  //       timerId = setInterval(() => {
+  //         checkStatus();
+  //       }, 2000);
+  //     } catch (error) {
+  //       console.error("Error setting up interval:", error);
+  //     }
+  //   }
 
-    return () => {
-      clearInterval(timerId);
-    };
-  }, [taskStatus]);
+  //   return () => {
+  //     clearInterval(timerId);
+  //   };
+  // }, [taskStatus]);
 
-  const checkStatus = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/result/${currentTaskStatus?.task_id}`
-      );
-      const data = await response.json();
-      if (data.status === "SUCCESS") {
-        const updatedTaskStatus = taskStatus.map((task) => {
-          if (task.cardId === id) {
-            return { ...task, status: "SUCCESS" };
-          }
-          return task;
-        });
-        dispatch(setTasksStatus(updatedTaskStatus));
-      }
-      return data;
-    } catch (error) {
-      toast.error("Error checking status: " + error);
-    }
-  };
+  // const checkStatus = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:8000/result/${currentTaskStatus?.task_id}`
+  //     );
+  //     const data = await response.json();
+  //     if (data.status === "SUCCESS") {
+  //       const updatedTaskStatus = taskStatus.map((task) => {
+  //         if (task.cardId === id) {
+  //           return { ...task, status: "SUCCESS" };
+  //         }
+  //         return task;
+  //       });
+  //       dispatch(setTasksStatus(updatedTaskStatus));
+  //     }
+  //     return data;
+  //   } catch (error) {
+  //     toast.error("Error checking status: " + error);
+  //   }
+  // };
 
   const isPlaceholderLabel = (label: string) => {
     return (
@@ -177,25 +177,28 @@ export default function CustomNode({
           </div>
         </div>
 
-        {currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
-          <div className="mr-2">
-            <BeatLoader loading={true} size={8} color="#009688" />
-          </div>
-        ) : (
-          <button
-            onClick={() => {
-              if (id === "1" || id === "2") {
-                toast.error("You cannot delete the default tasks");
-              }
-            }}
-            className="p-2.5 hover:bg-red-50 rounded-xl transition-all duration-200 group"
-          >
-            <RiDeleteBin6Line
-              size={18}
-              className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
-            />
-          </button>
-        )}
+        {
+          // currentTaskStatus && currentTaskStatus.status
+          "PENDING" === "PENDING" ? (
+            <div className="mr-2">
+              <BeatLoader loading={true} size={8} color="#009688" />
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                if (id === "1" || id === "2") {
+                  toast.error("You cannot delete the default tasks");
+                }
+              }}
+              className="p-2.5 hover:bg-red-50 rounded-xl transition-all duration-200 group"
+            >
+              <RiDeleteBin6Line
+                size={18}
+                className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
+              />
+            </button>
+          )
+        }
       </div>
 
       <Separator className="my-4 bg-gradient-to-r from-[#069494]/10 via-[#40E0D0]/20 to-[#069494]/10" />

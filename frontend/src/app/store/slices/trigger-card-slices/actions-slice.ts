@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { actionItemType } from "@/types";
 
-const initialState: actionItemType[] = [{ cardId: "2", editable: true }];
+const initialState: actionItemType[] = [{ cardId: "2" }];
 
 export const actionsSlice = createSlice({
   name: "actions",

@@ -2,7 +2,6 @@
 
 // React and Next.js imports
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 // XYFlow imports
@@ -47,7 +46,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -76,8 +74,9 @@ export default function Flow() {
   // Redux hooks and state
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.user.user_id);
-  const { workflowType, triggerType, channelId, videoTitle, editable } =
-    useSelector((state: RootState) => state.trigger);
+  const { workflowType, triggerType, channelId, videoTitle } = useSelector(
+    (state: RootState) => state.trigger
+  );
   const actionsList = useSelector((state: RootState) => state.actions);
 
   // Local state
@@ -96,7 +95,7 @@ export default function Flow() {
   });
 
   // API mutations
-  const mutation = useMutation<
+  const saveWorkflowMutation = useMutation<
     any,
     Error,
     {
@@ -113,6 +112,44 @@ export default function Flow() {
         body: JSON.stringify(data),
       }).then((res) => res.json()),
   });
+
+  const triggerWorkflowMutation = useMutation<
+    any,
+    Error,
+    {
+      triggerState: {
+        triggerType: string;
+        workflowType: string;
+        channelId: string;
+        videoTitle: string;
+      };
+      actionsList: typeof actionsList;
+    }
+  >({
+    mutationKey: ["triggerWorkflow"],
+    mutationFn: async (data) => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/trigger-workflow`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to trigger workflow");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      dispatch(setTasksStatus(data));
+      toast.success("Workflow triggered successfully!");
+    },
+    onError: (error) => {
+      toast.error(`Unable to trigger the workflow. Error: ${error.message}`);
+    },
+  });
+
   useEffect(() => {
     // dispatch(setIsSubscribed({ cardId: Number(cardId), isSubscribed: false }));
     setSelectValue("");
@@ -397,6 +434,21 @@ export default function Flow() {
       toast.error("Please select a trigger");
       return;
     }
+    if (workflowType === "") {
+      toast.error("Please select a workflow");
+      return;
+    }
+    if (
+      (workflowType === "Plan a video" ||
+        workflowType === "When a video is uploaded") &&
+      channelId === ""
+    ) {
+      toast.error("Please enter channelId");
+      return;
+    } else if (workflowType === "Generate Content Ideas" && videoTitle === "") {
+      toast.error("Please enter a video title");
+      return;
+    }
 
     for (const action of actionsList) {
       for (const key in action) {
@@ -407,31 +459,24 @@ export default function Flow() {
       }
     }
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/trigger-workflow`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({}),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to trigger workflow");
-      }
-
-      const { response: data } = await response.json();
-
-      dispatch(setTasksStatus(data));
-
-      toast.success("Workflow triggered successfully!");
-    } catch (error) {
-      toast.error("Failed to trigger workflow");
-    }
+    triggerWorkflowMutation.mutate({
+      triggerState: {
+        triggerType,
+        workflowType,
+        channelId,
+        videoTitle,
+      },
+      actionsList,
+    });
   };
+
+  if (triggerWorkflowMutation.isError) {
+    return (
+      <div className="text-red-500 ">
+        Error: {triggerWorkflowMutation.error.message}
+      </div>
+    );
+  }
 
   return (
     <div className="relative" style={{ height: "100dvh" }}>
@@ -499,7 +544,7 @@ export default function Flow() {
             </DialogHeader>
             <form
               onSubmit={form.handleSubmit((data) => {
-                mutation.mutate({
+                saveWorkflowMutation.mutate({
                   user_id: userId ?? "",
                   nodes: nodes,
                   edges: edges,
@@ -554,14 +599,19 @@ export default function Flow() {
         </Dialog>
 
         <button
+          disabled={triggerWorkflowMutation.isPending}
           onClick={handleTriggerWorkflow}
-          className="inline-flex items-center justify-center px-4 py-2
+          className={`inline-flex items-center justify-center px-4 py-2
           bg-teal-600/90 hover:bg-teal-600 text-white rounded-md
           shadow-lg backdrop-blur-sm
           font-medium text-sm
           border border-transparent
           transition-all duration-200
-          hover:scale-105 active:scale-95"
+          hover:scale-105 active:scale-95 ${
+            triggerWorkflowMutation.isPending
+              ? "opacity-50 cursor-not-allowed"
+              : ""
+          }`}
         >
           <svg
             className="w-4 h-4 mr-2"
