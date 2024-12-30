@@ -528,13 +528,18 @@ export default function Flow() {
     <div className="relative" style={{ height: "100dvh" }}>
       <div className="fixed top-20 left-4 z-50">
         <div
-          className="inline-flex items-center gap-2 px-3 py-1.5 
-          bg-white/90 hover:bg-white rounded-md
-          shadow-lg backdrop-blur-sm
-          border border-gray-200/50"
+          className="group inline-flex items-center gap-2 px-3 py-1.5 
+            bg-white/90 hover:bg-white rounded-md
+            shadow-lg hover:shadow-xl backdrop-blur-sm
+            border border-gray-200/50
+            transition-all duration-300
+            hover:scale-[1.02] active:scale-[0.98]
+            hover:border-teal-100
+            h-[42px]"
         >
           <svg
-            className="w-4 h-4 text-gray-500"
+            className="w-4 h-4 text-gray-500 transition-colors duration-200 
+              group-hover:text-teal-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -546,7 +551,10 @@ export default function Flow() {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <span className="text-sm font-medium text-gray-700">
+          <span
+            className="text-sm font-medium text-gray-700 group-hover:text-teal-600 
+            transition-colors duration-200"
+          >
             workflow/page.tsx
           </span>
         </div>
@@ -557,16 +565,19 @@ export default function Flow() {
           <DialogTrigger asChild>
             <Button
               type="button"
-              className="inline-flex items-center justify-center px-4 py-2
-              bg-white/90 hover:bg-white text-gray-700 rounded-md
-              shadow-lg backdrop-blur-sm
-              font-medium text-sm
-              border border-gray-200/50
-              transition-all duration-200
-              hover:scale-105 active:scale-95"
+              className="group inline-flex items-center justify-center px-4 py-2.5
+                bg-white/90 hover:bg-white text-gray-700 rounded-xl
+                shadow-lg hover:shadow-xl backdrop-blur-sm
+                font-medium text-sm
+                border border-gray-200/50
+                transition-all duration-300
+                hover:scale-[1.02] active:scale-[0.98]
+                hover:border-teal-100
+                h-[42px]"
             >
               <svg
-                className="w-4 h-4 mr-2"
+                className="w-4 h-4 mr-2 text-teal-600 transition-transform duration-200 
+                  group-hover:scale-110 group-hover:text-teal-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -578,7 +589,9 @@ export default function Flow() {
                   d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
                 />
               </svg>
-              Save
+              <span className="relative tracking-wide group-hover:text-teal-600 transition-colors duration-200">
+                Save Workflow
+              </span>
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-[#F7F5F1]/90 backdrop-blur-sm border border-gray-200/50">
@@ -628,19 +641,47 @@ export default function Flow() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="bg-white/80 border-gray-200 text-gray-700 hover:bg-white"
+                    className="bg-white/90 hover:bg-white border-gray-200 
+                      text-gray-600 hover:text-gray-700
+                      transition-all duration-200
+                      hover:scale-[1.02] active:scale-[0.98]
+                      hover:border-gray-300 py-4"
                   >
                     Cancel
                   </Button>
                 </DialogTrigger>
                 <Button
                   type="submit"
-                  className="bg-teal-600 hover:bg-teal-700 text-white px-6"
+                  className="group relative inline-flex items-center justify-center
+                    bg-gradient-to-r from-teal-600 to-teal-500
+                    hover:from-teal-500 hover:to-teal-600
+                    text-white font-medium
+                    shadow-[0_1px_10px_0_rgba(20,184,166,0.3)]
+                    hover:shadow-[0_1px_12px_0_rgba(20,184,166,0.4)]
+                    border border-teal-400/20
+                    transition-all duration-300
+                    hover:scale-[1.02] active:scale-[0.98]
+                    px-6 py-4"
                 >
                   {saveWorkflowMutation.isPending ? (
                     <Loader className="animate-spin w-5 h-5" color="#ffffff" />
                   ) : (
-                    "Save Workflow"
+                    <span className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 transition-transform duration-200 group-hover:scale-110"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      Save Workflow
+                    </span>
                   )}
                 </Button>
               </div>
@@ -651,42 +692,53 @@ export default function Flow() {
         <button
           disabled={triggerWorkflowMutation.isPending}
           onClick={handleTriggerWorkflow}
-          className={`inline-flex items-center justify-center 
-          bg-teal-600/90 hover:bg-teal-600 text-white rounded-md
-          shadow-lg backdrop-blur-sm
-          font-medium text-sm
-          border border-transparent
-          transition-all duration-200
-          hover:scale-105 active:scale-95 ${
-            triggerWorkflowMutation.isPending
-              ? "cursor-not-allowed px-6"
-              : "px-4 py-2"
-          }`}
+          className={`group inline-flex items-center justify-center gap-2
+            bg-gradient-to-r from-teal-600 to-teal-500
+            hover:from-teal-500 hover:to-teal-600
+            text-white rounded-xl
+            shadow-[0_1px_12px_0_rgba(20,184,166,0.3)]
+            hover:shadow-[0_1px_15px_0_rgba(20,184,166,0.4)]
+            font-medium text-sm
+            border border-teal-400/20
+            transition-all duration-300
+            hover:scale-[1.02] active:scale-[0.98]
+            ${
+              triggerWorkflowMutation.isPending
+                ? "cursor-not-allowed px-6 py-3"
+                : "px-5 py-2.5"
+            }`}
         >
           {triggerWorkflowMutation.isPending ? (
             <Loader className="animate-spin w-5 h-5" color="#ffffff" />
           ) : (
             <>
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Start
+              <span className="relative flex items-center gap-1">
+                <span className="relative z-10 flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      className="opacity-70"
+                    />
+                  </svg>
+                  <span className="font-semibold tracking-wide">
+                    Start Workflow
+                  </span>
+                </span>
+              </span>
             </>
           )}
         </button>
