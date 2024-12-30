@@ -77,8 +77,8 @@ export default function WorkflowsPage() {
 
   if (userError || workflowsError) {
     return (
-      <div className="min-h-screen bg-[#F7F5F1] flex justify-center items-center p-4">
-        <div className="max-w-md w-full bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200/50 p-8 text-center">
+      <div className="min-h-screen bg-[#F7F5F1] flex justify-center p-4 items-center">
+        <div className="max-w-md w-full bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200/50 text-center p-8">
           <div className="mb-8">
             <div className="bg-red-50 rounded-full p-4 w-20 h-20 mx-auto flex items-center justify-center">
               <svg
@@ -137,7 +137,7 @@ export default function WorkflowsPage() {
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      <div className="pt-28 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="pt-10 px-2">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
             <div>

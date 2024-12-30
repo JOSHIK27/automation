@@ -61,7 +61,7 @@ import {
   insertBtnStatusInBetween,
   setIsSubscribed,
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 type FormValues = {
   name: string;
