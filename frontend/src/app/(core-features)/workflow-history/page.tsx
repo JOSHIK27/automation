@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BsSearch, BsPlus, BsClock, BsPlayFill } from "react-icons/bs";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/store/store";
-import { useRouter } from "next/navigation";
 import { HashLoader } from "react-spinners";
 import { useSession } from "next-auth/react";
 import { sessionTokenName } from "@/lib/constants/common";
@@ -26,21 +23,14 @@ type Workflow = {
 
 export default function WorkflowsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
 
-  const sessionToken = Cookies.get(sessionTokenName);
-
-  if (status === "loading") {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <HashLoader color="#000000" />
-      </div>
-    );
-  }
-
-  const { data, isFetching, refetch } = useQuery({
-    queryKey: ["workflowhistory"],
+  const {
+    data: userData,
+    status: userStatus,
+    error: userError,
+  } = useQuery({
+    queryKey: ["user"],
     queryFn: async () => {
       const userResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/user`,
@@ -49,12 +39,25 @@ export default function WorkflowsPage() {
           body: JSON.stringify(session?.user),
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionToken ?? "notsignedin"}`,
+            Authorization: `Bearer ${
+              Cookies.get(sessionTokenName) ?? "notsignedin"
+            }`,
           },
         }
       );
-      const { user_id } = await userResponse.json();
+      return userResponse.json();
+    },
+    enabled: !!session,
+  });
+  const user_id = userData?.user_id;
 
+  const {
+    data: workflowHistory,
+    status: workflowsStatus,
+    error: workflowsError,
+  } = useQuery({
+    queryKey: ["history"],
+    queryFn: async () => {
       const workflowHistoryResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${
           user_id ?? "notsignedin"
@@ -67,21 +70,32 @@ export default function WorkflowsPage() {
         throw new Error("Failed to fetch the history");
       return workflowHistoryResponse.json();
     },
-    enabled: false,
+    enabled: !!user_id,
+    refetchOnMount: "always",
   });
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  if (userError || workflowsError) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-2xl font-bold text-neutral-900">
+          Error: {userError?.message ?? workflowsError?.message}
+        </div>
+      </div>
+    );
+  }
 
-  if (isFetching || !data)
+  if (
+    sessionStatus === "loading" ||
+    userStatus === "pending" ||
+    workflowsStatus === "pending"
+  )
     return (
       <div className="flex justify-center items-center h-screen">
         <HashLoader color="#36d7b7" />
       </div>
     );
 
-  const filteredWorkflows = data.workflow_history.filter(
+  const filteredWorkflows = workflowHistory?.workflow_history.filter(
     (workflow: Workflow) =>
       workflow.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       workflow.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -123,7 +137,7 @@ export default function WorkflowsPage() {
           <Separator className="my-6" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredWorkflows.map((workflow: Workflow, index: number) => (
+            {filteredWorkflows?.map((workflow: Workflow, index: number) => (
               <WorkflowCard key={index} workflow={workflow} />
             ))}
           </div>

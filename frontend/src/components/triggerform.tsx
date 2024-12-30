@@ -51,14 +51,6 @@ import { actionItemType } from "@/types";
 import { dataModel } from "@/data/selectDependencies";
 import { initialNodes, initialEdges } from "@/lib/constants/workflow";
 import { toast } from "sonner";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 
 export default function TriggerForm({
   showCard,
@@ -95,6 +87,7 @@ export default function TriggerForm({
   } = useForm();
   const [prevTriggerType, setPrevTriggerType] = useState<string | null>(null);
   const updateBtnState = useSelector((state: RootState) => state.updateBtn);
+  console.log(updateBtnState);
 
   watch("workflowType");
   watch("triggerType");
@@ -725,7 +718,8 @@ export default function TriggerForm({
 
           <div className="flex flex-col gap-2">
             <AnimatedSubscribeButtonDemo
-              disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
+              // disabled={Number(cardId) > Number(firstCardIdWithEmptyFields)}
+              disabled={false}
               isSubscribed={isSubscribed || false}
               t1="Submit"
               t2="Submitted"

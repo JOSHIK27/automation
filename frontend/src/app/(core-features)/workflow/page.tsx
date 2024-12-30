@@ -235,7 +235,10 @@ export default function Flow() {
         })
       );
       dispatch(
-        addBtnStatus({ cardId: Number(source) + 1, isSubscribed: false })
+        addBtnStatus({
+          cardId: String(Number(source) + 1),
+          isSubscribed: false,
+        })
       );
     } else {
       const currentNodes = nodes;
@@ -432,7 +435,33 @@ export default function Flow() {
 
   return (
     <div className="relative" style={{ height: "100dvh" }}>
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
+      <div className="absolute top-20 left-4 z-50">
+        <div
+          className="inline-flex items-center gap-2 px-3 py-1.5 
+          bg-white/90 hover:bg-white rounded-md
+          shadow-lg backdrop-blur-sm
+          border border-gray-200/50"
+        >
+          <svg
+            className="w-4 h-4 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          <span className="text-sm font-medium text-gray-700">
+            workflow/page.tsx
+          </span>
+        </div>
+      </div>
+
+      <div className="fixed top-20 right-4 z-50 flex gap-2">
         <Dialog>
           <DialogTrigger asChild>
             <Button

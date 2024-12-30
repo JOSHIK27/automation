@@ -15,7 +15,11 @@ export default function Page() {
   const { data: session, status } = useSession();
   const sessionToken = Cookies.get(sessionTokenName);
 
-  const { data: userStats, isLoading } = useQuery({
+  const {
+    data: userStats,
+    status: userStatsStatus,
+    error: userStatsError,
+  } = useQuery({
     queryKey: ["userStats"],
     queryFn: async () => {
       const response = await fetch(
@@ -30,15 +34,26 @@ export default function Page() {
       return response.json();
     },
     enabled: !!session,
+    refetchOnMount: "always",
   });
 
-  // if (status === "loading" || isLoading) {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <HashLoader color="#008080" />
-  //     </div>
-  //   );
-  // }
+  if (status === "loading" || userStatsStatus === "pending") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <HashLoader color="#008080" />
+      </div>
+    );
+  }
+
+  if (userStatsError) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-2xl font-bold text-neutral-900">
+          Error: {userStatsError.message}
+        </div>
+      </div>
+    );
+  }
 
   // if (!session) {
   //   router.push("/");
