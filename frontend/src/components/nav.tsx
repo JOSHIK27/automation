@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
@@ -21,11 +21,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import WorkflowNav from "@/components/workflownav";
+
 export function Nav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
   const session = useSession();
+  const pathname = usePathname();
+  const isWorkflowPage = pathname.startsWith("/workflow");
+
+  if (isWorkflowPage) {
+    return <WorkflowNav />;
+  }
 
   return (
     <>

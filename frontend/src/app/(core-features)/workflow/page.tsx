@@ -61,6 +61,7 @@ import {
   insertBtnStatusInBetween,
   setIsSubscribed,
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
+import { Loader, Loader2 } from "lucide-react";
 
 type FormValues = {
   name: string;
@@ -111,6 +112,9 @@ export default function Flow() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((res) => res.json()),
+    onSuccess: (data) => {
+      toast.success("Workflow saved successfully!");
+    },
   });
 
   const triggerWorkflowMutation = useMutation<
@@ -467,7 +471,7 @@ export default function Flow() {
     });
   };
 
-  if (triggerWorkflowMutation.isError) {
+  if (triggerWorkflowMutation.isError || saveWorkflowMutation.isError) {
     return (
       <div className="min-h-screen bg-[#F7F5F1] flex justify-center items-center p-4">
         <div className="max-w-md w-full bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200/50 p-8 text-center">
@@ -489,13 +493,23 @@ export default function Flow() {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Workflow Error
+            {triggerWorkflowMutation.isError
+              ? "Trigger Workflow Error"
+              : "Save Workflow Error"}
           </h2>
           <p className="text-gray-600 mb-8 leading-relaxed">
-            {triggerWorkflowMutation.error.message}
+            {triggerWorkflowMutation.error?.message ||
+              saveWorkflowMutation.error?.message}
           </p>
           <button
-            onClick={() => triggerWorkflowMutation.reset()}
+            onClick={() => {
+              if (triggerWorkflowMutation.isError) {
+                triggerWorkflowMutation.reset();
+              }
+              if (saveWorkflowMutation.isError) {
+                saveWorkflowMutation.reset();
+              }
+            }}
             className="inline-flex items-center justify-center px-8 py-3 
               bg-teal-600 hover:bg-teal-700 text-white rounded-xl
               font-medium text-sm
@@ -512,7 +526,7 @@ export default function Flow() {
 
   return (
     <div className="relative" style={{ height: "100dvh" }}>
-      <div className="absolute top-20 left-4 z-50">
+      <div className="fixed top-20 left-4 z-50">
         <div
           className="inline-flex items-center gap-2 px-3 py-1.5 
           bg-white/90 hover:bg-white rounded-md
@@ -621,9 +635,13 @@ export default function Flow() {
                 </DialogTrigger>
                 <Button
                   type="submit"
-                  className="bg-teal-600 hover:bg-teal-700 text-white"
+                  className="bg-teal-600 hover:bg-teal-700 text-white px-6"
                 >
-                  Save Workflow
+                  {saveWorkflowMutation.isPending ? (
+                    <Loader className="animate-spin w-5 h-5" color="#ffffff" />
+                  ) : (
+                    "Save Workflow"
+                  )}
                 </Button>
               </div>
             </form>
@@ -633,7 +651,7 @@ export default function Flow() {
         <button
           disabled={triggerWorkflowMutation.isPending}
           onClick={handleTriggerWorkflow}
-          className={`inline-flex items-center justify-center px-4 py-2
+          className={`inline-flex items-center justify-center 
           bg-teal-600/90 hover:bg-teal-600 text-white rounded-md
           shadow-lg backdrop-blur-sm
           font-medium text-sm
@@ -641,30 +659,36 @@ export default function Flow() {
           transition-all duration-200
           hover:scale-105 active:scale-95 ${
             triggerWorkflowMutation.isPending
-              ? "opacity-50 cursor-not-allowed"
-              : ""
+              ? "cursor-not-allowed px-6"
+              : "px-4 py-2"
           }`}
         >
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          Start
+          {triggerWorkflowMutation.isPending ? (
+            <Loader className="animate-spin w-5 h-5" color="#ffffff" />
+          ) : (
+            <>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Start
+            </>
+          )}
         </button>
       </div>
 
