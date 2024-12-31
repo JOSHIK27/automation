@@ -11,7 +11,8 @@ import { HashLoader } from "react-spinners";
 import { useSession } from "next-auth/react";
 import { sessionTokenName } from "@/lib/constants/common";
 import Cookies from "js-cookie";
-
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 type Workflow = {
   name: string;
   description: string;
@@ -24,7 +25,8 @@ type Workflow = {
 export default function WorkflowsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { data: session, status: sessionStatus } = useSession();
-
+  const router = useRouter();
+  const dispatch = useDispatch();
   const {
     data: userData,
     status: userStatus,
@@ -148,7 +150,12 @@ export default function WorkflowsPage() {
                 Manage and monitor your automated content workflows
               </p>
             </div>
-            <Button className="bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 transition-all duration-300">
+            <Button
+              className="bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 transition-all duration-300"
+              onClick={() => {
+                router.push("/build-workflow");
+              }}
+            >
               <BsPlus className="mr-2 text-lg" /> Create Workflow
             </Button>
           </div>
@@ -172,7 +179,14 @@ export default function WorkflowsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredWorkflows?.map((workflow: Workflow, index: number) => (
-              <WorkflowCard key={index} workflow={workflow} />
+              <WorkflowCard
+                key={index}
+                workflow={workflow}
+                router={router}
+                workflowHistory={workflowHistory}
+                dispatch={dispatch}
+                workflowId={workflow.workflow_id}
+              />
             ))}
           </div>
         </div>
@@ -181,7 +195,19 @@ export default function WorkflowsPage() {
   );
 }
 
-function WorkflowCard({ workflow }: { workflow: Workflow }) {
+function WorkflowCard({
+  workflow,
+  router,
+  workflowHistory,
+  dispatch,
+  workflowId,
+}: {
+  workflow: Workflow;
+  router: any;
+  workflowHistory: any;
+  dispatch: any;
+  workflowId: string;
+}) {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-neutral-200 hover:border-teal-500 transition-all duration-300">
       <div className="flex justify-between items-start mb-4">
@@ -208,13 +234,25 @@ function WorkflowCard({ workflow }: { workflow: Workflow }) {
           </div>
           <div className="text-sm text-neutral-500">{"0"} runs</div>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="hover:bg-teal-50 hover:text-teal-600"
-        >
-          <BsPlayFill className="mr-2" /> Run Now
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="hover:bg-teal-50 hover:text-teal-600"
+            onClick={() => {
+              router.push(`/workflow/${workflow.workflow_id}`);
+            }}
+          >
+            Open Editor
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="hover:bg-teal-50 hover:text-teal-600"
+          >
+            <BsPlayFill className="mr-2" /> Run Now
+          </Button>
+        </div>
       </div>
     </div>
   );

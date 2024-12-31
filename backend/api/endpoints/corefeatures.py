@@ -14,7 +14,7 @@ from fastapi import status
 from fastapi import Request
 from backend.dependencies import limiter
 import resend
-from typing import Dict
+from typing import Dict, Optional
 
 router = APIRouter()
 
@@ -163,8 +163,7 @@ async def saveworkflow(request: WorkflowPayload):
     }
 
 @router.get("/workflow-history/{userId}", status_code = 200)
-def workflowhistory(userId: str):
-
+def workflowhistory(userId: str, workflowId: Optional[str] = None):
 
     db = client["core"]
     workflows_collection = db["workflows"]
@@ -176,23 +175,57 @@ def workflowhistory(userId: str):
     workflow_history = []
 
     for workflow in workflows:
-        workflow_id = str(workflow["_id"])
-        nodes = list(nodes_collection.find({"workflow_id": workflow_id}))
-        edges = list(edges_collection.find({"workflow_id": workflow_id}))
+        if workflowId == None:
+            workflow_id = str(workflow["_id"])
+            nodes = list(nodes_collection.find({"workflow_id": workflow_id}))
+            edges = list(edges_collection.find({"workflow_id": workflow_id}))
 
-        for node in nodes:
-            node["_id"] = str(node["_id"])
-        for edge in edges:
-            edge["_id"] = str(edge["_id"])  
+            # Clean up nodes
+            for node in nodes:
+                node["_id"] = str(node["_id"])  # Convert ObjectId to string
+                del node["_id"]  # Remove _id
+                del node["workflow_id"]  # Remove workflow_id
 
-        workflow_history.append({
-            "name": workflow["name"],
-            "description": workflow["description"],
-            "created_at": workflow["created_at"],
-            "workflow_id": workflow_id,
-            "nodes": nodes,
-            "edges": edges
-        })
+            # Clean up edges
+            for edge in edges:
+                edge["_id"] = str(edge["_id"])  # Convert ObjectId to string
+                del edge["_id"]  # Remove _id
+                del edge["workflow_id"]  # Remove workflow_id
+
+            workflow_history.append({
+                "name": workflow["name"],
+                "description": workflow["description"],
+                "created_at": workflow["created_at"],
+                "workflow_id": workflow_id,
+                "nodes": nodes,
+                "edges": edges
+            })
+        elif workflowId == str(workflow["_id"]):
+            workflow_id = str(workflow["_id"])
+            nodes = list(nodes_collection.find({"workflow_id": workflow_id}))
+            edges = list(edges_collection.find({"workflow_id": workflow_id}))
+
+            # Clean up nodes
+            for node in nodes:
+                node["_id"] = str(node["_id"])  # Convert ObjectId to string
+                del node["_id"]  # Remove _id
+                del node["workflow_id"]  # Remove workflow_id
+
+
+            # Clean up edges
+            for edge in edges:
+                edge["_id"] = str(edge["_id"])  # Convert ObjectId to string
+                del edge["_id"]  # Remove _id
+                del edge["workflow_id"]  # Remove workflow_id
+
+            workflow_history.append({
+                "name": workflow["name"],
+                "description": workflow["description"],
+                "created_at": workflow["created_at"],
+                "workflow_id": workflow_id,
+                "nodes": nodes,
+                "edges": edges
+            })
 
     return {
         "workflow_history": workflow_history

@@ -30,7 +30,8 @@ export function Nav() {
   const pathname = usePathname();
   const isWorkflowPage =
     pathname.startsWith("/build-workflow") ||
-    pathname.startsWith("/workflow-history");
+    pathname.startsWith("/workflow-history") ||
+    pathname.startsWith("/workflow");
 
   if (isWorkflowPage) {
     return <WorkflowNav />;

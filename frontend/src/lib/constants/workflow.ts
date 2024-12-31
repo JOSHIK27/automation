@@ -1,6 +1,6 @@
 import { ConnectionLineType, MarkerType } from "@xyflow/react";
 
-type Node = {
+export type Node = {
   id: string;
   position: { x: number; y: number };
   data: {
@@ -12,7 +12,7 @@ type Node = {
   draggable: boolean;
 };
 
-type Edge = {
+export type Edge = {
   id: string;
   source: string;
   target: string;
