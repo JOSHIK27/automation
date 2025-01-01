@@ -190,13 +190,13 @@ export default function Flow() {
     [setEdges]
   );
 
-  if (status === "loading" || userStatus === "pending") {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <HashLoader color="#000000" />
-      </div>
-    );
-  }
+  // if (status === "loading" || userStatus === "pending") {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <HashLoader color="#000000" />
+  //     </div>
+  //   );
+  // }
 
   const onEdgeClick = (event: any, edge: any) => {
     const { source, target } = edge;
