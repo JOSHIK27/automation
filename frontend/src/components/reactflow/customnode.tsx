@@ -173,11 +173,7 @@ export default function CustomNode({
           </div>
         </div>
 
-        {error ? (
-          <div className="mr-2">
-            <RiErrorWarningLine className="text-red-500" />
-          </div>
-        ) : currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
+        {currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
           <div className="mr-2">
             <BeatLoader loading={true} size={8} color="#009688" />
           </div>

@@ -11,6 +11,7 @@ import { FadeText } from "./ui/fade-text";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAddUserMutation } from "@/hooks/mutations/useAddUserMutation";
 
 export function AnimatedShinyTextDemo() {
   return (
@@ -32,24 +33,12 @@ export function AnimatedShinyTextDemo() {
 export default function Hero({ session }: { session: any }) {
   const router = useRouter();
 
-  const { mutate: addUser } = useMutation({
-    mutationKey: ["user"],
-    mutationFn: async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-        body: JSON.stringify(session.user),
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response.json();
-    },
-  });
+  const addUserMutation = useAddUserMutation(session);
 
   useEffect(() => {
     if (session) {
       console.log(session);
-      addUser();
+      addUserMutation.mutate();
     }
   }, [session]);
 

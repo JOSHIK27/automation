@@ -25,6 +25,7 @@ import {
   insertActionInBetween,
 } from "@/app/store/slices/trigger-card-slices/actions-slice";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
+import { useSaveWorkFlowMutation } from "@/hooks/mutations/useSaveWorkFlowMutation";
 
 // Component imports
 import CustomNode from "@/components/reactflow/customnode";
@@ -54,7 +55,6 @@ import {
 import { initialEdges, initialNodes } from "@/lib/constants/workflow";
 import HashLoader from "react-spinners/HashLoader";
 import { toast } from "sonner";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
   addBtnStatus,
@@ -62,7 +62,8 @@ import {
   setIsSubscribed,
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 import { Loader } from "lucide-react";
-import { useUserId } from "@/hooks/useUserId";
+import { useUserId } from "@/hooks/custom/useUserId";
+import { useTriggerWorkFlowMutation } from "@/hooks/mutations/useTriggerWorkFlowMutation";
 
 import { sessionTokenName } from "@/lib/constants/common";
 import Cookies from "js-cookie";
@@ -100,60 +101,9 @@ export default function Flow() {
   });
 
   // API mutations
-  const saveWorkflowMutation = useMutation<
-    any,
-    Error,
-    {
-      user_id: string;
-      nodes: typeof nodes;
-      edges: typeof edges;
-    }
-  >({
-    mutationKey: ["saveWorkflow"],
-    mutationFn: (data) =>
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/save-workflow`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }).then((res) => res.json()),
-    onSuccess: (data) => {
-      toast.success("Workflow saved successfully!");
-    },
-  });
+  const saveWorkflowMutation = useSaveWorkFlowMutation();
 
-  const triggerWorkflowMutation = useMutation<
-    any,
-    Error,
-    {
-      triggerState: {
-        triggerType: string;
-        workflowType: string;
-        channelId: string;
-        videoTitle: string;
-      };
-      actionsList: typeof actionsList;
-    }
-  >({
-    mutationKey: ["triggerWorkflow"],
-    mutationFn: async (data) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/trigger-workflow`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to trigger workflow");
-      }
-      return response.json();
-    },
-    onSuccess: (data) => {
-      dispatch(setTasksStatus(data));
-      toast.success("Workflow triggered successfully!");
-    },
-  });
+  const triggerWorkflowMutation = useTriggerWorkFlowMutation();
 
   useEffect(() => {
     // dispatch(setIsSubscribed({ cardId: Number(cardId), isSubscribed: false }));
@@ -189,14 +139,6 @@ export default function Flow() {
     },
     [setEdges]
   );
-
-  // if (status === "loading" || userStatus === "pending") {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <HashLoader color="#000000" />
-  //     </div>
-  //   );
-  // }
 
   const onEdgeClick = (event: any, edge: any) => {
     const { source, target } = edge;

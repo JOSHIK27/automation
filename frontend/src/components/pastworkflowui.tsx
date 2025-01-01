@@ -61,9 +61,9 @@ import {
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 import { Loader } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { sessionTokenName } from "@/lib/constants/common";
-import Cookies from "js-cookie";
-import { useUserId } from "@/hooks/useUserId";
+import { useUserId } from "@/hooks/custom/useUserId";
+import { useUpdateWorkFlowMutation } from "@/hooks/mutations/useUpdateWorkFlowMutation";
+import { useTriggerWorkFlowMutation } from "@/hooks/mutations/useTriggerWorkFlowMutation";
 
 type FormValues = {
   name: string;
@@ -115,60 +115,9 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   });
 
   // API mutations
-  const updateWorkflowMutation = useMutation<
-    any,
-    Error,
-    {
-      user_id: string;
-      nodes: typeof nodes;
-      edges: typeof edges;
-    }
-  >({
-    mutationKey: ["updateWorkflow"],
-    mutationFn: (data) =>
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/update-workflow`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, workflow_id: workflowId }),
-      }).then((res) => res.json()),
-    onSuccess: (data) => {
-      toast.success("Workflow updated successfully!");
-    },
-  });
+  const updateWorkflowMutation = useUpdateWorkFlowMutation(workflowId);
 
-  const triggerWorkflowMutation = useMutation<
-    any,
-    Error,
-    {
-      triggerState: {
-        triggerType: string;
-        workflowType: string;
-        channelId: string;
-        videoTitle: string;
-      };
-      actionsList: typeof actionsList;
-    }
-  >({
-    mutationKey: ["triggerWorkflow"],
-    mutationFn: async (data) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/trigger-workflow`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to trigger workflow");
-      }
-      return response.json();
-    },
-    onSuccess: (data) => {
-      dispatch(setTasksStatus(data));
-      toast.success("Workflow triggered successfully!");
-    },
-  });
+  const triggerWorkflowMutation = useTriggerWorkFlowMutation();
 
   useEffect(() => {
     if (workflowHistory) {

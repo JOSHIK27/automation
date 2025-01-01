@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { sessionTokenName } from "@/lib/constants/common";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";

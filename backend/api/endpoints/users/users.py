@@ -12,6 +12,7 @@ def addUser(user: User):
     db = client["core"]
     users_collection = db["users"]
     user_id = users_collection.find_one({"email": user.email})
+    print(user_id)
     if user_id:
         return {"message": "User already exists", "user_id": str(user_id["_id"])}   
     user_id = users_collection.insert_one(user.model_dump()).inserted_id
