@@ -5,7 +5,11 @@ import { Handle, Position } from "@xyflow/react";
 import { Separator } from "@/components/ui/separator";
 import { BeatLoader } from "react-spinners";
 import { BiCaptions, BiSolidImage } from "react-icons/bi";
-import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
+import {
+  RiDeleteBin6Line,
+  RiErrorWarningLine,
+  RiVideoUploadLine,
+} from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2, MdFace, MdSummarize } from "react-icons/md";
 import { FaVideo, FaLightbulb, FaSearch, FaClock } from "react-icons/fa";
@@ -169,7 +173,11 @@ export default function CustomNode({
           </div>
         </div>
 
-        {currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
+        {error ? (
+          <div className="mr-2">
+            <RiErrorWarningLine className="text-red-500" />
+          </div>
+        ) : currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
           <div className="mr-2">
             <BeatLoader loading={true} size={8} color="#009688" />
           </div>

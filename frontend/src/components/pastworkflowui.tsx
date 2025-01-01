@@ -63,6 +63,7 @@ import { Loader } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { sessionTokenName } from "@/lib/constants/common";
 import Cookies from "js-cookie";
+import { useUserId } from "@/hooks/useUserId";
 
 type FormValues = {
   name: string;
@@ -96,45 +97,21 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     },
   });
 
-  const {
-    data: userData,
-    status: userStatus,
-    error: userError,
-  } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const userResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user`,
-        {
-          method: "POST",
-          body: JSON.stringify(session?.user),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${
-              Cookies.get(sessionTokenName) ?? "notsignedin"
-            }`,
-          },
-        }
-      );
-      return userResponse.json();
-    },
-    enabled: !!session,
-  });
-  const user_id = userData?.user_id;
+  const { userId, userStatus, userError } = useUserId(session);
 
   const {
     data: workflowHistory,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["workflowHistory", user_id, workflowId],
+    queryKey: ["workflowHistory", userId, workflowId],
     queryFn: async () => {
       const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${user_id}?workflowId=${workflowId}`
+        `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${userId}?workflowId=${workflowId}`
       );
       return resp.json();
     },
-    enabled: !!user_id,
+    enabled: !!userId,
   });
 
   // API mutations
@@ -658,7 +635,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
             <form
               onSubmit={form.handleSubmit((data) => {
                 updateWorkflowMutation.mutate({
-                  user_id: user_id ?? "",
+                  user_id: userId ?? "",
                   nodes: nodes,
                   edges: edges,
                   ...data,

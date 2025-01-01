@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from backend.schemas.users import User
 from backend.celery_config import celery_app
 from backend.tasks import generate_image_task
-from ...db.db import client
+from ....db.db import client
 
 
 router = APIRouter() 

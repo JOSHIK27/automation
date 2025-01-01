@@ -62,6 +62,7 @@ import {
   setIsSubscribed,
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 import { Loader } from "lucide-react";
+import { useUserId } from "@/hooks/useUserId";
 
 import { sessionTokenName } from "@/lib/constants/common";
 import Cookies from "js-cookie";
@@ -74,32 +75,7 @@ type FormValues = {
 export default function Flow() {
   // Authentication
   const { data: session, status } = useSession();
-
-  const {
-    data: userData,
-    status: userStatus,
-    error: userError,
-  } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const userResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user`,
-        {
-          method: "POST",
-          body: JSON.stringify(session?.user),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${
-              Cookies.get(sessionTokenName) ?? "notsignedin"
-            }`,
-          },
-        }
-      );
-      return userResponse.json();
-    },
-    enabled: !!session,
-  });
-  const user_id = userData?.user_id;
+  const { userId, userStatus, userError } = useUserId(session);
 
   // Redux hooks and state
   const dispatch = useDispatch();
@@ -214,7 +190,7 @@ export default function Flow() {
     [setEdges]
   );
 
-  if (status === "loading") {
+  if (status === "loading" || userStatus === "pending") {
     return (
       <div className="flex justify-center items-center h-screen">
         <HashLoader color="#000000" />
@@ -632,7 +608,7 @@ export default function Flow() {
             <form
               onSubmit={form.handleSubmit((data) => {
                 saveWorkflowMutation.mutate({
-                  user_id: user_id ?? "",
+                  user_id: userId ?? "",
                   nodes: nodes,
                   edges: edges,
                   ...data,
