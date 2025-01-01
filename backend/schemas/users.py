@@ -12,7 +12,7 @@ class Node(BaseModel):
     data: Dict[str, Any]
     type: str
     draggable: bool = True
-    measured: Dict[str, int]
+    measured: Optional[Dict[str, int]] = None
     selected: Optional[bool] = False
 
 class Edge(BaseModel):
@@ -30,3 +30,11 @@ class WorkflowPayload(BaseModel):
     name: str
     description: Optional[str] = None
      
+
+class UpdateWorkflowPayload(BaseModel):
+    user_id: str
+    nodes: List[Node]
+    edges: List[Edge]
+    name: str
+    description: Optional[str] = None
+    workflow_id: str

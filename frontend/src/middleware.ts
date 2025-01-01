@@ -13,5 +13,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/sample", "/workflow", "/workflow-history"],
+  matcher: [
+    "/sample",
+    "/workflow/:workflowid",
+    "/workflow-history",
+    "/build-workflow",
+  ],
 };

@@ -54,7 +54,7 @@ import {
 import { initialEdges, initialNodes } from "@/lib/constants/workflow";
 import HashLoader from "react-spinners/HashLoader";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
   addBtnStatus,
@@ -63,6 +63,9 @@ import {
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 import { Loader } from "lucide-react";
 
+import { sessionTokenName } from "@/lib/constants/common";
+import Cookies from "js-cookie";
+
 type FormValues = {
   name: string;
   description: string;
@@ -70,11 +73,36 @@ type FormValues = {
 
 export default function Flow() {
   // Authentication
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+
+  const {
+    data: userData,
+    status: userStatus,
+    error: userError,
+  } = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const userResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/user`,
+        {
+          method: "POST",
+          body: JSON.stringify(session?.user),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${
+              Cookies.get(sessionTokenName) ?? "notsignedin"
+            }`,
+          },
+        }
+      );
+      return userResponse.json();
+    },
+    enabled: !!session,
+  });
+  const user_id = userData?.user_id;
 
   // Redux hooks and state
   const dispatch = useDispatch();
-  const userId = useSelector((state: RootState) => state.user.user_id);
   const { workflowType, triggerType, channelId, videoTitle } = useSelector(
     (state: RootState) => state.trigger
   );
@@ -604,7 +632,7 @@ export default function Flow() {
             <form
               onSubmit={form.handleSubmit((data) => {
                 saveWorkflowMutation.mutate({
-                  user_id: userId ?? "",
+                  user_id: user_id ?? "",
                   nodes: nodes,
                   edges: edges,
                   ...data,

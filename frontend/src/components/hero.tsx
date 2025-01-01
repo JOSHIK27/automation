@@ -9,6 +9,8 @@ import AnimatedShinyText from "./ui/animated-shiny-text";
 import { BsLightningChargeFill } from "react-icons/bs";
 import { FadeText } from "./ui/fade-text";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function AnimatedShinyTextDemo() {
   return (
@@ -29,6 +31,27 @@ export function AnimatedShinyTextDemo() {
 
 export default function Hero({ session }: { session: any }) {
   const router = useRouter();
+
+  const { mutate: addUser } = useMutation({
+    mutationKey: ["user"],
+    mutationFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+        body: JSON.stringify(session.user),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.json();
+    },
+  });
+
+  useEffect(() => {
+    if (session) {
+      console.log(session);
+      addUser();
+    }
+  }, [session]);
 
   return (
     <section className="relative flex min-h-[calc(100vh-80px)] w-full items-center justify-center overflow-hidden bg-background px-4 sm:px-6 lg:px-8 mt-20 sm:mt-12">
@@ -56,10 +79,9 @@ export default function Hero({ session }: { session: any }) {
           />
         </div>
 
-        <h3 className="text-xl sm:text-2xl z-20 font-medium mt-8 mx-auto max-w-2xl leading-relaxed text-center text-neutral-600 dark:text-neutral-400 animate-fade-in">
-          Focus on creating content, not managing uploads. Streamline your
-          workflow and{" "}
-          <span className="text-teal-600 font-semibold">
+        <h3 className="text-xl sm:text-2xl z-20 font-medium mt-8 mx-auto max-w-2xl text-center text-neutral-600 dark:text-neutral-400 animate-fade-in">
+          Focus on creating, not managing. Streamline your workflow and{" "}
+          <span className="text-teal-600 rounded-none font-semibold">
             boost productivity by 10x
           </span>
           .

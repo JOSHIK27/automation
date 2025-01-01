@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { HashLoader } from "react-spinners";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,7 +10,6 @@ import { sessionTokenName } from "@/lib/constants/common";
 import Cookies from "js-cookie";
 
 export default function Page() {
-  const router = useRouter();
   const { data: session, status } = useSession();
   const sessionToken = Cookies.get(sessionTokenName);
 
@@ -89,12 +87,6 @@ export default function Page() {
     );
   }
 
-  // if (!session) {
-  //   router.push("/");
-  //   return null;
-  // }
-  if (!session) return <></>;
-
   return (
     <div className="min-h-screen bg-[#F7F5F1] pt-32 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -102,7 +94,7 @@ export default function Page() {
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200/50 mb-6">
           <div className="flex items-center gap-6">
             <div className="relative w-24 h-24 rounded-full overflow-hidden bg-teal-50 flex items-center justify-center border-2 border-teal-100">
-              {session.user?.image ? (
+              {session?.user?.image ? (
                 <img
                   src={session.user.image}
                   alt={session.user?.name || "Profile"}
@@ -110,15 +102,15 @@ export default function Page() {
                 />
               ) : (
                 <span className="text-4xl text-teal-600">
-                  {session.user?.name?.[0].toUpperCase()}
+                  {session?.user?.name?.[0].toUpperCase()}
                 </span>
               )}
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                {session.user?.name}
+                {session?.user?.name}
               </h1>
-              <p className="text-gray-500">{session.user?.email}</p>
+              <p className="text-gray-500">{session?.user?.email}</p>
             </div>
           </div>
         </div>

@@ -15,7 +15,8 @@ from fastapi import Request
 from backend.dependencies import limiter
 import resend
 from typing import Dict, Optional
-
+from ...schemas.users import UpdateWorkflowPayload
+from bson.objectid import ObjectId
 router = APIRouter()
 
 resend.api_key = os.getenv("RESEND_API_KEY")
@@ -65,14 +66,6 @@ async def generatetranscript(request: Request):
         return {"error": f"An unexpected error occurred: {str(e)}"}
     
 
-@router.get("/testing")
-def testinghandler():
-
-    chain(generate_image_task.s("Two men facing forward with their faces split down the middle, each side showing one man. The left man is an Indian male with a beard and sharp features, the right man is an East Asian male with short hair and rounder features. A dramatic background with glowing hues of green on the left and red on the right, creating a sense of intensity. The split between their faces looks like a cracked tear, adding a competitive and high-stakes vibe. Cinematic lighting with a bold focus on the faces, creating a sharp, high-contrast look"), task1.s()).apply_async()
-
-    return {
-        "message": "Tasks queued"
-    }
 
 @router.post("/trigger-workflow")
 async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
@@ -97,7 +90,7 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
                 "cardId": action["cardId"],
                 "status": "PENDING"
             })
-    return {"response": response}
+    return response
 
 
 
@@ -162,6 +155,46 @@ async def saveworkflow(request: WorkflowPayload):
         "workflow_id": str(workflow_result.inserted_id)
     }
 
+
+@router.put("/update-workflow", status_code=200)
+def updateworkflow(request: UpdateWorkflowPayload):
+    db = client["core"]
+    workflows_collection = db["workflows"]
+    nodes_collection = db["nodes"]
+    edges_collection = db["edges"]
+
+    # Delete existing nodes and edges for this workflow
+    nodes_collection.delete_many({"workflow_id": request.workflow_id})
+    edges_collection.delete_many({"workflow_id": request.workflow_id})
+    
+    # Update workflow details
+    workflows_collection.update_one(
+        {"_id": ObjectId(request.workflow_id)},
+        {"$set": {
+            "name": request.name,
+            "description": request.description,
+            "updated_at": datetime.utcnow()
+        }}
+    )
+    
+    # Insert new nodes
+    if request.nodes:
+        nodes_data = [node.model_dump() for node in request.nodes]
+        for node in nodes_data:
+            node["workflow_id"] = request.workflow_id
+        nodes_collection.insert_many(nodes_data)
+
+    # Insert new edges
+    if request.edges:
+        edges_data = [edge.model_dump() for edge in request.edges]
+        for edge in edges_data:
+            edge["workflow_id"] = request.workflow_id
+        edges_collection.insert_many(edges_data)
+
+    return {
+        "message": "Workflow updated successfully"
+    }
+
 @router.get("/workflow-history/{userId}", status_code = 200)
 def workflowhistory(userId: str, workflowId: Optional[str] = None):
 
@@ -170,8 +203,10 @@ def workflowhistory(userId: str, workflowId: Optional[str] = None):
     nodes_collection = db["nodes"]
     edges_collection = db["edges"]
 
-    workflows = list(workflows_collection.find({"user_id": userId}))
+    print(userId)
 
+    workflows = list(workflows_collection.find({"user_id": userId}))
+    print(workflows) 
     workflow_history = []
 
     for workflow in workflows:

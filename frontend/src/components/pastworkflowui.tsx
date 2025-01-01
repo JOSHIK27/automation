@@ -138,7 +138,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   });
 
   // API mutations
-  const saveWorkflowMutation = useMutation<
+  const updateWorkflowMutation = useMutation<
     any,
     Error,
     {
@@ -147,15 +147,15 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       edges: typeof edges;
     }
   >({
-    mutationKey: ["saveWorkflow"],
+    mutationKey: ["updateWorkflow"],
     mutationFn: (data) =>
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/save-workflow`, {
-        method: "POST",
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/update-workflow`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, workflow_id: workflowId }),
       }).then((res) => res.json()),
     onSuccess: (data) => {
-      toast.success("Workflow saved successfully!");
+      toast.success("Workflow updated successfully!");
     },
   });
 
@@ -523,7 +523,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     });
   };
 
-  if (triggerWorkflowMutation.isError || saveWorkflowMutation.isError) {
+  if (triggerWorkflowMutation.isError || updateWorkflowMutation.isError) {
     return (
       <div className="min-h-screen bg-[#F7F5F1] flex justify-center items-center p-4">
         <div className="max-w-md w-full bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200/50 p-8 text-center">
@@ -551,15 +551,15 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
           </h2>
           <p className="text-gray-600 mb-8 leading-relaxed">
             {triggerWorkflowMutation.error?.message ||
-              saveWorkflowMutation.error?.message}
+              updateWorkflowMutation.error?.message}
           </p>
           <button
             onClick={() => {
               if (triggerWorkflowMutation.isError) {
                 triggerWorkflowMutation.reset();
               }
-              if (saveWorkflowMutation.isError) {
-                saveWorkflowMutation.reset();
+              if (updateWorkflowMutation.isError) {
+                updateWorkflowMutation.reset();
               }
             }}
             className="inline-flex items-center justify-center px-8 py-3 
@@ -642,20 +642,22 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
                 />
               </svg>
               <span className="relative tracking-wide group-hover:text-teal-600 transition-colors duration-200">
-                Save Workflow
+                Update Workflow
               </span>
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-[#F7F5F1]/90 backdrop-blur-sm border border-gray-200/50">
             <DialogHeader>
-              <DialogTitle className="text-gray-700">Save Workflow</DialogTitle>
+              <DialogTitle className="text-gray-700">
+                Update Workflow
+              </DialogTitle>
               <DialogDescription className="text-gray-500">
-                Enter the details of your workflow before saving.
+                Enter the details of your workflow before updating.
               </DialogDescription>
             </DialogHeader>
             <form
               onSubmit={form.handleSubmit((data) => {
-                saveWorkflowMutation.mutate({
+                updateWorkflowMutation.mutate({
                   user_id: user_id ?? "",
                   nodes: nodes,
                   edges: edges,
@@ -715,7 +717,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
                     hover:scale-[1.02] active:scale-[0.98]
                     px-6 py-4"
                 >
-                  {saveWorkflowMutation.isPending ? (
+                  {updateWorkflowMutation.isPending ? (
                     <Loader className="animate-spin w-5 h-5" color="#ffffff" />
                   ) : (
                     <span className="flex items-center gap-2">
