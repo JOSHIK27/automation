@@ -5,36 +5,12 @@ import { HashLoader } from "react-spinners";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
-import { sessionTokenName } from "@/lib/constants/common";
-import Cookies from "js-cookie";
+import { useUserStatsQuery } from "@/hooks/queries/useUserStatsQuery";
 
 export default function Page() {
   const { data: session, status } = useSession();
-  const sessionToken = Cookies.get(sessionTokenName);
-
-  const {
-    data: userStats,
-    status: userStatsStatus,
-    error: userStatsError,
-  } = useQuery({
-    queryKey: ["userStats"],
-    queryFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user-stats`,
-        {
-          headers: {
-            Authorization: `Bearer ${sessionToken ?? ""}`,
-          },
-        }
-      );
-      if (!response.ok) throw new Error("Failed to fetch user stats");
-      return response.json();
-    },
-    enabled: !!session,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: false,
-  });
+  const { userStats, userStatsStatus, userStatsError } =
+    useUserStatsQuery(session);
 
   if (status === "loading" || userStatsStatus === "pending") {
     return (

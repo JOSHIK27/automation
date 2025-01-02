@@ -15,7 +15,7 @@ import { MdOutlineStickyNote2, MdFace, MdSummarize } from "react-icons/md";
 import { FaVideo, FaLightbulb, FaSearch, FaClock } from "react-icons/fa";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
 import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
+import { useCurrentTaskQuery } from "@/hooks/queries/useCurrentTaskQuery";
 
 export default function CustomNode({
   data,
@@ -33,21 +33,7 @@ export default function CustomNode({
   const taskStatus = useSelector((state: RootState) => state.taskstatus);
   const currentTaskStatus = taskStatus?.find((task: any) => task.cardId === id);
 
-  const {
-    data: ts,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["task-status", currentTaskStatus?.task_id],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:8000/result/${currentTaskStatus?.task_id}`
-      );
-      return response.json();
-    },
-    enabled: !!currentTaskStatus?.task_id,
-    refetchInterval: currentTaskStatus?.status === "SUCCESS" ? false : 2000,
-  });
+  const { ts, status, error } = useCurrentTaskQuery(currentTaskStatus);
 
   if (status === "success") {
     if (ts.status === "SUCCESS") {

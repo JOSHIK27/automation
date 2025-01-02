@@ -10,7 +10,6 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { FadeText } from "./ui/fade-text";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAddUserMutation } from "@/hooks/mutations/useAddUserMutation";
 
 export function AnimatedShinyTextDemo() {

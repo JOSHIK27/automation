@@ -6,13 +6,12 @@ import { Input } from "@/components/ui/input";
 import { BsSearch, BsPlus, BsClock, BsPlayFill } from "react-icons/bs";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
 import { HashLoader } from "react-spinners";
 import { useSession } from "next-auth/react";
-import { sessionTokenName } from "@/lib/constants/common";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
+import { useUserId } from "@/hooks/custom/useUserId";
+import { useWorkflowHistoryQuery } from "@/hooks/queries/useWorkflowHistoryQuery";
 type Workflow = {
   name: string;
   description: string;
@@ -27,55 +26,10 @@ export default function WorkflowsPage() {
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
-  const {
-    data: userData,
-    status: userStatus,
-    error: userError,
-  } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const userResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user`,
-        {
-          method: "POST",
-          body: JSON.stringify(session?.user),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${
-              Cookies.get(sessionTokenName) ?? "notsignedin"
-            }`,
-          },
-        }
-      );
-      return userResponse.json();
-    },
-    enabled: !!session,
-  });
-  const user_id = userData?.user_id;
+  const { userId, userStatus, userError } = useUserId(session);
 
-  const {
-    data: workflowHistory,
-    status: workflowsStatus,
-    error: workflowsError,
-  } = useQuery({
-    queryKey: ["history"],
-    queryFn: async () => {
-      const workflowHistoryResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${
-          user_id ?? "notsignedin"
-        }`,
-        {
-          method: "GET",
-        }
-      );
-      if (!workflowHistoryResponse.ok)
-        throw new Error("Failed to fetch the history");
-      return workflowHistoryResponse.json();
-    },
-    enabled: !!user_id,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: false,
-  });
+  const { workflowHistory, workflowsStatus, workflowsError } =
+    useWorkflowHistoryQuery(userId);
 
   if (userError || workflowsError) {
     return (

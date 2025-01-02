@@ -60,10 +60,10 @@ import {
   setIsSubscribed,
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 import { Loader } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { useUserId } from "@/hooks/custom/useUserId";
 import { useUpdateWorkFlowMutation } from "@/hooks/mutations/useUpdateWorkFlowMutation";
 import { useTriggerWorkFlowMutation } from "@/hooks/mutations/useTriggerWorkFlowMutation";
+import { useWorkflowDetails } from "@/hooks/queries/useWorkflowDetails";
 
 type FormValues = {
   name: string;
@@ -99,20 +99,10 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
 
   const { userId, userStatus, userError } = useUserId(session);
 
-  const {
-    data: workflowHistory,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["workflowHistory", userId, workflowId],
-    queryFn: async () => {
-      const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${userId}?workflowId=${workflowId}`
-      );
-      return resp.json();
-    },
-    enabled: !!userId,
-  });
+  const { workflowDetails, isLoading, error } = useWorkflowDetails(
+    workflowId,
+    userId
+  );
 
   // API mutations
   const updateWorkflowMutation = useUpdateWorkFlowMutation(workflowId);
@@ -120,14 +110,14 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const triggerWorkflowMutation = useTriggerWorkFlowMutation();
 
   useEffect(() => {
-    if (workflowHistory) {
-      const historyNodes = workflowHistory.workflow_history[0].nodes as Node[];
-      const historyEdges = workflowHistory.workflow_history[0].edges as Edge[];
+    if (workflowDetails) {
+      const historyNodes = workflowDetails.workflow_history[0].nodes as Node[];
+      const historyEdges = workflowDetails.workflow_history[0].edges as Edge[];
 
       setNodes(historyNodes);
       setEdges(historyEdges);
     }
-  }, [workflowHistory]);
+  }, [workflowDetails]);
 
   useEffect(() => {
     // dispatch(setIsSubscribed({ cardId: Number(cardId), isSubscribed: false }));
