@@ -1,18 +1,22 @@
-name: CD
+name: Deploy
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Deploy to EC2 instance
-        uses: easingthemes/ssh-deploy@main
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: SSH and deploy
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.HOST_DNS }}
-          REMOTE_USER: ${{ secrets.USERNAME }}
-          TARGET: ${{ secrets.TARGET_DIR }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > keyfile
+          chmod 600 keyfile
+          ssh -t -i keyfile ubuntu@ec2-16-171-19-255.eu-north-1.compute.amazonaws.com "sudo bash ~/deploy.sh"
