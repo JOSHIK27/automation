@@ -27,7 +27,7 @@ export default function WorkflowNav() {
   const session = useSession();
 
   return (
-    <NavigationMenu className="flex justify-between items-center w-auto max-w-screen-2xl mx-4 mt-2 rounded-xl shadow-md px-4 py-2">
+    <NavigationMenu className="sticky top-0 flex justify-between items-center w-auto max-w-screen-2xl mx-4 mt-2 rounded-xl shadow-md px-4 py-2">
       <NavigationMenuList className="flex-1">
         <NavigationMenuItem>
           <Link href="/" className="group">

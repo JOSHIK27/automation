@@ -5,8 +5,6 @@ import { Nav } from "@/components/nav";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
 import Providers from "./providers";
-import { AuthToast } from "@/components/auth-toast";
-import { usePathname } from "next/navigation";
 
 const parkinsans = localFont({
   src: "./fonts/Parkinsans-VariableFont_wght.ttf",
@@ -28,7 +26,6 @@ export default function RootLayout({
       <body className={`${parkinsans.variable} font-parkinsans antialiased`}>
         <SessionProvider>
           <Providers>
-            <AuthToast />
             <Nav />
             {children}
           </Providers>

@@ -1,9 +1,9 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status # type: ignore
 from backend.schemas.users import WorkflowPayload, UpdateWorkflowPayload
 from backend.tasks import generate_image_task, generate_content_ideas
 from ....db.db import client
 from datetime import datetime
-from bson.objectid import ObjectId
+from bson.objectid import ObjectId # type: ignore
 from typing import Optional
 
 
@@ -26,9 +26,9 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
                 "status": "PENDING"
             })
         elif action['actionType'] == 'Analyse my channel videos and generate ideas':
-            task_id = generate_content_ideas.delay(trigger_data["triggerInput"])
+            task_id = generate_content_ideas.delay(trigger_data["channelId"])
             response.append({
-                "task_id": str(task_id),  # Ensure task_id is serializable
+                "task_id": str(task_id), 
                 "cardId": action["cardId"],
                 "status": "PENDING"
             })

@@ -23,7 +23,6 @@ import {
   addAction,
   insertActionInBetween,
 } from "@/app/store/slices/trigger-card-slices/actions-slice";
-import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
 
 // Component imports
 import CustomNode from "@/components/reactflow/customnode";
@@ -747,7 +746,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       >
         <Background
           variant={BackgroundVariant.Dots}
-          style={{ backgroundColor: "#F7F5F1" }}
+          style={{ backgroundColor: "#F8FAFC" }}
           gap={20}
         />
       </ReactFlow>

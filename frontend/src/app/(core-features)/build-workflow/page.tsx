@@ -24,7 +24,6 @@ import {
   addAction,
   insertActionInBetween,
 } from "@/app/store/slices/trigger-card-slices/actions-slice";
-import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
 import { useSaveWorkFlowMutation } from "@/hooks/mutations/useSaveWorkFlowMutation";
 
 // Component imports
@@ -719,7 +718,9 @@ export default function Flow() {
       >
         <Background
           variant={BackgroundVariant.Dots}
-          style={{ backgroundColor: "#F7F5F1" }}
+          style={{
+            backgroundColor: "#F8FAFC",
+          }}
           gap={20}
         />
       </ReactFlow>
