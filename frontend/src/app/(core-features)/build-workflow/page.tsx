@@ -3,6 +3,7 @@
 // React and Next.js imports
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { format } from "date-fns";
 
 // XYFlow imports
 import {
@@ -22,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import {
   addAction,
+  clearActions,
   insertActionInBetween,
 } from "@/app/store/slices/trigger-card-slices/actions-slice";
 import { useSaveWorkFlowMutation } from "@/hooks/mutations/useSaveWorkFlowMutation";
@@ -57,11 +59,19 @@ import { useForm } from "react-hook-form";
 import {
   addBtnStatus,
   insertBtnStatusInBetween,
+  resetBtnStatus,
   setIsSubscribed,
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 import { Loader } from "lucide-react";
 import { useUserId } from "@/hooks/custom/useUserId";
 import { useTriggerWorkFlowMutation } from "@/hooks/mutations/useTriggerWorkFlowMutation";
+import { resetTriggerState } from "@/app/store/slices/trigger-card-slices/trigger-slice";
+import {
+  resetWorkflowName,
+  setWorkflowId,
+  setWorkflowName,
+} from "@/app/store/slices/workflow-name-slice";
+import { useUpdateWorkFlowMutation } from "@/hooks/mutations/useUpdateWorkFlowMutation";
 
 type FormValues = {
   name: string;
@@ -86,6 +96,11 @@ export default function Flow() {
   const [showCard, setShowCard] = useState(false);
   const [cardId, setCardId] = useState<string>("");
   const [, setSelectValue] = useState("");
+  const { workflowName, workflowId } = useSelector(
+    (state: RootState) => state.workflowName
+  );
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Form handling
   const form = useForm<FormValues>({
@@ -97,8 +112,33 @@ export default function Flow() {
 
   // API mutations
   const saveWorkflowMutation = useSaveWorkFlowMutation();
+  const updateWorkflowMutation = useUpdateWorkFlowMutation(workflowId);
 
   const triggerWorkflowMutation = useTriggerWorkFlowMutation();
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetTriggerState());
+      dispatch(clearActions());
+      dispatch(resetBtnStatus());
+      dispatch(resetWorkflowName());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (nodes.length > 2 || edges.length > 1) {
+      setHasUnsavedChanges(true);
+    }
+  }, [nodes, edges]);
+
+  useEffect(() => {
+    if (saveWorkflowMutation.isSuccess) {
+      dispatch(setWorkflowName(saveWorkflowMutation.data.name));
+      dispatch(setWorkflowId(saveWorkflowMutation.data.workflow_id));
+      setLastSaved(new Date());
+      setHasUnsavedChanges(false);
+    }
+  }, [saveWorkflowMutation.isSuccess]);
 
   useEffect(() => {
     // dispatch(setIsSubscribed({ cardId: Number(cardId), isSubscribed: false }));
@@ -356,6 +396,10 @@ export default function Flow() {
   };
 
   const onNodeClick = (event: any, node: any) => {
+    if (!workflowName) {
+      toast.error("Please save the workflow before editing");
+      return;
+    }
     if (event.target.tagName === "SPAN") {
       setShowCard(true);
       setCardId(node.id);
@@ -496,7 +540,7 @@ export default function Flow() {
             className="text-sm font-medium text-gray-700 group-hover:text-teal-600 
             transition-colors duration-200"
           >
-            workflow/page.tsx
+            {workflowName ? workflowName : "Untitled Workflow"}
           </span>
         </div>
       </div>
@@ -544,12 +588,20 @@ export default function Flow() {
             </DialogHeader>
             <form
               onSubmit={form.handleSubmit((data) => {
-                saveWorkflowMutation.mutate({
-                  user_id: userId ?? "",
-                  nodes: nodes,
-                  edges: edges,
-                  ...data,
-                });
+                if (workflowName) {
+                  updateWorkflowMutation.mutate({
+                    user_id: userId ?? "",
+                    nodes: nodes,
+                    edges: edges,
+                  });
+                } else {
+                  saveWorkflowMutation.mutate({
+                    user_id: userId ?? "",
+                    nodes: nodes,
+                    edges: edges,
+                    ...data,
+                  });
+                }
               })}
               className="space-y-4"
             >
@@ -724,6 +776,57 @@ export default function Flow() {
           gap={20}
         />
       </ReactFlow>
+
+      <div className="fixed bottom-4 right-4 z-50">
+        <div
+          className={`group inline-flex items-center gap-2 px-4 py-2 
+          bg-white/90 hover:bg-white rounded-xl
+          shadow-lg hover:shadow-xl backdrop-blur-sm
+          border transition-all duration-300
+          ${hasUnsavedChanges ? "border-amber-200/50" : "border-gray-200/50"}`}
+        >
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-2 h-2 rounded-full transition-colors duration-300
+              ${
+                hasUnsavedChanges ? "bg-amber-400 animate-pulse" : "bg-teal-500"
+              }`}
+            />
+            <svg
+              className={`w-4 h-4 transition-colors duration-200
+                ${
+                  hasUnsavedChanges
+                    ? "text-amber-500"
+                    : "text-gray-400 group-hover:text-teal-500"
+                }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span
+              className={`text-sm transition-colors duration-200
+              ${
+                hasUnsavedChanges
+                  ? "text-amber-700"
+                  : "text-gray-500 group-hover:text-gray-700"
+              }`}
+            >
+              {hasUnsavedChanges
+                ? "Unsaved changes"
+                : lastSaved
+                ? `Last saved: ${format(lastSaved, "MMM d, yyyy h:mm a")}`
+                : "Not saved yet"}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -75,6 +75,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
 
   // Redux hooks and state
   const dispatch = useDispatch();
+  const [workflowName, setWorkflowName] = useState("");
 
   const { workflowType, triggerType, channelId, videoTitle } = useSelector(
     (state: RootState) => state.trigger
@@ -522,7 +523,9 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
             className="text-sm font-medium text-gray-700 group-hover:text-teal-600 
             transition-colors duration-200"
           >
-            workflow/page.tsx
+            {workflowDetails?.workflow_history[0].name
+              ? workflowDetails?.workflow_history[0].name
+              : "Untitled Workflow"}
           </span>
         </div>
       </div>

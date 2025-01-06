@@ -67,7 +67,8 @@ async def saveworkflow(request: WorkflowPayload):
     
     return {
         "message": "Workflow saved successfully",
-        "workflow_id": str(workflow_result.inserted_id)
+        "workflow_id": str(workflow_result.inserted_id),
+        "name": request.name
     }
 
 

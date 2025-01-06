@@ -48,9 +48,18 @@ const updateBtnSlice = createSlice({
         state.push(btnStatus);
       });
     },
+    resetBtnStatus: (state) => {
+      state.splice(0, state.length);
+      state.push({ cardId: "1", isSubscribed: false });
+      state.push({ cardId: "2", isSubscribed: false });
+    },
   },
 });
 
-export const { setIsSubscribed, addBtnStatus, insertBtnStatusInBetween } =
-  updateBtnSlice.actions;
+export const {
+  setIsSubscribed,
+  addBtnStatus,
+  insertBtnStatusInBetween,
+  resetBtnStatus,
+} = updateBtnSlice.actions;
 export default updateBtnSlice.reducer;

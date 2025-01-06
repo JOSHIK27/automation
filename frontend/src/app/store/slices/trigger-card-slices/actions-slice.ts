@@ -54,6 +54,7 @@ export const actionsSlice = createSlice({
     },
     clearActions: (state) => {
       state.splice(0, state.length);
+      state.push({ cardId: "2" });
     },
   },
 });

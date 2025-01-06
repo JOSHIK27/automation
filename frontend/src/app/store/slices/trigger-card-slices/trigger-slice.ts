@@ -19,8 +19,14 @@ const triggerSlice = createSlice({
       state.channelId = channelId;
       state.videoTitle = videoTitle;
     },
+    resetTriggerState: (state) => {
+      state.triggerType = "";
+      state.workflowType = "";
+      state.channelId = "";
+      state.videoTitle = "";
+    },
   },
 });
 
-export const { setTriggerState } = triggerSlice.actions;
+export const { setTriggerState, resetTriggerState } = triggerSlice.actions;
 export default triggerSlice.reducer;
