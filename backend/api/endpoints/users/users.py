@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter # type: ignore
 from backend.schemas.users import User
 from backend.celery_config import celery_app
 from backend.tasks import generate_image_task
@@ -8,7 +8,7 @@ from ....db.db import client
 router = APIRouter() 
 
 @router.post("/user")
-def addUser(user: User):
+def add_user(user: User):
     db = client["core"]
     users_collection = db["users"]
     user_id = users_collection.find_one({"email": user.email})

@@ -5,6 +5,8 @@ from ....db.db import client
 from datetime import datetime
 from bson.objectid import ObjectId # type: ignore
 from typing import Optional
+from backend.api.endpoints.webhooks.webhooks import subscribe_to_channel
+
 
 
 router = APIRouter()
@@ -15,9 +17,11 @@ async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
     trigger_data = dict(triggerState)
     actions_data = [dict(action) for action in actionsList]
 
+    if(trigger_data["workflowType"] == "Post Production"):
+        subscribe_to_channel(channel_id=trigger_data["channelId"], callback_url="https://localhost:8000/webhook")
+
     response = []
     for action in actions_data:
-        print(action['actionType'])
         if action['actionType'] == 'Generate thumbnail':
             task_id = generate_image_task.delay(action["thumbnailPrompt"])
             response.append({

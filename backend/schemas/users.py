@@ -6,6 +6,10 @@ class User(BaseModel):
     email: str
     image: Optional[str] = None
 
+class SubscriptionRequest(BaseModel):
+    channel_id: str
+    callback_url: str
+
 class Node(BaseModel):
     id: str
     position: Dict[str, float]

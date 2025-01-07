@@ -1,17 +1,18 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Request, HTTPException # type: ignore
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
+from fastapi.responses import JSONResponse # type: ignore
 from backend.api.endpoints.users.users import router as users_router
 from backend.api.endpoints.webhooks.webhooks import router as webhooks_router
 from backend.api.endpoints.corefeatures import router as core_features
 from backend.api.endpoints.celery.celery import router as celery_router
 from backend.utils.jwt_utils import decode_jwe
-from pymongo import MongoClient
+from pymongo import MongoClient # type: ignore
 import os
 from .dependencies import limiter
-from slowapi.errors import RateLimitExceeded  
-from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded # type: ignore
+from slowapi import _rate_limit_exceeded_handler # type: ignore
 from backend.api.endpoints.workflows.workflows import router as workflows_router
+
 app = FastAPI()
 
 app.include_router(users_router)
@@ -35,7 +36,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = MongoClient(os.getenv("MONGO_URI"))
+
 
 
 
