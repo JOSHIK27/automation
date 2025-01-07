@@ -1,3 +1,4 @@
+import { setWorkflowName } from "@/app/store/slices/workflow-slice";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 

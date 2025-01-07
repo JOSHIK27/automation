@@ -108,7 +108,9 @@ def updateworkflow(request: UpdateWorkflowPayload):
         edges_collection.insert_many(edges_data)
 
     return {
-        "message": "Workflow updated successfully"
+        "message": "Workflow updated successfully",
+        "workflow_id": request.workflow_id,
+        "name": request.name
     }
 
 @router.get("/workflow-history/{userId}", status_code = 200)

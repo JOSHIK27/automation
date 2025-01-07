@@ -51,7 +51,6 @@ import {
 // Other imports
 import HashLoader from "react-spinners/HashLoader";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
   addBtnStatus,
@@ -63,6 +62,9 @@ import { useUserId } from "@/hooks/custom/useUserId";
 import { useUpdateWorkFlowMutation } from "@/hooks/mutations/useUpdateWorkFlowMutation";
 import { useTriggerWorkFlowMutation } from "@/hooks/mutations/useTriggerWorkFlowMutation";
 import { useWorkflowDetails } from "@/hooks/queries/useWorkflowDetails";
+import { format } from "date-fns";
+import { setWorkflowId } from "@/app/store/slices/workflow-slice";
+import { setWorkflowName } from "@/app/store/slices/workflow-slice";
 
 type FormValues = {
   name: string;
@@ -75,7 +77,6 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
 
   // Redux hooks and state
   const dispatch = useDispatch();
-  const [workflowName, setWorkflowName] = useState("");
 
   const { workflowType, triggerType, channelId, videoTitle } = useSelector(
     (state: RootState) => state.trigger
@@ -88,6 +89,12 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const [showCard, setShowCard] = useState(false);
   const [cardId, setCardId] = useState<string>("");
   const [, setSelectValue] = useState("");
+
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const { workflowName } = useSelector(
+    (state: RootState) => state.workflowName
+  );
 
   // Form handling
   const form = useForm<FormValues>({
@@ -153,6 +160,21 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     },
     [setEdges]
   );
+
+  useEffect(() => {
+    if (nodes.length > 2 || edges.length > 1) {
+      setHasUnsavedChanges(true);
+    }
+  }, [nodes, edges]);
+
+  useEffect(() => {
+    if (updateWorkflowMutation.isSuccess) {
+      dispatch(setWorkflowName(updateWorkflowMutation.data.name));
+      dispatch(setWorkflowId(updateWorkflowMutation.data.workflow_id));
+      setLastSaved(new Date());
+      setHasUnsavedChanges(false);
+    }
+  }, [updateWorkflowMutation.isSuccess]);
 
   if (status === "loading") {
     return (
@@ -495,38 +517,69 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   return (
     <div className="relative" style={{ height: "100dvh" }}>
       <div className="fixed top-20 left-4 z-50">
-        <div
-          className="group inline-flex items-center gap-2 px-3 py-1.5 
-            bg-white/90 hover:bg-white rounded-md
-            shadow-lg hover:shadow-xl backdrop-blur-sm
-            border border-gray-200/50
-            transition-all duration-300
-            hover:scale-[1.02] active:scale-[0.98]
-            hover:border-teal-100
-            h-[42px]"
-        >
-          <svg
-            className="w-4 h-4 text-gray-500 transition-colors duration-200 
-              group-hover:text-teal-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <div className="relative group">
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-teal-600/10 
+            rounded-xl blur-xl transition-all duration-300 group-hover:blur-2xl"
+          />
+          <div
+            className="relative flex items-center gap-3 px-4 py-2.5
+            bg-white/80 hover:bg-white/90
+            backdrop-blur-md
+            rounded-xl
+            border border-gray-200/30 hover:border-teal-500/30
+            shadow-lg shadow-teal-900/5
+            hover:shadow-xl hover:shadow-teal-900/10
+            transition-all duration-300 ease-out
+            group-hover:scale-[1.02]
+            min-w-[200px]"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <span
-            className="text-sm font-medium text-gray-700 group-hover:text-teal-600 
-            transition-colors duration-200"
-          >
-            {workflowDetails?.workflow_history[0].name
-              ? workflowDetails?.workflow_history[0].name
-              : "Untitled Workflow"}
-          </span>
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div
+                  className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-teal-600 
+                  rounded-lg blur-sm opacity-0 group-hover:opacity-30 transition-opacity duration-300"
+                />
+                <svg
+                  className="relative w-5 h-5 text-teal-600 transition-transform duration-300
+                    group-hover:scale-110 group-hover:rotate-[-8deg]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.8}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[13px] font-medium text-gray-400">
+                  Workflow Name
+                </span>
+                <span
+                  className="text-sm font-semibold text-gray-700 group-hover:text-teal-700
+                  transition-colors duration-200 truncate max-w-[180px]"
+                >
+                  {workflowName
+                    ? workflowName
+                    : workflowDetails?.workflow_history[0].name}
+                </span>
+              </div>
+            </div>
+            <div className="ml-auto pl-3 border-l border-gray-200/50">
+              <div
+                className={`w-2 h-2 rounded-full transition-colors duration-300
+                ${
+                  hasUnsavedChanges
+                    ? "bg-amber-400 animate-pulse"
+                    : "bg-teal-500"
+                }`}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -753,6 +806,57 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
           gap={20}
         />
       </ReactFlow>
+
+      <div className="fixed bottom-4 right-4 z-50">
+        <div
+          className={`group inline-flex items-center gap-2 px-4 py-2 
+          bg-white/90 hover:bg-white rounded-xl
+          shadow-lg hover:shadow-xl backdrop-blur-sm
+          border transition-all duration-300
+          ${hasUnsavedChanges ? "border-amber-200/50" : "border-gray-200/50"}`}
+        >
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-2 h-2 rounded-full transition-colors duration-300
+              ${
+                hasUnsavedChanges ? "bg-amber-400 animate-pulse" : "bg-teal-500"
+              }`}
+            />
+            <svg
+              className={`w-4 h-4 transition-colors duration-200
+                ${
+                  hasUnsavedChanges
+                    ? "text-amber-500"
+                    : "text-gray-400 group-hover:text-teal-500"
+                }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span
+              className={`text-sm transition-colors duration-200
+              ${
+                hasUnsavedChanges
+                  ? "text-amber-700"
+                  : "text-gray-500 group-hover:text-gray-700"
+              }`}
+            >
+              {hasUnsavedChanges
+                ? "Unsaved changes"
+                : lastSaved
+                ? `Last saved: ${format(lastSaved, "MMM d, yyyy h:mm a")}`
+                : "Not saved yet"}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

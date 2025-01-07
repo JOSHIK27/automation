@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const workflowNameSlice = createSlice({
-  name: "workflowName",
+export const workflowSlice = createSlice({
+  name: "workflow",
   initialState: {
     workflowName: "",
     workflowId: "",
@@ -21,5 +21,5 @@ export const workflowNameSlice = createSlice({
 });
 
 export const { setWorkflowName, setWorkflowId, resetWorkflowName } =
-  workflowNameSlice.actions;
-export default workflowNameSlice.reducer;
+  workflowSlice.actions;
+export default workflowSlice.reducer;
