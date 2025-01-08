@@ -31,3 +31,5 @@ openai==1.58.1
 keybert==0.8.5
 python-jose[cryptography]==3.3.0
 hkdf==0.0.3
+resend==2.5.1
+slowapi==0.1.9
