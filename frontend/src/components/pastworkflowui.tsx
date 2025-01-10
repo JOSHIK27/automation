@@ -451,6 +451,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     }
 
     triggerWorkflowMutation.mutate({
+      workflowId: workflowId,
       triggerState: {
         triggerType,
         workflowType,

@@ -24,7 +24,7 @@ def generate_image_task(prompt: str):
     }
 
     response = requests.post(url, json=payload, headers=headers).json()
-    print(response)
+
 
     return {
         "url": response["data"][0]["url"]
@@ -62,7 +62,7 @@ def generate_thumbnail(prompt: str):
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    print(response.text)
+
 
 
 
@@ -88,7 +88,7 @@ def swap_face(target_image_url: str, source_image_url: str):
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    print(response.text)
+
 
 @celery_app.task
 def generate_summary():

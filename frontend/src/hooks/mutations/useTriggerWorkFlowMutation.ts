@@ -9,6 +9,7 @@ export function useTriggerWorkFlowMutation() {
     any,
     Error,
     {
+      workflowId: string;
       triggerState: {
         triggerType: string;
         workflowType: string;

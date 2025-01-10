@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status # type: ignore
-from backend.schemas.users import WorkflowPayload, UpdateWorkflowPayload
+from backend.schemas.users import WorkflowPayload, UpdateWorkflowPayload, TriggerWorkflowPayload
 from backend.tasks import generate_image_task, generate_content_ideas
 from ....db.db import client
 from datetime import datetime
@@ -10,40 +10,64 @@ from backend.api.endpoints.webhooks.webhooks import subscribe_to_channel
 
 
 router = APIRouter()
+db = client["core"]
 
 @router.post("/trigger-workflow")
-async def triggerworkflow(triggerState: dict, actionsList: list[dict]):
+async def triggerworkflow(request: TriggerWorkflowPayload):
     # Convert complex objects to simple dictionaries before processing
-    trigger_data = dict(triggerState)
-    actions_data = [dict(action) for action in actionsList]
+    trigger_data = dict(request.triggerState)
+    actions_data = [dict(action) for action in request.actionsList]
 
     if(trigger_data["workflowType"] == "Post Production"):
-        subscribe_to_channel(channel_id=trigger_data["channelId"], callback_url="https://localhost:8000/webhook")
+        response = []
+        db.postproduction_workflow_information.insert_one({
+            "workflow_id": request.workflowId,
+            "trigger_data": trigger_data,
+            "actions_data": actions_data,
+            "channel_id": trigger_data["channelId"],
+            "status": "Yet to be processed"
+        })
+        for action in actions_data:
+            response.append({
+                "task_id": "",
+                "cardId": action["cardId"],
+                "status": "Yet to be processed"
+            })
 
-    response = []
-    for action in actions_data:
-        if action['actionType'] == 'Generate thumbnail':
-            task_id = generate_image_task.delay(action["thumbnailPrompt"])
-            response.append({
-                "task_id": str(task_id),  # Ensure task_id is serializable
-                "cardId": action["cardId"],
-                "status": "PENDING"
-            })
-        elif action['actionType'] == 'Analyse my channel videos and generate ideas':
-            task_id = generate_content_ideas.delay(trigger_data["channelId"])
-            response.append({
-                "task_id": str(task_id), 
-                "cardId": action["cardId"],
-                "status": "PENDING"
-            })
-    return response
+        return response
+    
+    else:
+        db.preproduction_workflow_information.insert_one({
+            "workflow_id": request.workflowId,
+            "trigger_data": trigger_data,
+            "actions_data": actions_data,
+        })
+        response = []
+        for action in actions_data:
+            if action['actionType'] == 'Generate thumbnail':
+                task_id = generate_image_task.delay(action["thumbnailPrompt"])
+                response.append({
+                    "task_id": str(task_id),  # Ensure task_id is serializable
+                    "cardId": action["cardId"],
+                    "status": "PENDING"
+                })
+        action['actionType'] == 'Analyse my channel videos and generate ideas'
+        task_id = generate_content_ideas.delay(trigger_data["channelId"])
+        response.append({
+            "task_id": str(task_id), 
+            "cardId": action["cardId"],
+            "status": "PENDING"
+        })
+
+        return response
+
+    
+    
 
 
 @router.post("/save-workflow", status_code=status.HTTP_201_CREATED)
 async def saveworkflow(request: WorkflowPayload):
-    print(f"user_id={request.user_id}", f"nodes={request.nodes}", f"edges={request.edges}")
     
-    db = client["core"]
     workflows_collection = db["workflows"]
     nodes_collection = db["nodes"]
     edges_collection = db["edges"]
@@ -78,7 +102,7 @@ async def saveworkflow(request: WorkflowPayload):
 
 @router.put("/update-workflow", status_code=200)
 def updateworkflow(request: UpdateWorkflowPayload):
-    db = client["core"]
+
     workflows_collection = db["workflows"]
     nodes_collection = db["nodes"]
     edges_collection = db["edges"]
@@ -125,10 +149,7 @@ def workflowhistory(userId: str, workflowId: Optional[str] = None):
     nodes_collection = db["nodes"]
     edges_collection = db["edges"]
 
-    print(userId)
-
     workflows = list(workflows_collection.find({"user_id": userId}))
-    print(workflows) 
     workflow_history = []
 
     for workflow in workflows:

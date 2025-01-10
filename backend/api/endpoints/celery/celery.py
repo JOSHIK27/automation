@@ -49,8 +49,6 @@ def generatekeywords(request: Request, textContent: str):
 
     keywords = kw_model.extract_keywords(textContent, keyphrase_ngram_range=(1, 2), stop_words=None)
 
-    print(keywords)
-
     return {
         "message": "Success"
     }
@@ -58,7 +56,6 @@ def generatekeywords(request: Request, textContent: str):
 @router.get("/result/{task_id}")
 async def get_result(task_id: str):
     result = celery_app.AsyncResult(task_id)
-    print(result.result)
     if result.state == "PENDING":
         return {"status": "PENDING"}
     elif result.state == "SUCCESS":

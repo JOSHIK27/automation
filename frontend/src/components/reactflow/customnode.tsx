@@ -31,6 +31,7 @@ export default function CustomNode({
 }) {
   const dispatch = useDispatch();
   const taskStatus = useSelector((state: RootState) => state.taskstatus);
+  console.log(taskStatus);
   const currentTaskStatus = taskStatus?.find((task: any) => task.cardId === id);
 
   const { ts, status, error } = useCurrentTaskQuery(currentTaskStatus);
@@ -159,9 +160,17 @@ export default function CustomNode({
           </div>
         </div>
 
-        {currentTaskStatus && currentTaskStatus.status === "PENDING" ? (
-          <div className="mr-2">
-            <BeatLoader loading={true} size={8} color="#009688" />
+        {currentTaskStatus &&
+        (currentTaskStatus.status === "PENDING" ||
+          currentTaskStatus.status === "Yet to be processed") ? (
+          <div className="flex items-center gap-2 mr-2">
+            {currentTaskStatus.status === "Yet to be processed" ? (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
+                Yet to be processed
+              </span>
+            ) : (
+              <BeatLoader loading={true} size={8} color="#009688" />
+            )}
           </div>
         ) : (
           <button

@@ -72,6 +72,7 @@ import {
   setWorkflowName,
 } from "@/app/store/slices/workflow-slice";
 import { useUpdateWorkFlowMutation } from "@/hooks/mutations/useUpdateWorkFlowMutation";
+import { usePubSubHubBubSubscribeMutation } from "@/hooks/mutations/usePubSubHubBubSubscribeMutation";
 
 type FormValues = {
   name: string;
@@ -99,7 +100,6 @@ export default function Flow() {
   const { workflowName, workflowId } = useSelector(
     (state: RootState) => state.workflowName
   );
-  console.log(workflowId);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -116,6 +116,10 @@ export default function Flow() {
   const updateWorkflowMutation = useUpdateWorkFlowMutation(workflowId);
 
   const triggerWorkflowMutation = useTriggerWorkFlowMutation();
+
+  // Add this near other hooks at the top level
+
+  const pubSubHubBubSubscribeMutation = usePubSubHubBubSubscribeMutation();
 
   useEffect(() => {
     return () => {
@@ -452,7 +456,13 @@ export default function Flow() {
       }
     }
 
+    if (workflowType === "Post Production") {
+      pubSubHubBubSubscribeMutation.mutate({
+        channel_id: channelId,
+      });
+    }
     triggerWorkflowMutation.mutate({
+      workflowId: workflowId,
       triggerState: {
         triggerType,
         workflowType,

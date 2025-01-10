@@ -3,9 +3,10 @@ from xml.etree import ElementTree as ET
 from io import BytesIO
 from backend.schemas.users import SubscriptionRequest
 import httpx # type: ignore
+from backend.db.db import client
 
 router = APIRouter()
-
+db = client["core"]
 
 @router.get("/webhook")
 async def webhook_verify(
@@ -25,12 +26,12 @@ async def webhook_verify(
 
 @router.post("/subscribe")
 async def subscribe_to_channel(request: SubscriptionRequest):
-    
+
     PUBSUB_HUB_URL = "https://pubsubhubbub.appspot.com/subscribe"
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": request.callback_url,
+        "hub.callback": "https://d1b7-92-237-137-142.ngrok-free.app/webhook",
         "hub.verify": "async",
     }
 
@@ -66,7 +67,17 @@ async def webhook(request: Request):
             'published': entry.find('atom:published', ns).text,
             'link': entry.find('atom:link', ns).get('href')
         }
-        print(video_data)
+
+        to_be_processed_workflows = list(db.postproduction_workflow_information.find({
+            "channel_id": video_data["channel_id"]
+        }))
+
+        print(video_data, to_be_processed_workflows)
+
         return video_data
+    
+
+    
+
     
     return {"message": "No video entry found"}

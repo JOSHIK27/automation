@@ -87,7 +87,6 @@ export default function TriggerForm({
   } = useForm();
   const [prevTriggerType, setPrevTriggerType] = useState<string | null>(null);
   const updateBtnState = useSelector((state: RootState) => state.updateBtn);
-  console.log(updateBtnState);
 
   watch("workflowType");
   watch("triggerType");

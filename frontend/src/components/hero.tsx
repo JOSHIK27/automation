@@ -36,7 +36,6 @@ export default function Hero({ session }: { session: any }) {
 
   useEffect(() => {
     if (session) {
-      console.log(session);
       addUserMutation.mutate();
     }
   }, [session]);

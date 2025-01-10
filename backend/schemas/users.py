@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional, Any, Union
-from pydantic import BaseModel
+from pydantic import BaseModel # type: ignore
 
 class User(BaseModel):
     name: str
@@ -8,7 +8,6 @@ class User(BaseModel):
 
 class SubscriptionRequest(BaseModel):
     channel_id: str
-    callback_url: str
 
 class Node(BaseModel):
     id: str
@@ -42,3 +41,8 @@ class UpdateWorkflowPayload(BaseModel):
     name: str
     description: Optional[str] = None
     workflow_id: str
+
+class TriggerWorkflowPayload(BaseModel):
+    workflowId: str
+    triggerState: Dict[str, Any]
+    actionsList: List[Dict[str, Any]]
