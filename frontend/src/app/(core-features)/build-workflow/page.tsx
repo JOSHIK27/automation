@@ -152,7 +152,6 @@ export default function Flow() {
   }, [saveWorkflowMutation.isSuccess, updateWorkflowMutation.isSuccess]);
 
   useEffect(() => {
-    // dispatch(setIsSubscribed({ cardId: Number(cardId), isSubscribed: false }));
     setSelectValue("");
   }, [cardId, nodes.length]);
   useEffect(() => {
@@ -623,7 +622,7 @@ export default function Flow() {
                 />
               </svg>
               <span className="relative tracking-wide group-hover:text-teal-600 transition-colors duration-200">
-                {workflowName ? "Update Workflow" : "Save Workflow"}
+                Save Workflow
               </span>
             </Button>
           </DialogTrigger>

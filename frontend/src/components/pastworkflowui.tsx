@@ -15,7 +15,7 @@ import {
   useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Node, Edge } from "@/lib/constants/workflow";
+
 // Redux imports
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
@@ -111,29 +111,11 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const updateWorkflowMutation = useUpdateWorkFlowMutation(workflowId);
   const triggerWorkflowMutation = useTriggerWorkFlowMutation();
 
-  // Node Connection Handler
-  const onConnect = useCallback(
-    (connection: any) => {
-      const edge = { ...connection, type: ConnectionLineType.SimpleBezier };
-      setEdges((eds) => addEdge(edge, eds));
-    },
-    [setEdges]
-  );
-
-  // Node & Edge Types Configuration
-  const nodeTypes = {
-    custom: CustomNode,
-    customWithHandle: CustomNodeWithHandle,
-  };
-  const edgeTypes = {
-    custom: CustomEdge,
-  };
-
   // Effects
   useEffect(() => {
     if (workflowDetails) {
-      const historyNodes = workflowDetails.workflow_history[0].nodes as Node[];
-      const historyEdges = workflowDetails.workflow_history[0].edges as Edge[];
+      const historyNodes = workflowDetails.workflow_history[0].nodes as any[];
+      const historyEdges = workflowDetails.workflow_history[0].edges as any[];
       setNodes(historyNodes);
       setEdges(historyEdges);
     }
@@ -144,7 +126,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   }, [cardId, nodes?.length]);
 
   useEffect(() => {
-    const updatedNodes = nodes.map((node: Node) => ({
+    const updatedNodes = nodes.map((node: any) => ({
       ...node,
       data: {
         ...node.data,
@@ -177,6 +159,21 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       </div>
     );
   }
+  console.log(nodes, edges);
+  // Node Connection Handler
+  const onConnect = (connection: any) => {
+    const edge = { ...connection, type: ConnectionLineType.SimpleBezier };
+    setEdges((eds) => addEdge(edge, eds));
+  };
+
+  // Node & Edge Types Configuration
+  const nodeTypes = {
+    custom: CustomNode,
+    customWithHandle: CustomNodeWithHandle,
+  };
+  const edgeTypes = {
+    custom: CustomEdge,
+  };
 
   // Event Handlers
   const onEdgeClick = (event: any, edge: any) => {

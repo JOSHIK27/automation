@@ -29,3 +29,4 @@ def get_generate_image_handler(task_id: str):
     result = celery_app.AsyncResult(task_id)
     return {"status": result.status, "result": result.result}
 
+

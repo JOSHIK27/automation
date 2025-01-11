@@ -19,6 +19,8 @@ type Workflow = {
   workflow_id: string;
   nodes: any[];
   edges: any[];
+  runs: number;
+  running: boolean;
 };
 
 export default function WorkflowsPage() {
@@ -170,41 +172,57 @@ function WorkflowCard({
         </h3>
         <div
           className={cn(
-            "px-3 py-1 rounded-full text-sm bg-neutral-100 text-neutral-700"
-            // workflow.status === "active"
-            //   ? "bg-teal-100 text-teal-700"
-            //   : "bg-neutral-100 text-neutral-700"
+            "px-3 py-1 rounded-full text-[12px] bg-neutral-100 text-neutral-700",
+            workflow.running
+              ? "bg-teal-100 text-teal-700"
+              : "bg-neutral-100 text-neutral-700"
           )}
         >
-          {"Pending"}
+          {workflow.running ? "In Progress" : "Pending"}
         </div>
       </div>
       <p className="text-neutral-600 mb-6">{workflow.description}</p>
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <div className="flex items-center text-sm text-neutral-500">
+          <div className="flex items-center text-sm text-neutral-500 text-[12px]">
             <BsClock className="mr-2" />
-            {workflow.created_at}
+            {new Date(workflow.created_at).toLocaleString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            })}
           </div>
-          <div className="text-sm text-neutral-500">{"0"} runs</div>
         </div>
         <div className="flex gap-2">
           <Button
             variant="ghost"
             size="sm"
-            className="hover:bg-teal-50 hover:text-teal-600"
+            className="text-neutral-500 text-[12px]"
             onClick={() => {
               router.push(`/workflow/${workflow.workflow_id}`);
             }}
           >
-            Open Editor
+            {workflow.runs} runs
           </Button>
           <Button
+            onClick={() => {
+              router.push(`/workflow/${workflow.workflow_id}`);
+              return;
+            }}
             variant="ghost"
             size="sm"
-            className="hover:bg-teal-50 hover:text-teal-600"
+            className={cn(
+              "text-[12px]",
+              workflow.running
+                ? "bg-neutral-50 hover:bg-neutral-50 text-neutral-600 hover:text-neutral-700"
+                : "bg-teal-50 hover:bg-teal-50 text-teal-600 hover:text-teal-700"
+            )}
           >
-            <BsPlayFill className="mr-2" /> Run Now
+            <BsPlayFill className="mr-2" />{" "}
+            {workflow.running ? "View Progress" : "Run Now"}
           </Button>
         </div>
       </div>

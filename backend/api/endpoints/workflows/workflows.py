@@ -18,6 +18,15 @@ async def triggerworkflow(request: TriggerWorkflowPayload):
     trigger_data = dict(request.triggerState)
     actions_data = [dict(action) for action in request.actionsList]
 
+    workflows_collection = db["workflows"]
+    workflows_collection.update_one(
+        {"_id": ObjectId(request.workflowId)},
+        {
+            "$inc": {"runs": 1},
+            "$set": {"running": True}
+        }
+    )
+
     if(trigger_data["workflowType"] == "Post Production"):
         response = []
         db.postproduction_workflow_information.insert_one({
@@ -78,7 +87,9 @@ async def saveworkflow(request: WorkflowPayload):
         "user_id": request.user_id,
         "name": request.name,
         "description": request.description,
-        "created_at": datetime.utcnow()
+        "created_at": datetime.utcnow(),
+        "runs": 0,
+        "running": False
     }
     
     workflow_result = workflows_collection.insert_one(workflow_doc)
@@ -178,7 +189,9 @@ def workflowhistory(userId: str, workflowId: Optional[str] = None):
                 "created_at": workflow["created_at"],
                 "workflow_id": workflow_id,
                 "nodes": nodes,
-                "edges": edges
+                "edges": edges,
+                "runs": workflow["runs"],
+                "running": workflow["running"]
             })
         elif workflowId == str(workflow["_id"]):
             workflow_id = str(workflow["_id"])
@@ -204,7 +217,9 @@ def workflowhistory(userId: str, workflowId: Optional[str] = None):
                 "created_at": workflow["created_at"],
                 "workflow_id": workflow_id,
                 "nodes": nodes,
-                "edges": edges
+                "edges": edges,
+                "runs": workflow["runs"],
+                "running": workflow["running"]
             })
 
     return {
