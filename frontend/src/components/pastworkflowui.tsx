@@ -87,8 +87,8 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   );
 
   // Local State
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [showCard, setShowCard] = useState(false);
   const [cardId, setCardId] = useState<string>("");
   const [selectValue, setSelectValue] = useState("");
@@ -119,7 +119,15 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     },
     [setEdges]
   );
-  console.log(nodes, edges);
+
+  // Node & Edge Types Configuration
+  const nodeTypes = {
+    custom: CustomNode,
+    customWithHandle: CustomNodeWithHandle,
+  };
+  const edgeTypes = {
+    custom: CustomEdge,
+  };
 
   // Effects
   useEffect(() => {
@@ -396,15 +404,6 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       setCardId(node.id);
       return;
     }
-  };
-
-  // Node & Edge Types Configuration
-  const nodeTypes = {
-    custom: CustomNode,
-    customWithHandle: CustomNodeWithHandle,
-  };
-  const edgeTypes = {
-    custom: CustomEdge,
   };
 
   // Workflow Trigger Handler
@@ -781,8 +780,8 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={() => {}}
-        onEdgesChange={() => {}}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}
         onEdgeClick={onEdgeClick}
         onConnect={onConnect}
