@@ -3,6 +3,8 @@ from backend.schemas.users import User
 from backend.celery_config import celery_app
 from backend.tasks import generate_image_task
 from ....db.db import client
+from bson.objectid import ObjectId # type: ignore
+
 
 
 router = APIRouter() 
@@ -30,3 +32,20 @@ def get_generate_image_handler(task_id: str):
     return {"status": result.status, "result": result.result}
 
 
+@router.get("/user-stats")
+def get_user_stats(email: str):
+    db = client["core"]
+    users_collection = db["users"]
+    user_stats = users_collection.find_one({"email": email})
+    workflows = list(db["workflows"].find({"user_id": str(ObjectId(user_stats["_id"])) }))
+    print(user_stats, workflows, ObjectId(user_stats["_id"]))
+    totalWorkflows = 0
+    activeWorkflows = 0
+    tasksCompleted = 0
+    for workflow in workflows:
+        if workflow["running"] == True:
+            activeWorkflows += 1
+        totalWorkflows += 1
+        tasksCompleted += 1
+
+    return {"totalWorkflows": totalWorkflows, "activeWorkflows": activeWorkflows, "tasksCompleted": tasksCompleted, "subscriptionPlan": "free"}

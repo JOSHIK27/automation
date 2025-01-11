@@ -12,7 +12,7 @@ export function useUserStatsQuery(session: any) {
     queryKey: ["userStats"],
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user-stats`,
+        `${process.env.NEXT_PUBLIC_API_URL}/user-stats?email=${session.user.email}`,
         {
           headers: {
             Authorization: `Bearer ${sessionToken ?? ""}`,
