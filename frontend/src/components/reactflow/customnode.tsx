@@ -1,21 +1,18 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { Handle, Position } from "@xyflow/react";
 import { Separator } from "@/components/ui/separator";
 import { BeatLoader } from "react-spinners";
 import { BiCaptions, BiSolidImage } from "react-icons/bi";
-import {
-  RiDeleteBin6Line,
-  RiErrorWarningLine,
-  RiVideoUploadLine,
-} from "react-icons/ri";
+import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2, MdFace, MdSummarize } from "react-icons/md";
 import { FaVideo, FaLightbulb, FaSearch, FaClock } from "react-icons/fa";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
 import { toast } from "sonner";
 import { useCurrentTaskQuery } from "@/hooks/queries/useCurrentTaskQuery";
+import { useTaskStatusMutation } from "@/hooks/mutations/useTaskStatusMutation";
+import { useEffect } from "react";
 
 export default function CustomNode({
   data,
@@ -31,22 +28,31 @@ export default function CustomNode({
 }) {
   const dispatch = useDispatch();
   const taskStatus = useSelector((state: RootState) => state.taskstatus);
-  console.log(taskStatus);
   const currentTaskStatus = taskStatus?.find((task: any) => task.cardId === id);
-
   const { ts, status, error } = useCurrentTaskQuery(currentTaskStatus);
+  const workflowId = useSelector(
+    (state: RootState) => state.workflowName.workflowId
+  );
+  const updateTaskStatusMutation = useTaskStatusMutation({
+    workflowId: workflowId,
+    cardId: id,
+  });
 
-  if (status === "success") {
-    if (ts.status === "SUCCESS") {
-      const updatedTaskStatus = taskStatus.map((task) => {
-        if (task.cardId === id) {
-          return { ...task, status: "SUCCESS" };
-        }
-        return task;
-      });
-      dispatch(setTasksStatus(updatedTaskStatus));
+  useEffect(() => {
+    if (status === "success") {
+      if (ts.status === "SUCCESS") {
+        console.log("Updating task status");
+        const updatedTaskStatus = taskStatus.map((task) => {
+          if (task.cardId === id) {
+            return { ...task, status: "SUCCESS" };
+          }
+          return task;
+        });
+        dispatch(setTasksStatus(updatedTaskStatus));
+        updateTaskStatusMutation.mutate();
+      }
     }
-  }
+  }, [status, ts]);
 
   const isPlaceholderLabel = (label: string) => {
     return (

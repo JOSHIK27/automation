@@ -6,7 +6,7 @@ from datetime import datetime
 from bson.objectid import ObjectId # type: ignore
 from typing import Optional
 from backend.api.endpoints.webhooks.webhooks import subscribe_to_channel
-
+from backend.schemas.users import UpdateTaskStatusPayload
 
 
 router = APIRouter()
@@ -37,13 +37,9 @@ async def triggerworkflow(request: TriggerWorkflowPayload):
         return response
     
     else:
-        db.preproduction_workflow_information.insert_one({
-            "workflow_id": request.workflowId,
-            "trigger_data": trigger_data,
-            "actions_data": actions_data,
-        })
         response = []
         for action in actions_data:
+            action["status"] = "PENDING"
             if action['actionType'] == 'Generate thumbnail':
                 task_id = generate_image_task.delay(action["thumbnailPrompt"])
                 response.append({
@@ -51,12 +47,18 @@ async def triggerworkflow(request: TriggerWorkflowPayload):
                     "cardId": action["cardId"],
                     "status": "PENDING"
                 })
-        action['actionType'] == 'Analyse my channel videos and generate ideas'
-        task_id = generate_content_ideas.delay(trigger_data["channelId"])
-        response.append({
-            "task_id": str(task_id), 
-            "cardId": action["cardId"],
-            "status": "PENDING"
+            elif action['actionType'] == 'Analyse my channel videos and generate ideas':
+                task_id = generate_content_ideas.delay(trigger_data["channelId"])
+                response.append({
+                    "task_id": str(task_id), 
+                    "cardId": action["cardId"],
+                    "status": "PENDING"
+                })
+        print(actions_data)
+        db.preproduction_workflow_information.insert_one({
+            "workflow_id": request.workflowId,
+            "trigger_data": trigger_data,
+            "actions_data": actions_data,
         })
 
         return response
@@ -208,3 +210,39 @@ def workflowhistory(userId: str, workflowId: Optional[str] = None):
     return {
         "workflow_history": workflow_history
     }
+
+@router.post("/update-task-status", status_code=200)
+async def update_task_status(request: UpdateTaskStatusPayload):
+    db = client["core"]
+    
+    pre_workflow = db.preproduction_workflow_information.find_one(
+        {"workflow_id": request.workflowId}
+    )
+    print(pre_workflow)
+    
+    if pre_workflow:
+        pre_workflow_actions = pre_workflow["actions_data"]
+        for action in pre_workflow_actions:
+            if action["cardId"] == request.cardId:
+                action["status"] = "SUCCESS"
+                break
+        db.preproduction_workflow_information.update_one(
+            {"workflow_id": request.workflowId},
+            {"$set": {"actions_data": pre_workflow_actions}}
+        )
+    else:
+        post_workflow = db.postproduction_workflow_information.find_one(
+            {"workflow_id": request.workflowId}
+        )
+        post_workflow_actions = post_workflow["actions_data"]
+        for action in post_workflow_actions:
+            if action["cardId"] == request.cardId:
+                action["status"] = "SUCCESS"
+                break
+        db.postproduction_workflow_information.update_one(
+            {"workflow_id": request.workflowId},
+            {"$set": {"actions_data": post_workflow_actions}}
+        )
+
+    return {"message": "Task status updated successfully"}
+

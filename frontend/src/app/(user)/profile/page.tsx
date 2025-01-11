@@ -15,7 +15,7 @@ export default function Page() {
   if (status === "loading" || userStatsStatus === "pending") {
     return (
       <div className="flex justify-center items-center h-screen">
-        <HashLoader color="#008080" />
+        <HashLoader color="#009688" />
       </div>
     );
   }

@@ -72,31 +72,30 @@ type FormValues = {
 };
 
 export default function WorkflowUI({ workflowId }: { workflowId: string }) {
-  // Authentication
+  // Authentication & User
   const { status, data: session } = useSession();
+  const { userId, userStatus, userError } = useUserId(session);
 
-  // Redux hooks and state
+  // Redux State & Dispatch
   const dispatch = useDispatch();
-
   const { workflowType, triggerType, channelId, videoTitle } = useSelector(
     (state: RootState) => state.trigger
   );
   const actionsList = useSelector((state: RootState) => state.actions);
-
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
-
-  const [showCard, setShowCard] = useState(false);
-  const [cardId, setCardId] = useState<string>("");
-  const [, setSelectValue] = useState("");
-
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const { workflowName } = useSelector(
     (state: RootState) => state.workflowName
   );
 
-  // Form handling
+  // Local State
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+  const [showCard, setShowCard] = useState(false);
+  const [cardId, setCardId] = useState<string>("");
+  const [selectValue, setSelectValue] = useState("");
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Form Handling
   const form = useForm<FormValues>({
     defaultValues: {
       name: "",
@@ -104,55 +103,15 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     },
   });
 
-  const { userId, userStatus, userError } = useUserId(session);
-
+  // API Queries & Mutations
   const { workflowDetails, isLoading, error } = useWorkflowDetails(
     workflowId,
     userId
   );
-
-  // API mutations
   const updateWorkflowMutation = useUpdateWorkFlowMutation(workflowId);
-
   const triggerWorkflowMutation = useTriggerWorkFlowMutation();
 
-  useEffect(() => {
-    if (workflowDetails) {
-      const historyNodes = workflowDetails.workflow_history[0].nodes as Node[];
-      const historyEdges = workflowDetails.workflow_history[0].edges as Edge[];
-
-      setNodes(historyNodes);
-      setEdges(historyEdges);
-    }
-  }, [workflowDetails]);
-
-  useEffect(() => {
-    // dispatch(setIsSubscribed({ cardId: Number(cardId), isSubscribed: false }));
-    setSelectValue("");
-  }, [cardId, nodes?.length]);
-  useEffect(() => {
-    const updatedNodes = nodes.map((node: Node) => {
-      if (node.id === cardId) {
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            selected: true,
-          },
-        };
-      } else {
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            selected: false,
-          },
-        };
-      }
-    });
-    setNodes(updatedNodes);
-  }, [cardId]);
-
+  // Node Connection Handler
   const onConnect = useCallback(
     (connection: any) => {
       const edge = { ...connection, type: ConnectionLineType.SimpleBezier };
@@ -160,6 +119,32 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     },
     [setEdges]
   );
+  console.log(nodes, edges);
+
+  // Effects
+  useEffect(() => {
+    if (workflowDetails) {
+      const historyNodes = workflowDetails.workflow_history[0].nodes as Node[];
+      const historyEdges = workflowDetails.workflow_history[0].edges as Edge[];
+      setNodes(historyNodes);
+      setEdges(historyEdges);
+    }
+  }, [workflowDetails]);
+
+  useEffect(() => {
+    setSelectValue("");
+  }, [cardId, nodes?.length]);
+
+  useEffect(() => {
+    const updatedNodes = nodes.map((node: Node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        selected: node.id === cardId,
+      },
+    }));
+    setNodes(updatedNodes);
+  }, [cardId]);
 
   useEffect(() => {
     if (nodes.length > 2 || edges.length > 1) {
@@ -176,14 +161,16 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     }
   }, [updateWorkflowMutation.isSuccess]);
 
+  // Loading State
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center h-screen">
-        <HashLoader color="#000000" />
+        <HashLoader color="#009688" />
       </div>
     );
   }
 
+  // Event Handlers
   const onEdgeClick = (event: any, edge: any) => {
     const { source, target } = edge;
     let flag = target === "customWithHandle";
@@ -379,7 +366,6 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
         id: String(Number(source) + 1) + "->" + String(Number(source) + 2),
         source: String(Number(source) + 1),
         target: String(Number(source) + 2),
-        // type: ConnectionLineType.SimpleBezier,
         animated: true,
         markerEnd: {
           type: MarkerType.Arrow,
@@ -412,6 +398,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     }
   };
 
+  // Node & Edge Types Configuration
   const nodeTypes = {
     custom: CustomNode,
     customWithHandle: CustomNodeWithHandle,
@@ -420,7 +407,9 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     custom: CustomEdge,
   };
 
+  // Workflow Trigger Handler
   const handleTriggerWorkflow = async () => {
+    // Validation checks
     if (triggerType === "") {
       toast.error("Please select a trigger");
       return;
@@ -441,6 +430,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       return;
     }
 
+    // Check for missing action inputs
     for (const action of actionsList) {
       for (const key in action) {
         if (!action[key as keyof typeof action]) {
@@ -450,6 +440,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       }
     }
 
+    // Trigger workflow
     triggerWorkflowMutation.mutate({
       workflowId: workflowId,
       triggerState: {

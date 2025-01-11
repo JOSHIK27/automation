@@ -46,3 +46,7 @@ class TriggerWorkflowPayload(BaseModel):
     workflowId: str
     triggerState: Dict[str, Any]
     actionsList: List[Dict[str, Any]]
+
+class UpdateTaskStatusPayload(BaseModel):
+    workflowId: str
+    cardId: str

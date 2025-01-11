@@ -81,7 +81,7 @@ export default function WorkflowsPage() {
   )
     return (
       <div className="flex justify-center items-center h-screen">
-        <HashLoader color="#36d7b7" />
+        <HashLoader color="#009688" />
       </div>
     );
 
