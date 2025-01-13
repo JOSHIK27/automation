@@ -2,6 +2,12 @@
 
 A modern web application for automating video content workflows using AI capabilities. Built with Next.js, FastAPI, and Celery.
 
+## Architecture
+
+![image](https://github.com/user-attachments/assets/964df7d7-81d8-4cd2-be5e-c0bab3b09f3c)
+
+
+
 ## 🌟 Core Features
 
 - **Visual Workflow Builder**: Create complex automation workflows with an intuitive drag-and-drop interface
