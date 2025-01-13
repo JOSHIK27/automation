@@ -7,11 +7,11 @@ from backend.api.endpoints.corefeatures import router as core_features
 from backend.api.endpoints.celery.celery import router as celery_router
 from backend.utils.jwt_utils import decode_jwe
 from pymongo import MongoClient # type: ignore
-import os
 from .dependencies import limiter
 from slowapi.errors import RateLimitExceeded # type: ignore
 from slowapi import _rate_limit_exceeded_handler # type: ignore
 from backend.api.endpoints.workflows.workflows import router as workflows_router
+from backend.api.endpoints.websocket.websocket import router as websocket_router
 
 app = FastAPI()
 
@@ -20,7 +20,7 @@ app.include_router(webhooks_router)
 app.include_router(core_features)
 app.include_router(celery_router)
 app.include_router(workflows_router)
-
+app.include_router(websocket_router)
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)

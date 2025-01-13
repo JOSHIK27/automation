@@ -20,18 +20,6 @@ def add_user(user: User):
     return {"message": "Success", "user_id": str(user_id)}
  
 
-@router.post("/generate-image")
-def generate_image_handler(prompt: str):
-    result = generate_image_task.delay(prompt)
-    return {"message": "Task started", "task_id": result.id}
-
-
-@router.get("/generate-image/{task_id}")
-def get_generate_image_handler(task_id: str):
-    result = celery_app.AsyncResult(task_id)
-    return {"status": result.status, "result": result.result}
-
-
 @router.get("/user-stats")
 def get_user_stats(email: str):
     db = client["core"]

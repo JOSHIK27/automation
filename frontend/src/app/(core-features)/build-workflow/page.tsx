@@ -60,7 +60,6 @@ import {
   addBtnStatus,
   insertBtnStatusInBetween,
   resetBtnStatus,
-  setIsSubscribed,
 } from "@/app/store/slices/trigger-card-slices/update-btn-slice";
 import { Loader } from "lucide-react";
 import { useUserId } from "@/hooks/custom/useUserId";
@@ -154,6 +153,7 @@ export default function Flow() {
   useEffect(() => {
     setSelectValue("");
   }, [cardId, nodes.length]);
+
   useEffect(() => {
     const updatedNodes = nodes.map((node) => {
       if (node.id === cardId) {

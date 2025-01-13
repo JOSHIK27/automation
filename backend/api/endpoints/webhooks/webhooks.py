@@ -72,6 +72,23 @@ async def webhook(request: Request):
             "channel_id": video_data["channel_id"]
         }))
 
+        for workflow in to_be_processed_workflows:
+            if workflow["trigger_data"]["channel_id"] == video_data["channel_id"]:
+                
+                actions_data = workflow["action_data"]
+
+                for action in actions_data:
+                    if action["actionType"] == "Generate summary":
+                        print(action)
+                    elif action["actionType"] == "Generate captions":
+                        print(action)
+                    elif action["actionType"] == "Generate timestamps":
+                        print(action)
+                    elif action["actionType"] == "Generate SEO optimized title":
+                        print(action)
+                    elif action["actionType"] == "Generate SEO optimized description":
+                        print(action)
+
         print(video_data, to_be_processed_workflows)
 
         return video_data
