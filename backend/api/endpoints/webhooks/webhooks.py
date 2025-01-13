@@ -4,6 +4,10 @@ from io import BytesIO
 from backend.schemas.users import SubscriptionRequest
 import httpx # type: ignore
 from backend.db.db import client
+from backend.api.endpoints.websocket.websocket import get_connected_clients
+from bson.objectid import ObjectId
+from backend.tasks import generate_seo_title, generate_seo_keywords, generate_summary, generate_timestamps
+
 
 router = APIRouter()
 db = client["core"]
@@ -31,7 +35,7 @@ async def subscribe_to_channel(request: SubscriptionRequest):
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": "https://d1b7-92-237-137-142.ngrok-free.app/webhook",
+        "hub.callback": "https://60d4-92-237-137-142.ngrok-free.app/webhook",
         "hub.verify": "async",
     }
 
@@ -68,30 +72,71 @@ async def webhook(request: Request):
             'link': entry.find('atom:link', ns).get('href')
         }
 
+        connected_clients = get_connected_clients()
+
         to_be_processed_workflows = list(db.postproduction_workflow_information.find({
             "channel_id": video_data["channel_id"]
         }))
 
         for workflow in to_be_processed_workflows:
-            if workflow["trigger_data"]["channel_id"] == video_data["channel_id"]:
+            workflow_id = workflow["workflow_id"]
+            user_id = db.workflows.find_one({
+                "_id": ObjectId(workflow_id)
+            })["user_id"]
+
+
+            if workflow["trigger_data"]["channelId"] == video_data["channel_id"]:
                 
-                actions_data = workflow["action_data"]
+                actions_data = workflow["actions_data"]
+
+                response = []
 
                 for action in actions_data:
-                    if action["actionType"] == "Generate summary":
-                        print(action)
-                    elif action["actionType"] == "Generate captions":
-                        print(action)
-                    elif action["actionType"] == "Generate timestamps":
-                        print(action)
-                    elif action["actionType"] == "Generate SEO optimized title":
-                        print(action)
-                    elif action["actionType"] == "Generate SEO optimized description":
-                        print(action)
+                    response.append({
+                        "task_id": "123",
+                        "cardId": action["cardId"],
+                        "status": "PENDING"
+                    })
+                    # if action["actionType"] == "Generate summary":
+                    #     task_id = generate_summary.delay(action["input"])
+                    #     response.append({
+                    #         "task_id": str(task_id),
+                    #         "cardId": action["cardId"],
+                    #         "status": "PENDING"
+                    #     })
+                    # elif action["actionType"] == "Generate captions":
+                    #     task_id = generate_captions.delay(action["input"])
+                    #     response.append({
+                    #         "task_id": str(task_id),
+                    #         "cardId": action["cardId"],
+                    #         "status": "PENDING"
+                    #     })
+                    # elif action["actionType"] == "Generate timestamps":
+                    #     task_id = generate_timestamps.delay(action["input"])
+                    #     response.append({
+                    #         "task_id": str(task_id),
+                    #         "cardId": action["cardId"],
+                    #         "status": "PENDING"
+                    #     })
+                    # elif action["actionType"] == "Generate SEO optimized title":
+                    #     task_id = generate_seo_title.delay(action["input"])
+                    #     response.append({
+                    #         "task_id": str(task_id),
+                    #         "cardId": action["cardId"],
+                    #         "status": "PENDING"
+                    #     })
+                    # elif action["actionType"] == "Generate SEO optimized description":
+                    #     task_id = generate_seo_keywords.delay(action["input"])
+                    #     response.append({
+                    #         "task_id": str(task_id),
+                    #         "cardId": action["cardId"],
+                    #         "status": "PENDING"
+                    #     })
+                
+                if user_id in connected_clients:
+                    await connected_clients[user_id].send_json(response)
 
-        print(video_data, to_be_processed_workflows)
-
-        return video_data
+        return response
     
 
     

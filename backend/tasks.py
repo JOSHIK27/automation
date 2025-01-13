@@ -106,6 +106,10 @@ def generate_summary():
         }
     )
 
+    return {
+        "summary": response
+    }
+
 
 @celery_app.task
 def generate_transcript():
@@ -122,6 +126,10 @@ def generate_transcript():
             "preferredLanguage": "string" 
         }
     )
+
+    return {
+        "transcript": response
+    }
 
 @celery_app.task
 def generate_content_ideas(channel_id: str):
@@ -182,6 +190,10 @@ def generate_timestamps():
         }
     )
 
+    return {
+        "timestamps": response
+    }
+
 
 @celery_app.task
 def generate_seo_keywords(textContent: str):
@@ -191,7 +203,7 @@ def generate_seo_keywords(textContent: str):
     keywords = kw_model.extract_keywords(textContent, keyphrase_ngram_range=(1, 2), stop_words=None)
 
     return {
-        keywords: keywords
+        "keywords": keywords
     }
 
 @celery_app.task
