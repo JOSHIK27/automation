@@ -65,6 +65,7 @@ import { useWorkflowDetails } from "@/hooks/queries/useWorkflowDetails";
 import { format } from "date-fns";
 import { setWorkflowId } from "@/app/store/slices/workflow-slice";
 import { setWorkflowName } from "@/app/store/slices/workflow-slice";
+import { Node, Edge } from "@/lib/constants/workflow";
 
 type FormValues = {
   name: string;
@@ -87,8 +88,8 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   );
 
   // Local State
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const [showCard, setShowCard] = useState(false);
   const [cardId, setCardId] = useState<string>("");
   const [selectValue, setSelectValue] = useState("");

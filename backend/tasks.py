@@ -6,6 +6,28 @@ from googleapiclient.discovery import build
 from openai import OpenAI
 from keybert import KeyBERT
 
+
+dumpling_base_url = "https://app.dumplingai.com"
+
+
+def generate_transcript(video_url: str):
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.getenv('DUMPLING_API_KEY')}"
+    }
+
+    response = requests.post(f"{dumpling_base_url}/api/v1/get-youtube-transcript", headers = headers , json= {
+            "videoUrl": video_url, 
+            "includeTimestamps": "boolean",
+            "timestampsToCombine": "number", 
+            "preferredLanguage": "en" 
+        }
+    )   
+
+    return response
+
+
 @celery_app.task
 def generate_image_task(prompt: str):
     url = "https://api.ideogram.ai/generate"
@@ -91,45 +113,32 @@ def swap_face(target_image_url: str, source_image_url: str):
 
 
 @celery_app.task
-def generate_summary():
-
+def generate_summary(video_url: str):
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {os.getenv('DUMPLING_API_KEY')}"
     }
     
-    response = requests.post("/api/v1/get-youtube-transcript", headers = headers , json= {
-            "videoUrl": "string", 
+    response = requests.post(f"{dumpling_base_url}/api/v1/get-youtube-transcript", 
+        headers=headers,
+        json={
+            "videoUrl": video_url, 
             "includeTimestamps": "boolean",
             "timestampsToCombine": "number", 
             "preferredLanguage": "string" 
         }
     )
-
-    return {
-        "summary": response
-    }
+    
+    # Convert response to JSON before returning
+    return response.json()
 
 
 @celery_app.task
-def generate_transcript():
-    
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {os.getenv('DUMPLING_API_KEY')}"
-    }
-    
-    response = requests.post("/api/v1/get-youtube-transcript", headers = headers , json= {
-            "videoUrl": "string", 
-            "includeTimestamps": "boolean",
-            "timestampsToCombine": "number", 
-            "preferredLanguage": "string" 
-        }
-    )
+def generate_transcript(video_url: str):
 
-    return {
-        "transcript": response
-    }
+    transcript = generate_summary(video_url)
+
+    return transcript
 
 @celery_app.task
 def generate_content_ideas(channel_id: str):
@@ -175,24 +184,22 @@ def generate_content_ideas(channel_id: str):
     }
 
 @celery_app.task
-def generate_timestamps():
+def generate_timestamps(video_url: str):
     
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {os.getenv('DUMPLING_API_KEY')}"
     }
     
-    response = requests.post("/api/v1/get-youtube-transcript", headers = headers , json= {
-            "videoUrl": "string", 
+    response = requests.post(f"{dumpling_base_url}/api/v1/get-youtube-transcript", headers = headers , json= {
+            "videoUrl": video_url, 
             "includeTimestamps": "boolean",
             "timestampsToCombine": "number", 
             "preferredLanguage": "string" 
         }
     )
 
-    return {
-        "timestamps": response
-    }
+    return response
 
 
 @celery_app.task
@@ -202,31 +209,29 @@ def generate_seo_keywords(textContent: str):
 
     keywords = kw_model.extract_keywords(textContent, keyphrase_ngram_range=(1, 2), stop_words=None)
 
-    return {
-        "keywords": keywords
-    }
+    return keywords
 
 @celery_app.task
-def generate_seo_title(transcript: str):
-
+def generate_seo_title(video_url: str):
     openai_client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
-
-    prompt = f"""
-    Create 5 SEO-optimized YouTube titles for the following video content:
-    {transcript}
-    Each title should:
-    - Contain relevant keywords.
-    - Be under 60 characters.
-    - Be engaging and click-worthy.
-    """
+    transcript = generate_transcript(video_url)
 
     completion = openai_client.chat.completions.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=150,
-        temperature=0.7
+        model="gpt-4", # Updated model name
+        messages=[
+            {"role": "system", "content": "You are an SEO expert specializing in YouTube titles."},
+            {"role": "user", "content": f"""
+                Create 5 SEO-optimized YouTube titles for the following video content:
+                {transcript}
+                Each title should:
+                - Contain relevant keywords
+                - Be under 60 characters
+                - Be engaging and click-worthy
+            """}
+        ],
+        temperature=0.7,
+        max_tokens=150
     )
 
-    return {
-        "title": completion
-    }
+    return completion.choices[0].message.content
+

@@ -35,7 +35,7 @@ async def subscribe_to_channel(request: SubscriptionRequest):
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": "https://60d4-92-237-137-142.ngrok-free.app/webhook",
+        "hub.callback": "https://6dee-92-237-137-142.ngrok-free.app/webhook",
         "hub.verify": "async",
     }
 
@@ -92,18 +92,14 @@ async def webhook(request: Request):
                 response = []
 
                 for action in actions_data:
-                    response.append({
-                        "task_id": "123",
-                        "cardId": action["cardId"],
-                        "status": "PENDING"
-                    })
-                    # if action["actionType"] == "Generate summary":
-                    #     task_id = generate_summary.delay(action["input"])
-                    #     response.append({
-                    #         "task_id": str(task_id),
-                    #         "cardId": action["cardId"],
-                    #         "status": "PENDING"
-                    #     })
+                    print(action)
+                    if action["actionType"] == "Generate summary":
+                        task_id = generate_summary.delay(video_data["link"])
+                        response.append({
+                            "task_id": str(task_id),
+                            "cardId": action["cardId"],
+                            "status": "PENDING"
+                        })
                     # elif action["actionType"] == "Generate captions":
                     #     task_id = generate_captions.delay(action["input"])
                     #     response.append({
@@ -118,20 +114,27 @@ async def webhook(request: Request):
                     #         "cardId": action["cardId"],
                     #         "status": "PENDING"
                     #     })
-                    # elif action["actionType"] == "Generate SEO optimized title":
-                    #     task_id = generate_seo_title.delay(action["input"])
-                    #     response.append({
-                    #         "task_id": str(task_id),
-                    #         "cardId": action["cardId"],
-                    #         "status": "PENDING"
-                    #     })
-                    # elif action["actionType"] == "Generate SEO optimized description":
-                    #     task_id = generate_seo_keywords.delay(action["input"])
-                    #     response.append({
-                    #         "task_id": str(task_id),
-                    #         "cardId": action["cardId"],
-                    #         "status": "PENDING"
-                    #     })
+                    elif action["actionType"] == "Generate SEO optimized title":
+                        task_id = generate_seo_title.delay(video_data["link"])
+                        response.append({
+                            "task_id": str(task_id),
+                            "cardId": action["cardId"],
+                            "status": "PENDING"
+                        })
+                    elif action["actionType"] == "Generate SEO optimized description":
+                        task_id = generate_seo_keywords.delay(video_data["link"])
+                        response.append({
+                            "task_id": str(task_id),
+                            "cardId": action["cardId"],
+                            "status": "PENDING"
+                        })
+                    elif action["actionType"] == "Generate SEO optimized keywords":
+                        task_id = generate_seo_keywords.delay(video_data["link"])
+                        response.append({
+                            "task_id": str(task_id),
+                            "cardId": action["cardId"],
+                            "status": "PENDING"
+                        })
                 
                 if user_id in connected_clients:
                     await connected_clients[user_id].send_json(response)

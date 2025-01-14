@@ -113,28 +113,26 @@ export default function CustomNode({
       className={`
         ${
           data.selected
-            ? "border-2 border-[#069494] ring-4 ring-[#069494]/20"
-            : "border border-gray-200/60"
+            ? "border-2 border-[#069494] ring-4 ring-[#069494]/10"
+            : "border border-gray-100"
         }
-        bg-white/95 rounded-xl w-[400px] p-6 relative
-        shadow-[0_8px_30px_rgb(0,0,0,0.06)]
-        hover:shadow-[0_16px_40px_rgb(0,0,0,0.08)]
-        hover:scale-[1.02]
+        bg-white/95 backdrop-blur-xl
+        rounded-2xl w-[420px] p-6 relative
+        shadow-[0_4px_20px_rgba(0,0,0,0.05)]
+        hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+        hover:scale-[1.01]
         transition-all duration-300 ease-out
-        backdrop-blur-lg
       `}
     >
       {data.type === "Action" && (
         <Handle
-          onConnect={(params) => console.log("handle onConnect", params)}
           type="target"
-          isConnectableStart
           position={Position.Top}
-          className="!w-5 !h-5 !border-[2px] !border-[#069494] !bg-white !rounded-full
+          className="!w-4 !h-4 !border-2 !border-[#069494] !bg-white !rounded-full
             before:content-[''] before:absolute before:w-2 before:h-2 
-            before:bg-gradient-to-br before:from-[#069494] before:to-[#40E0D0] 
-            before:rounded-full before:top-1/2 before:left-1/2 
-            before:-translate-x-1/2 before:-translate-y-1/2"
+            before:bg-[#069494] before:rounded-full before:top-1/2 before:left-1/2 
+            before:-translate-x-1/2 before:-translate-y-1/2
+            hover:!border-[#40E0D0] transition-colors"
         />
       )}
 
@@ -145,13 +143,13 @@ export default function CustomNode({
               flex items-center gap-2
               ${
                 data.type === "Trigger"
-                  ? "bg-gradient-to-br from-[#069494]/10 to-[#40E0D0]/5"
-                  : "bg-gradient-to-br from-gray-50 to-gray-100/50"
+                  ? "bg-gradient-to-br from-[#069494]/5 to-[#40E0D0]/5"
+                  : "bg-gradient-to-br from-gray-50/80 to-transparent"
               }
-              rounded-lg px-4 py-2
-              border border-gray-100
-              hover:translate-y-[-2px]
-              hover:shadow-lg hover:shadow-[#069494]/10
+              rounded-xl px-4 py-2
+              border border-gray-100/60
+              hover:border-[#069494]/20
+              hover:shadow-sm
               transition-all duration-200
             `}
           >
@@ -169,13 +167,13 @@ export default function CustomNode({
         {currentTaskStatus &&
         (currentTaskStatus.status === "PENDING" ||
           currentTaskStatus.status === "Yet to be processed") ? (
-          <div className="flex items-center gap-2 mr-2">
+          <div className="flex items-center gap-2">
             {currentTaskStatus.status === "Yet to be processed" ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
                 Yet to be processed
               </span>
             ) : (
-              <BeatLoader loading={true} size={8} color="#009688" />
+              <BeatLoader loading={true} size={6} color="#069494" />
             )}
           </div>
         ) : (
@@ -185,17 +183,17 @@ export default function CustomNode({
                 toast.error("You cannot delete the default tasks");
               }
             }}
-            className="p-2.5 hover:bg-red-50 rounded-xl transition-all duration-200 group"
+            className="p-2.5 hover:bg-red-50/80 rounded-xl transition-all duration-200 group"
           >
             <RiDeleteBin6Line
-              size={18}
+              size={16}
               className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
             />
           </button>
         )}
       </div>
 
-      <Separator className="my-4 bg-gradient-to-r from-[#069494]/10 via-[#40E0D0]/20 to-[#069494]/10" />
+      <Separator className="my-4 bg-gradient-to-r from-transparent via-gray-200/60 to-transparent" />
 
       <div className="px-1">
         {isPlaceholderLabel(data.label) ? (
@@ -207,18 +205,13 @@ export default function CustomNode({
           <div
             className={`
               flex items-center gap-3
-              bg-gradient-to-br from-gray-50 via-white to-gray-50
-              border border-gray-200/60
-              w-fit py-2.5 px-4 rounded-lg
-              hover:border-[#069494]/30 hover:from-[#069494]/5 hover:to-white
+              bg-gradient-to-br from-gray-50/50 via-white to-gray-50/50
+              border border-gray-100
+              w-fit py-2.5 px-4 rounded-xl
+              hover:border-[#069494]/20 hover:from-[#069494]/5 hover:to-white
               hover:shadow-lg hover:shadow-[#069494]/5
               hover:scale-[1.02]
               transition-all duration-200
-              ${
-                data.type === "Trigger"
-                  ? "hover:from-blue-50/20 hover:to-white"
-                  : ""
-              }
             `}
           >
             <div
@@ -238,11 +231,10 @@ export default function CustomNode({
       </div>
 
       <Handle
-        onConnect={(params) => console.log("handle onConnect", params)}
         type="source"
-        isConnectableEnd
         position={Position.Bottom}
-        className="!w-4 !h-4 !border-[2px] !border-[#069494] !bg-white !rounded-full"
+        className="!w-4 !h-4 !border-2 !border-[#069494] !bg-white !rounded-full
+          hover:!border-[#40E0D0] transition-colors"
       />
 
       {false && (
