@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
+import { updateStartFetching } from "@/app/store/slices/startfetching-slice";
 
 export function useCurrentTaskQuery(currentTaskStatus: any) {
-  const {
-    data: ts,
-    status,
-    error,
-  } = useQuery({
+  const startFetching = useSelector((state: RootState) => state.startFetching);
+  const dispatch = useDispatch();
+  const query = useQuery({
     queryKey: ["task-status", currentTaskStatus?.task_id],
     queryFn: async () => {
       const response = await fetch(
@@ -13,8 +14,22 @@ export function useCurrentTaskQuery(currentTaskStatus: any) {
       );
       return response.json();
     },
-    enabled: !!currentTaskStatus?.task_id,
-    refetchInterval: currentTaskStatus?.status === "SUCCESS" ? false : 2000,
+    enabled:
+      !!currentTaskStatus?.task_id &&
+      (currentTaskStatus?.status === "PENDING" ||
+        startFetching.find((item) => item.id === currentTaskStatus?.cardId)
+          ?.startFetching),
+    refetchInterval: (data: any) =>
+      data?.state?.data?.status === "SUCCESS" ? false : 2000,
   });
-  return { ts, status, error };
+  if (query.data?.state?.data?.status === "SUCCESS") {
+    dispatch(
+      updateStartFetching({
+        id: currentTaskStatus?.cardId,
+        startFetching: false,
+      })
+    );
+  }
+
+  return { ts: query.data, status: query.status, error: query.error };
 }

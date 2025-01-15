@@ -17,7 +17,7 @@ def add_user(user: User):
     if user_id:
         return {"message": "User already exists", "user_id": str(user_id["_id"])}   
     user_id = users_collection.insert_one(user.model_dump()).inserted_id
-    return {"message": "Success", "user_id": str(user_id)}
+    return {"message": "SUCCESS", "user_id": str(user_id)}
  
 
 @router.get("/user-stats")

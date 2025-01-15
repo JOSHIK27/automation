@@ -7,7 +7,7 @@ from backend.db.db import client
 from backend.api.endpoints.websocket.websocket import get_connected_clients
 from bson.objectid import ObjectId
 from backend.tasks import generate_seo_title, generate_seo_keywords, generate_summary, generate_timestamps
-
+import asyncio
 
 router = APIRouter()
 db = client["core"]
@@ -35,7 +35,7 @@ async def subscribe_to_channel(request: SubscriptionRequest):
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": "https://6dee-92-237-137-142.ngrok-free.app/webhook",
+        "hub.callback": "https://f722-92-237-137-142.ngrok-free.app/webhook",
         "hub.verify": "async",
     }
 
@@ -90,9 +90,12 @@ async def webhook(request: Request):
                 actions_data = workflow["actions_data"]
 
                 response = []
-
+                client_state = []
                 for action in actions_data:
-                    print(action)
+                    client_state.append({
+                        "id": action["cardId"],
+                        "startFetching": True
+                    })
                     if action["actionType"] == "Generate summary":
                         task_id = generate_summary.delay(video_data["link"])
                         response.append({
@@ -136,8 +139,23 @@ async def webhook(request: Request):
                             "status": "PENDING"
                         })
                 
+                db.task_status.update_one(
+                    {"workflow_id": workflow_id},
+                    {
+                        "$set": {
+                            "task_status": [{
+                                "task_id": item["task_id"],
+                                "status": "PENDING",
+                                "cardId": item["cardId"]
+                            } for item in response]
+                        }
+                    },
+                    upsert=True
+                )
+                print(client_state)
+
                 if user_id in connected_clients:
-                    await connected_clients[user_id].send_json(response)
+                    await connected_clients[user_id].send_json({"workflow_id": workflow_id, "client_state": client_state})
 
         return response
     

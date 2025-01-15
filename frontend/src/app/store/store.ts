@@ -5,7 +5,7 @@ import taskstatusReducer from "./slices/trigger-card-slices/task-status-slice";
 import userReducer from "./slices/user-slice";
 import updateBtnReducer from "./slices/trigger-card-slices/update-btn-slice";
 import workflowNameReducer from "./slices/workflow-slice";
-
+import startFetchingReducer from "./slices/startfetching-slice";
 export const store = configureStore({
   reducer: {
     trigger: triggerReducer,
@@ -14,6 +14,7 @@ export const store = configureStore({
     user: userReducer,
     updateBtn: updateBtnReducer,
     workflowName: workflowNameReducer,
+    startFetching: startFetchingReducer,
   },
 });
 

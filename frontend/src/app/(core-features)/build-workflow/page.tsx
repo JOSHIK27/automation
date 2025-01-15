@@ -72,6 +72,7 @@ import {
 } from "@/app/store/slices/workflow-slice";
 import { useUpdateWorkFlowMutation } from "@/hooks/mutations/useUpdateWorkFlowMutation";
 import { usePubSubHubBubSubscribeMutation } from "@/hooks/mutations/usePubSubHubBubSubscribeMutation";
+import { setStartFetching } from "@/app/store/slices/startfetching-slice";
 
 type FormValues = {
   name: string;
@@ -82,13 +83,6 @@ export default function Flow() {
   // Authentication
   const { data: session, status } = useSession();
   const { userId, userStatus, userError } = useUserId(session);
-
-  // Redux hooks and state
-  const dispatch = useDispatch();
-  const { workflowType, triggerType, channelId, videoTitle } = useSelector(
-    (state: RootState) => state.trigger
-  );
-  const actionsList = useSelector((state: RootState) => state.actions);
 
   // Local state
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -101,6 +95,31 @@ export default function Flow() {
   );
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [renderKey, setRenderKey] = useState(0);
+  const startFetching = useSelector((state: RootState) => state.startFetching);
+  console.log(startFetching);
+
+  // websocker
+  useEffect(() => {
+    if (userId) {
+      const ws = new WebSocket(`ws://localhost:8000/ws?userId=${userId}`);
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data?.workflow_id === workflowId) {
+          setRenderKey((prev) => prev + 1);
+          dispatch(setStartFetching(data.client_state));
+        }
+      };
+      return () => ws.close();
+    }
+  }, [userId, workflowId]);
+
+  // Redux hooks and state
+  const dispatch = useDispatch();
+  const { workflowType, triggerType, channelId, videoTitle } = useSelector(
+    (state: RootState) => state.trigger
+  );
+  const actionsList = useSelector((state: RootState) => state.actions);
 
   // Form handling
   const form = useForm<FormValues>({
@@ -460,16 +479,24 @@ export default function Flow() {
         channel_id: channelId,
       });
     }
-    triggerWorkflowMutation.mutate({
-      workflowId: workflowId,
-      triggerState: {
-        triggerType,
-        workflowType,
-        channelId,
-        videoTitle,
+    triggerWorkflowMutation.mutate(
+      {
+        workflowId: workflowId,
+        triggerState: {
+          triggerType,
+          workflowType,
+          channelId,
+          videoTitle,
+        },
+        actionsList,
       },
-      actionsList,
-    });
+      {
+        onSuccess: () => {
+          setRenderKey((prev) => prev + 1);
+          toast.success("Workflow triggered successfully!");
+        },
+      }
+    );
   };
 
   if (triggerWorkflowMutation.isError || saveWorkflowMutation.isError) {
@@ -526,7 +553,7 @@ export default function Flow() {
   }
 
   return (
-    <div className="relative" style={{ height: "100dvh" }}>
+    <div key={renderKey} className="relative" style={{ height: "100dvh" }}>
       <div className="fixed top-20 left-4 z-50">
         <div className="relative group">
           <div

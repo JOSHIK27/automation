@@ -56,10 +56,11 @@ def generatekeywords(request: Request, textContent: str):
 @router.get("/result/{task_id}")
 async def get_result(task_id: str):
     result = celery_app.AsyncResult(task_id)
-    if result.state == "PENDING":
+
+    if result.state != "SUCCESS":
         return {"status": "PENDING"}
-    elif result.state == "SUCCESS":
-        return {"status": "SUCCESS", "result": result.result}
     else:
-        return {"status": f"Task failed or has an unknown state: {result.state}"}
+        return {"status": "SUCCESS", "result": result.result}
+    # else:
+    #     return {"status": f"Task failed or has an unknown state: {result.state}"}
     

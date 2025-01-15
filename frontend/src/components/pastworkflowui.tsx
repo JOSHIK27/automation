@@ -66,6 +66,7 @@ import { format } from "date-fns";
 import { setWorkflowId } from "@/app/store/slices/workflow-slice";
 import { setWorkflowName } from "@/app/store/slices/workflow-slice";
 import { Node, Edge } from "@/lib/constants/workflow";
+import { setStartFetching } from "@/app/store/slices/startfetching-slice";
 
 type FormValues = {
   name: string;
@@ -77,6 +78,31 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const { status, data: session } = useSession();
   const { userId, userStatus, userError } = useUserId(session);
 
+  // websocker
+  const [renderKey, setRenderKey] = useState(0);
+  // Local State
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const [showCard, setShowCard] = useState(false);
+  const [cardId, setCardId] = useState<string>("");
+  const [selectValue, setSelectValue] = useState("");
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  useEffect(() => {
+    if (userId) {
+      const ws = new WebSocket(`ws://localhost:8000/ws?userId=${userId}`);
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data?.workflow_id === workflowId) {
+          dispatch(setStartFetching(data?.client_state));
+          setRenderKey((prev) => prev + 1);
+        }
+      };
+      return () => ws.close();
+    }
+  }, [userId, workflowId]);
+
   // Redux State & Dispatch
   const dispatch = useDispatch();
   const { workflowType, triggerType, channelId, videoTitle } = useSelector(
@@ -86,15 +112,8 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const { workflowName } = useSelector(
     (state: RootState) => state.workflowName
   );
-
-  // Local State
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
-  const [showCard, setShowCard] = useState(false);
-  const [cardId, setCardId] = useState<string>("");
-  const [selectValue, setSelectValue] = useState("");
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const startFetching = useSelector((state: RootState) => state.startFetching);
+  console.log(startFetching);
 
   // Form Handling
   const form = useForm<FormValues>({
@@ -113,6 +132,10 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const triggerWorkflowMutation = useTriggerWorkFlowMutation();
 
   // Effects
+  useEffect(() => {
+    dispatch(setWorkflowId(workflowId));
+  }, [workflowId]);
+
   useEffect(() => {
     if (workflowDetails) {
       const historyNodes = workflowDetails.workflow_history[0].nodes as any[];
@@ -160,7 +183,6 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       </div>
     );
   }
-  console.log(nodes, edges);
   // Node Connection Handler
   const onConnect = (connection: any) => {
     const edge = { ...connection, type: ConnectionLineType.SimpleBezier };

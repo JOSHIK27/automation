@@ -12,7 +12,9 @@ import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-stat
 import { toast } from "sonner";
 import { useCurrentTaskQuery } from "@/hooks/queries/useCurrentTaskQuery";
 import { useTaskStatusMutation } from "@/hooks/mutations/useTaskStatusMutation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useTaskStatusQuery } from "@/hooks/queries/useTaskStatusQuery";
+import { usePathname } from "next/navigation";
 
 export default function CustomNode({
   data,
@@ -26,33 +28,35 @@ export default function CustomNode({
   };
   id: string;
 }) {
-  const dispatch = useDispatch();
-  const taskStatus = useSelector((state: RootState) => state.taskstatus);
-  const currentTaskStatus = taskStatus?.find((task: any) => task.cardId === id);
-  const { ts, status, error } = useCurrentTaskQuery(currentTaskStatus);
   const workflowId = useSelector(
     (state: RootState) => state.workflowName.workflowId
   );
-  const updateTaskStatusMutation = useTaskStatusMutation({
-    workflowId: workflowId,
-    cardId: id,
-  });
+  const dispatch = useDispatch();
+  const { data: currentTaskStatus } = useTaskStatusQuery(workflowId, id); // returns from task_status collections
+  // const currentTaskStatus = useSelector((state: RootState) => state.taskstatus);
+  // const currentTaskStatus = taskStatus?.find((task: any) => task.cardId === id);
+  const { ts, status, error } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
+  // console.log("currentTaskStatus", currentTaskStatus, "ts", ts);
+  // const updateTaskStatusMutation = useTaskStatusMutation({
+  //   workflowId: workflowId,
+  //   cardId: id,
+  // });
 
-  useEffect(() => {
-    if (status === "success") {
-      if (ts.status === "SUCCESS") {
-        console.log("Updating task status");
-        const updatedTaskStatus = taskStatus.map((task) => {
-          if (task.cardId === id) {
-            return { ...task, status: "SUCCESS" };
-          }
-          return task;
-        });
-        dispatch(setTasksStatus(updatedTaskStatus));
-        updateTaskStatusMutation.mutate();
-      }
-    }
-  }, [status, ts]);
+  // useEffect(() => {
+  //   if (status === "success") {
+  //     if (ts.status === "SUCCESS") {
+  //       console.log("Updating task status");
+  //       const updatedTaskStatus = taskStatus.map((task) => {
+  //         if (task.cardId === id) {
+  //           return { ...task, status: "SUCCESS" };
+  //         }
+  //         return task;
+  //       });
+  //       dispatch(setTasksStatus(updatedTaskStatus));
+  //       updateTaskStatusMutation.mutate();
+  //     }
+  //   }
+  // }, [status, ts]);
 
   const isPlaceholderLabel = (label: string) => {
     return (
@@ -164,33 +168,37 @@ export default function CustomNode({
           </div>
         </div>
 
-        {currentTaskStatus &&
-        (currentTaskStatus.status === "PENDING" ||
-          currentTaskStatus.status === "Yet to be processed") ? (
-          <div className="flex items-center gap-2">
-            {currentTaskStatus.status === "Yet to be processed" ? (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
-                Yet to be processed
-              </span>
-            ) : (
-              <BeatLoader loading={true} size={6} color="#069494" />
-            )}
-          </div>
-        ) : (
-          <button
-            onClick={() => {
-              if (id === "1" || id === "2") {
-                toast.error("You cannot delete the default tasks");
-              }
-            }}
-            className="p-2.5 hover:bg-red-50/80 rounded-xl transition-all duration-200 group"
-          >
-            <RiDeleteBin6Line
-              size={16}
-              className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
-            />
-          </button>
-        )}
+        {ts ? (
+          ts.status !== "SUCCESS" || ts.status === "Yet to be processed" ? (
+            <div className="flex items-center gap-2">
+              {ts.status === "Yet to be processed" ? (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
+                  Yet to be processed
+                </span>
+              ) : (
+                <BeatLoader loading={true} size={6} color="#069494" />
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                if (id === "1" || id === "2") {
+                  toast.error("You cannot delete the default tasks");
+                }
+              }}
+              className="p-2.5 hover:bg-red-50/80 rounded-xl transition-all duration-200 group"
+            >
+              <RiDeleteBin6Line
+                size={16}
+                className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
+              />
+            </button>
+          )
+        ) : currentTaskStatus?.status === "Yet to be processed" ? (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
+            Yet to be processed
+          </span>
+        ) : null}
       </div>
 
       <Separator className="my-4 bg-gradient-to-r from-transparent via-gray-200/60 to-transparent" />

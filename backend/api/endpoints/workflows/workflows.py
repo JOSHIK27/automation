@@ -7,7 +7,7 @@ from bson.objectid import ObjectId # type: ignore
 from typing import Optional
 from backend.api.endpoints.webhooks.webhooks import subscribe_to_channel
 from backend.schemas.users import UpdateTaskStatusPayload
-
+from fastapi.responses import JSONResponse
 
 router = APIRouter()
 db = client["core"]
@@ -42,7 +42,10 @@ async def triggerworkflow(request: TriggerWorkflowPayload):
                 "cardId": action["cardId"],
                 "status": "Yet to be processed"
             })
-
+        db.task_status.insert_one({
+            "workflow_id": request.workflowId,
+            "task_status": response
+        })
         return response
     
     else:
@@ -52,7 +55,7 @@ async def triggerworkflow(request: TriggerWorkflowPayload):
             if action['actionType'] == 'Generate thumbnail':
                 task_id = generate_image_task.delay(action["thumbnailPrompt"])
                 response.append({
-                    "task_id": str(task_id),  # Ensure task_id is serializable
+                    "task_id": str(task_id),
                     "cardId": action["cardId"],
                     "status": "PENDING"
                 })
@@ -68,6 +71,11 @@ async def triggerworkflow(request: TriggerWorkflowPayload):
             "workflow_id": request.workflowId,
             "trigger_data": trigger_data,
             "actions_data": actions_data,
+        })
+
+        db.task_status.insert_one({
+            "workflow_id": request.workflowId,
+            "task_status": response
         })
 
         return response
@@ -261,3 +269,19 @@ async def update_task_status(request: UpdateTaskStatusPayload):
 
     return {"message": "Task status updated successfully"}
 
+
+@router.get("/task-status/{workflowId}/{cardId}", status_code=200)
+async def get_task_status(workflowId: str, cardId: str):
+
+    if cardId == "1":
+        return {"status": "SUCCESS"}
+        
+    db = client["core"]
+    task_status = db.task_status.find_one({"workflow_id": workflowId})
+    
+    if task_status:
+        for task in task_status["task_status"]:
+            if task["cardId"] == cardId:
+                return task
+        
+    return JSONResponse(status_code=404, content={"message": "Task not found"})

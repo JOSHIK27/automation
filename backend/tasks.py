@@ -5,7 +5,7 @@ import os
 from googleapiclient.discovery import build
 from openai import OpenAI
 from keybert import KeyBERT
-
+import asyncio
 
 dumpling_base_url = "https://app.dumplingai.com"
 
@@ -213,25 +213,27 @@ def generate_seo_keywords(textContent: str):
 
 @celery_app.task
 def generate_seo_title(video_url: str):
-    openai_client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
-    transcript = generate_transcript(video_url)
+    # openai_client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
+    # transcript = generate_transcript(video_url)
 
-    completion = openai_client.chat.completions.create(
-        model="gpt-4", # Updated model name
-        messages=[
-            {"role": "system", "content": "You are an SEO expert specializing in YouTube titles."},
-            {"role": "user", "content": f"""
-                Create 5 SEO-optimized YouTube titles for the following video content:
-                {transcript}
-                Each title should:
-                - Contain relevant keywords
-                - Be under 60 characters
-                - Be engaging and click-worthy
-            """}
-        ],
-        temperature=0.7,
-        max_tokens=150
-    )
+    # completion = openai_client.chat.completions.create(
+    #     model="gpt-4", # Updated model name
+    #     messages=[
+    #         {"role": "system", "content": "You are an SEO expert specializing in YouTube titles."},
+    #         {"role": "user", "content": f"""
+    #             Create 5 SEO-optimized YouTube titles for the following video content:
+    #             {transcript}
+    #             Each title should:
+    #             - Contain relevant keywords
+    #             - Be under 60 characters
+    #             - Be engaging and click-worthy
+    #         """}
+    #     ],
+    #     temperature=0.7,
+    #     max_tokens=150
+    # )
+    return "A random title"
+    # return completion.choices[0].message.content
 
-    return completion.choices[0].message.content
+
 
