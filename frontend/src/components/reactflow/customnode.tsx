@@ -93,164 +93,74 @@ export default function CustomNode({
       className={`
         ${
           data.selected
-            ? "border-2 border-[#069494] ring-4 ring-[#069494]/10"
-            : "border border-gray-100"
+            ? "ring-2 ring-teal-500/20 shadow-[0_0_0_1px_rgba(20,184,166,0.4)]"
+            : "ring-1 ring-gray-950/5"
         }
-        bg-white/95 backdrop-blur-xl
-        rounded-2xl w-[420px] p-6 relative
-        shadow-[0_4px_20px_rgba(0,0,0,0.05)]
-        hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]
-        hover:scale-[1.01]
+        bg-gradient-to-b from-white via-white to-gray-50/80
+        backdrop-blur-xl
+        rounded-2xl w-[420px] relative
+        shadow-[0_4px_20px_rgba(0,0,0,0.03)]
+        hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]
+        group
         transition-all duration-300 ease-out
       `}
     >
+      {/* Premium glass effect header */}
+      <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-teal-500/10 to-transparent" />
+
+      {/* Handle for Action nodes */}
       {data.type === "Action" && (
         <Handle
           type="target"
           position={Position.Top}
-          className="!w-4 !h-4 !border-2 !border-[#069494] !bg-white !rounded-full
-            before:content-[''] before:absolute before:w-2 before:h-2 
-            before:bg-[#069494] before:rounded-full before:top-1/2 before:left-1/2 
+          className="!w-3 !h-3 !border !border-teal-500/30 !bg-white !rounded-full
+            before:content-[''] before:absolute before:w-1.5 before:h-1.5 
+            before:bg-teal-500/40 before:rounded-full before:top-1/2 before:left-1/2 
             before:-translate-x-1/2 before:-translate-y-1/2
-            hover:!border-[#40E0D0] transition-colors"
+            hover:!border-teal-500/50 hover:before:bg-teal-500/60
+            transition-all duration-200"
         />
       )}
 
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div
-            className={`
-              flex items-center gap-2
-              ${
-                data.type === "Trigger"
-                  ? "bg-gradient-to-br from-[#069494]/5 to-[#40E0D0]/5"
-                  : "bg-gradient-to-br from-gray-50/80 to-transparent"
-              }
-              rounded-xl px-4 py-2
-              border border-gray-100/60
-              hover:border-[#069494]/20
-              hover:shadow-sm
-              transition-all duration-200
-            `}
-          >
-            {data.type !== "Trigger" ? (
-              <MdOutlineStickyNote2 className="text-teal text-lg" />
-            ) : (
-              <IoPlayCircle className="text-teal text-lg" />
-            )}
-            <span className="text-sm font-medium bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-              {data.type}
-            </span>
-          </div>
-        </div>
-
-        {result ? (
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 border border-emerald-500/20 hover:shadow-sm hover:border-emerald-500/30 transition-all duration-200">
-            <svg
-              className="w-3 h-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Result
-          </div>
-        ) : ts ? (
-          ts.status !== "SUCCESS" || ts.status === "Yet to be processed" ? (
-            <div className="flex items-center gap-2">
-              {ts.status === "Yet to be processed" ? (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
-                  Yet to be processed
-                </span>
-              ) : (
-                <BeatLoader loading={true} size={6} color="#069494" />
-              )}
-            </div>
-          ) : (
-            <button
-              onClick={() => {
-                if (id === "1" || id === "2") {
-                  toast.error("You cannot delete the default tasks");
-                }
-              }}
-              className="p-2.5 hover:bg-red-50/80 rounded-xl transition-all duration-200 group"
-            >
-              <RiDeleteBin6Line
-                size={16}
-                className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
-              />
-            </button>
-          )
-        ) : currentTaskStatus?.status === "Yet to be processed" ? (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
-            Yet to be processed
-          </span>
-        ) : null}
-      </div>
-
-      <Separator className="my-4 bg-gradient-to-r from-transparent via-gray-200/60 to-transparent" />
-
-      <div className="px-1">
-        {isPlaceholderLabel(data.label) ? (
-          <span className="text-sm text-gray-400 italic flex items-center gap-2.5 px-2">
-            <MdOutlineStickyNote2 className="text-gray-300" />
-            No Description
-          </span>
-        ) : (
-          <div
-            className={`
-              flex items-center gap-3
-              bg-gradient-to-br from-gray-50/50 via-white to-gray-50/50
-              border border-gray-100
-              w-fit py-2.5 px-4 rounded-xl
-              hover:border-[#069494]/20 hover:from-[#069494]/5 hover:to-white
-              hover:shadow-lg hover:shadow-[#069494]/5
-              hover:scale-[1.02]
-              transition-all duration-200
-            `}
-          >
+      <div className="p-5">
+        {/* Header Section */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
             <div
               className={`
-              p-2 rounded-lg
-              ${data.type === "Trigger" ? "bg-blue-50" : "bg-gray-50"}
-              transition-colors duration-200
-            `}
+                flex items-center gap-2 px-3 py-1.5
+                ${
+                  data.type === "Trigger"
+                    ? "bg-gradient-to-br from-teal-50 to-emerald-50/50"
+                    : "bg-gradient-to-br from-gray-50 to-slate-50/50"
+                }
+                rounded-lg
+                ring-1 ring-gray-950/5
+                group-hover:ring-teal-500/20
+                transition-all duration-200
+              `}
             >
-              {getIconForLabel(data.label)}
+              {data.type !== "Trigger" ? (
+                <MdOutlineStickyNote2 className="text-teal-600/80 text-sm" />
+              ) : (
+                <IoPlayCircle className="text-teal-600/80 text-sm" />
+              )}
+              <span className="text-xs font-medium text-gray-600">
+                {data.type}
+              </span>
             </div>
-            <span className="text-sm font-medium text-gray-700">
-              {data.label}
-            </span>
           </div>
-        )}
-      </div>
 
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="!w-4 !h-4 !border-2 !border-[#069494] !bg-white !rounded-full
-          hover:!border-[#40E0D0] transition-colors"
-      />
-
-      {false && (
-        <div className="mt-4">
-          <Separator className="my-4 bg-gray-100" />
-
-          <button
-            onClick={() => {
-              /* Add your result view/copy logic */
-            }}
-            className="group flex w-full items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 transition-all duration-200 hover:border-teal/20 hover:bg-teal/5"
-          >
-            <div className="flex items-center gap-2.5">
+          {/* Status Indicators */}
+          {result ? (
+            <div
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
+              bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-600
+              ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/30
+              transition-all duration-200"
+            >
               <svg
-                className="h-4 w-4 text-teal"
+                className="w-3 h-3"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -262,24 +172,87 @@ export default function CustomNode({
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span className="text-sm text-gray-600">View result</span>
+              <span>Complete</span>
             </div>
-            <svg
-              className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:translate-x-0.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
+          ) : ts ? (
+            ts.status !== "SUCCESS" || ts.status === "Yet to be processed" ? (
+              <div className="flex items-center gap-2">
+                {ts.status === "Yet to be processed" ? (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
+                    Yet to be processed
+                  </span>
+                ) : (
+                  <BeatLoader loading={true} size={6} color="#069494" />
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  if (id === "1" || id === "2") {
+                    toast.error("You cannot delete the default tasks");
+                  }
+                }}
+                className="p-2.5 hover:bg-red-50/80 rounded-xl transition-all duration-200 group"
+              >
+                <RiDeleteBin6Line
+                  size={16}
+                  className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
+                />
+              </button>
+            )
+          ) : currentTaskStatus?.status === "Yet to be processed" ? (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
+              Yet to be processed
+            </span>
+          ) : null}
         </div>
-      )}
+
+        {/* Separator with gradient */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-200/60 to-transparent my-4" />
+
+        {/* Content Section */}
+        <div className="px-1">
+          {isPlaceholderLabel(data.label) ? (
+            <span className="text-sm text-gray-400 italic flex items-center gap-2.5 px-2">
+              <MdOutlineStickyNote2 className="text-gray-300" />
+              Select an action
+            </span>
+          ) : (
+            <div
+              className={`
+              flex items-center gap-3
+              bg-gradient-to-br from-gray-50/80 via-white to-gray-50/80
+              ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
+              w-fit py-2.5 px-4 rounded-xl
+              group-hover:shadow-lg group-hover:shadow-teal-500/5
+              transition-all duration-200
+            `}
+            >
+              <div
+                className={`
+                p-2 rounded-lg
+                ${data.type === "Trigger" ? "bg-teal-50/80" : "bg-gray-50/80"}
+                transition-colors duration-200
+              `}
+              >
+                {getIconForLabel(data.label)}
+              </div>
+              <span className="text-sm font-medium text-gray-700">
+                {data.label}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Handle */}
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="!w-3 !h-3 !border !border-teal-500/30 !bg-white !rounded-full
+          hover:!border-teal-500/50
+          transition-colors duration-200"
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 // React and Next.js imports
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 // XYFlow imports
 import {
@@ -79,10 +79,10 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const { userId, userStatus, userError } = useUserId(session);
 
   // websocker
-  const [renderKey, setRenderKey] = useState(0);
+  const [, setRenderKey] = useState(0);
   // Local State
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<any>([]);
   const [showCard, setShowCard] = useState(false);
   const [cardId, setCardId] = useState<string>("");
   const [selectValue, setSelectValue] = useState("");
@@ -241,12 +241,16 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
         type: "customWithHandle",
         draggable: true,
       });
-      const updatedNodes = nodes.filter((n) => n.id !== "customWithHandle");
+      const updatedNodes: Node[] = nodes.filter(
+        (n: Node) => n.id !== "customWithHandle"
+      );
       updatedNodes.push(newnodes[0]);
       updatedNodes.push(newnodes[1]);
       setNodes(updatedNodes);
 
-      const updatedEdges = edges.filter((e) => e.target !== target);
+      const updatedEdges: Edge[] = edges.filter(
+        (e: Edge) => e.target !== target
+      );
 
       updatedEdges.push({
         id: `${source}->${String(Number(source) + 1)}`,
@@ -286,7 +290,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     } else {
       const currentNodes = nodes;
       const currentEdges = edges;
-      let updatedNodes = currentNodes.map((n) => {
+      let updatedNodes = currentNodes.map((n: Node) => {
         if (n.id === "customWithHandle") {
           return {
             ...n,
@@ -349,7 +353,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       };
       updatedNodes.push(newNode);
       updatedNodes.sort((a, b) => Number(a.id) - Number(b.id));
-      const newEdges: any[] = currentEdges.map((edge) => {
+      const newEdges: Edge[] = currentEdges.map((edge: Edge) => {
         if (
           edge.target !== "customWithHandle" &&
           Number(edge.source) > Number(source)
