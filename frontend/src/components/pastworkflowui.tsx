@@ -95,8 +95,8 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data?.workflow_id === workflowId) {
-          dispatch(setStartFetching(data?.client_state));
           setRenderKey((prev) => prev + 1);
+          dispatch(setStartFetching(data.client_state));
         }
       };
       return () => ws.close();

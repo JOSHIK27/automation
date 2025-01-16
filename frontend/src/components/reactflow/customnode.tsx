@@ -31,33 +31,9 @@ export default function CustomNode({
   const workflowId = useSelector(
     (state: RootState) => state.workflowName.workflowId
   );
-  const dispatch = useDispatch();
   const { data: currentTaskStatus } = useTaskStatusQuery(workflowId, id); // returns from task_status collections
-  // const currentTaskStatus = useSelector((state: RootState) => state.taskstatus);
-  // const currentTaskStatus = taskStatus?.find((task: any) => task.cardId === id);
-  const { ts, status, error } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
-  // console.log("currentTaskStatus", currentTaskStatus, "ts", ts);
-  // const updateTaskStatusMutation = useTaskStatusMutation({
-  //   workflowId: workflowId,
-  //   cardId: id,
-  // });
-
-  // useEffect(() => {
-  //   if (status === "success") {
-  //     if (ts.status === "SUCCESS") {
-  //       console.log("Updating task status");
-  //       const updatedTaskStatus = taskStatus.map((task) => {
-  //         if (task.cardId === id) {
-  //           return { ...task, status: "SUCCESS" };
-  //         }
-  //         return task;
-  //       });
-  //       dispatch(setTasksStatus(updatedTaskStatus));
-  //       updateTaskStatusMutation.mutate();
-  //     }
-  //   }
-  // }, [status, ts]);
-
+  const { ts } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
+  const result = ts?.result;
   const isPlaceholderLabel = (label: string) => {
     return (
       label === "Select the event that you want to trigger" ||
@@ -168,7 +144,24 @@ export default function CustomNode({
           </div>
         </div>
 
-        {ts ? (
+        {result ? (
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-600 border border-emerald-500/20 hover:shadow-sm hover:border-emerald-500/30 transition-all duration-200">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            Result
+          </div>
+        ) : ts ? (
           ts.status !== "SUCCESS" || ts.status === "Yet to be processed" ? (
             <div className="flex items-center gap-2">
               {ts.status === "Yet to be processed" ? (
