@@ -5,6 +5,7 @@ import os
 from googleapiclient.discovery import build
 from openai import OpenAI
 from keybert import KeyBERT
+import ast
 
 dumpling_base_url = "https://app.dumplingai.com"
 
@@ -140,11 +141,8 @@ def generate_transcript(video_url: str):
 
 @celery_app.task
 def generate_content_ideas(channel_id: str):
-
-    service = build("youtube", "v3", developerKey = os.getenv("YOUTUBE_DATA_API_KEY"))
-
-    response = service.channels().list(part = "contentDetails", id = channel_id).execute()
-
+    service = build("youtube", "v3", developerKey=os.getenv("YOUTUBE_DATA_API_KEY"))
+    response = service.channels().list(part="contentDetails", id=channel_id).execute()
     uploads_playlist_id = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
 
     video_titles = []
@@ -169,16 +167,25 @@ def generate_content_ideas(channel_id: str):
     completion = openai_client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
             {
                 "role": "user",
-                "content": f"You are an expert creative content creator who is known for innovation. I want you to give me 5 creative youtube video idea's based on my past video's on my youtube channel. Here's the list of titles of my videos: {video_titles}"
+                "content": f"""
+Analyze the following YouTube video titles and generate 5 new video ideas that are similar in theme or style. 
+The response must be returned as a valid Python list of strings, formatted as a single line with no additional text, code blocks, or formatting.
+
+Example output:
+['Idea 1', 'Idea 2', 'Idea 3', 'Idea 4', 'Idea 5']
+
+Here are the previous video titles:
+{video_titles}
+"""
             }
-        ]
+        ],
     )
+    print(completion.choices[0].message.content)
 
     return {
-        "Content_Ideas": completion
+        "content_ideas": completion.choices[0].message.content
     }
 
 @celery_app.task

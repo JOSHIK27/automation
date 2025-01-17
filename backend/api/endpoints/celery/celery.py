@@ -57,11 +57,16 @@ def generatekeywords(request: Request, textContent: str):
 @router.get("/result/{task_id}")
 async def get_result(task_id: str):
     result = celery_app.AsyncResult(task_id)
+    actionType = ""
+    if "url" in result.result:
+        actionType = "Generate thumbnail"
+    elif "content_ideas" in result.result:
+        actionType = "Analyse my channel videos and generate ideas"
     
     if result.state != "SUCCESS":
-        return {"status": "PENDING"}
+        return {"status": "PENDING", "actionType": actionType}
     else:
-        return {"status": "SUCCESS", "result": result.result}
+        return {"status": "SUCCESS", "result": result.result, "actionType": actionType}
     # else:
     #     return {"status": f"Task failed or has an unknown state: {result.state}"}
     

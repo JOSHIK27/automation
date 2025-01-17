@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import { FaLightbulb } from "react-icons/fa";
 
-export default function GenerateContentIdeas({
+export default function GenerateIdeas({
   isResultOpen,
   setIsResultOpen,
   contentIdeas,

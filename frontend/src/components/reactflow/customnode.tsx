@@ -14,7 +14,7 @@ import GenerateThumbnail from "../resultDialogs/generateThumbnails";
 import GenerateTimeStamps from "../resultDialogs/generateTimeStamps";
 import GenerateSummary from "../resultDialogs/generateVideoSummary";
 import GenerateSEOTitles from "../resultDialogs/generateSEOTitles";
-
+import GenerateIdeas from "../resultDialogs/generateContentIdeas";
 export default function CustomNode({
   data,
   id,
@@ -32,7 +32,7 @@ export default function CustomNode({
   );
   const { data: currentTaskStatus } = useTaskStatusQuery(workflowId, id); // returns from task_status collections
   const { latestStatus } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
-  const result: any = latestStatus?.result || "1";
+  const result: any = latestStatus?.result;
   const resultType: { [key: string]: boolean } = {
     "Generate thumbnail": false,
     "Generate SEO optimized title": false,
@@ -40,8 +40,9 @@ export default function CustomNode({
     "Generate summary": false,
     "Generate timestamps": false,
     "Swap face": false,
+    "Analyse my channel videos and generate ideas": false,
   };
-  if (result?.actionType) resultType[result.actionType] = true;
+  if (latestStatus?.actionType) resultType[latestStatus.actionType] = true;
 
   const isPlaceholderLabel = (label: string) => {
     return (
@@ -53,13 +54,7 @@ export default function CustomNode({
   const videoSummary = `
     The golden rays of the morning sun streamed through the dense canopy of the forest, casting dappled patterns on the forest floor. A gentle breeze rustled the leaves, carrying with it the earthy aroma of moss and damp soil. Birds chirped melodiously, their songs weaving a natural symphony that blended seamlessly with the distant murmur of a babbling brook. A lone squirrel scurried across the path, pausing briefly to inspect a stray acorn before darting into the underbrush. Nearby, wildflowers in shades of purple, yellow, and white swayed gently, their vibrant colors a stark contrast to the deep green foliage. It was a scene of pure tranquility, unmarred by the chaos of the outside world, where time seemed to slow down, allowing one to soak in the beauty and serenity of nature's embrace. Amidst this idyllic setting, a sense of wonder and calm took hold, as if the forest itself were whispering secrets of a simpler, more harmonious existence.
   `;
-  const contentIdeas = [
-    "The sky was painted with hues of orange and pink as the sun set beyond the horizon.",
-    "A gentle rain began to fall, creating a soothing rhythm against the windows.",
-    "The library was silent except for the faint rustle of pages being turned by avid readers.",
-    "Laughter echoed through the park as children chased each other around the playground.",
-    "The aroma of freshly brewed coffee filled the air, inviting everyone to take a moment to relax.",
-  ];
+  const contentIdeas = result?.content_ideas;
 
   const videoTitles = [
     "The sky was painted with hues of orange and pink as the sun set beyond the horizon.",
@@ -69,13 +64,13 @@ export default function CustomNode({
     "The aroma of freshly brewed coffee filled the air, inviting everyone to take a moment to relax.",
   ];
 
-  const thumbnailUrls = [
-    "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
-    "https://images.unsplash.com/photo-1511497584788-876760111969?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
-    "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
-    "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
-    "https://images.unsplash.com/photo-1574169208507-843761648ae4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
-  ];
+  const thumbnailUrls: string[] = [];
+  thumbnailUrls.push(result?.url);
+  thumbnailUrls.push(result?.url);
+  thumbnailUrls.push(result?.url);
+  thumbnailUrls.push(result?.url);
+  thumbnailUrls.push(result?.url);
+  console.log(thumbnailUrls);
 
   const timeStamps = [
     { "00:00": "Introduction and opening scene." },
@@ -406,6 +401,13 @@ export default function CustomNode({
             isResultOpen={isResultOpen}
             setIsResultOpen={setIsResultOpen}
             timeStamps={timeStamps}
+          />
+        )}
+        {resultType["Analyse my channel videos and generate ideas"] && (
+          <GenerateIdeas
+            isResultOpen={isResultOpen}
+            setIsResultOpen={setIsResultOpen}
+            contentIdeas={contentIdeas}
           />
         )}
       </div>

@@ -423,7 +423,10 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   };
 
   const onNodeClick = (event: any, node: any) => {
-    if (event.target.tagName === "SPAN") {
+    if (
+      event.target.tagName === "SPAN" &&
+      event.target.id.includes("action-placeholder")
+    ) {
       setShowCard(true);
       setCardId(node.id);
       return;
