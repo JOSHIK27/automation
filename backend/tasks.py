@@ -5,10 +5,8 @@ import os
 from googleapiclient.discovery import build
 from openai import OpenAI
 from keybert import KeyBERT
-import asyncio
 
 dumpling_base_url = "https://app.dumplingai.com"
-
 
 def generate_transcript(video_url: str):
 

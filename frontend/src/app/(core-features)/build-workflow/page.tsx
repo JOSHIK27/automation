@@ -429,7 +429,10 @@ export default function Flow() {
       toast.error("Please save the workflow before editing");
       return;
     }
-    if (event.target.tagName === "SPAN") {
+    if (
+      event.target.tagName === "SPAN" &&
+      event.target.id.includes("action-placeholder")
+    ) {
       setShowCard(true);
       setCardId(node.id);
       return;

@@ -9,6 +9,7 @@ import { MdOutlineStickyNote2, MdFace, MdSummarize } from "react-icons/md";
 import { FaVideo, FaLightbulb, FaSearch, FaClock } from "react-icons/fa";
 import { useCurrentTaskQuery } from "@/hooks/queries/useCurrentTaskQuery";
 import { useTaskStatusQuery } from "@/hooks/queries/useTaskStatusQuery";
+import { useState } from "react";
 
 export default function CustomNode({
   data,
@@ -27,13 +28,48 @@ export default function CustomNode({
   );
   const { data: currentTaskStatus } = useTaskStatusQuery(workflowId, id); // returns from task_status collections
   const { latestStatus } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
-  const result = latestStatus?.result;
+  const result = latestStatus?.result || "1";
   const isPlaceholderLabel = (label: string) => {
     return (
       label === "Select the event that you want to trigger" ||
       label === "Select the action that you want to perform"
     );
   };
+
+  const videoSummary = `
+    The golden rays of the morning sun streamed through the dense canopy of the forest, casting dappled patterns on the forest floor. A gentle breeze rustled the leaves, carrying with it the earthy aroma of moss and damp soil. Birds chirped melodiously, their songs weaving a natural symphony that blended seamlessly with the distant murmur of a babbling brook. A lone squirrel scurried across the path, pausing briefly to inspect a stray acorn before darting into the underbrush. Nearby, wildflowers in shades of purple, yellow, and white swayed gently, their vibrant colors a stark contrast to the deep green foliage. It was a scene of pure tranquility, unmarred by the chaos of the outside world, where time seemed to slow down, allowing one to soak in the beauty and serenity of nature's embrace. Amidst this idyllic setting, a sense of wonder and calm took hold, as if the forest itself were whispering secrets of a simpler, more harmonious existence.
+  `;
+  const contentIdeas = [
+    "The sky was painted with hues of orange and pink as the sun set beyond the horizon.",
+    "A gentle rain began to fall, creating a soothing rhythm against the windows.",
+    "The library was silent except for the faint rustle of pages being turned by avid readers.",
+    "Laughter echoed through the park as children chased each other around the playground.",
+    "The aroma of freshly brewed coffee filled the air, inviting everyone to take a moment to relax.",
+  ];
+
+  const videoTitles = [
+    "The sky was painted with hues of orange and pink as the sun set beyond the horizon.",
+    "A gentle rain began to fall, creating a soothing rhythm against the windows.",
+    "The library was silent except for the faint rustle of pages being turned by avid readers.",
+    "Laughter echoed through the park as children chased each other around the playground.",
+    "The aroma of freshly brewed coffee filled the air, inviting everyone to take a moment to relax.",
+  ];
+
+  const thumbnailUrls = [
+    "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
+    "https://images.unsplash.com/photo-1511497584788-876760111969?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
+    "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
+    "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
+    "https://images.unsplash.com/photo-1574169208507-843761648ae4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
+  ];
+
+  const timeStamps = [
+    { "00:00": "Introduction and opening scene." },
+    { "01:15": "Explanation of the main topic." },
+    { "03:45": "Demonstration of the first example." },
+    { "07:30": "Detailed discussion and analysis." },
+    { "12:00": "Conclusion and final thoughts." },
+  ];
 
   const getIconForLabel = (label: string) => {
     const iconProps = { className: "w-4 h-4 text-gray-600" };
@@ -82,97 +118,99 @@ export default function CustomNode({
     }
   };
 
+  const [isResultOpen, setIsResultOpen] = useState(false);
+
   return (
-    <div
-      className={`
-        ${
-          data.selected
-            ? "ring-2 ring-teal-500/20 shadow-[0_0_0_1px_rgba(20,184,166,0.4)]"
-            : "ring-1 ring-gray-950/5"
-        }
-        bg-gradient-to-b from-white via-white to-gray-50/80
-        backdrop-blur-xl
-        rounded-2xl w-[420px] relative
-        shadow-[0_4px_20px_rgba(0,0,0,0.03)]
-        hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]
-        group
-        transition-all duration-300 ease-out
-      `}
-    >
-      {/* Premium glass effect header */}
-      <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-teal-500/10 to-transparent" />
+    <>
+      <div
+        className={`
+          ${
+            data.selected
+              ? "ring-2 ring-teal-500/20 shadow-[0_0_0_1px_rgba(20,184,166,0.4)]"
+              : "ring-1 ring-gray-950/5"
+          }
+          bg-gradient-to-b from-white via-white to-gray-50/80
+          backdrop-blur-xl
+          rounded-2xl w-[420px] relative
+          shadow-[0_4px_20px_rgba(0,0,0,0.03)]
+          hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]
+          group
+          transition-all duration-300 ease-out
+        `}
+      >
+        {/* Premium glass effect header */}
+        <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-teal-500/10 to-transparent" />
 
-      {/* Handle for Action nodes */}
-      {data.type === "Action" && (
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="!w-3 !h-3 !border !border-teal-500/30 !bg-white !rounded-full
-            before:content-[''] before:absolute before:w-1.5 before:h-1.5 
-            before:bg-teal-500/40 before:rounded-full before:top-1/2 before:left-1/2 
-            before:-translate-x-1/2 before:-translate-y-1/2
-            hover:!border-teal-500/50 hover:before:bg-teal-500/60
-            transition-all duration-200"
-        />
-      )}
+        {/* Handle for Action nodes */}
+        {data.type === "Action" && (
+          <Handle
+            type="target"
+            position={Position.Top}
+            className="!w-3 !h-3 !border !border-teal-500/30 !bg-white !rounded-full
+              before:content-[''] before:absolute before:w-1.5 before:h-1.5 
+              before:bg-teal-500/40 before:rounded-full before:top-1/2 before:left-1/2 
+              before:-translate-x-1/2 before:-translate-y-1/2
+              hover:!border-teal-500/50 hover:before:bg-teal-500/60
+              transition-all duration-200"
+          />
+        )}
 
-      <div className="p-5">
-        {/* Header Section */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div
-              className={`
-                flex items-center gap-2 px-3 py-1.5
-                ${
-                  data.type === "Trigger"
-                    ? "bg-gradient-to-br from-teal-50 to-emerald-50/50"
-                    : "bg-gradient-to-br from-gray-50 to-slate-50/50"
-                }
-                rounded-lg
-                ring-1 ring-gray-950/5
-                group-hover:ring-teal-500/20
-                transition-all duration-200
-              `}
-            >
-              {data.type !== "Trigger" ? (
-                <MdOutlineStickyNote2 className="text-teal-600/80 text-sm" />
-              ) : (
-                <IoPlayCircle className="text-teal-600/80 text-sm" />
-              )}
-              <span className="text-xs font-medium text-gray-600">
-                {data.type}
-              </span>
+        <div className="p-5">
+          {/* Header Section */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div
+                className={`
+                  flex items-center gap-2 px-3 py-1.5
+                  ${
+                    data.type === "Trigger"
+                      ? "bg-gradient-to-br from-teal-50 to-emerald-50/50"
+                      : "bg-gradient-to-br from-gray-50 to-slate-50/50"
+                  }
+                  rounded-lg
+                  ring-1 ring-gray-950/5
+                  group-hover:ring-teal-500/20
+                  transition-all duration-200
+                `}
+              >
+                {data.type !== "Trigger" ? (
+                  <MdOutlineStickyNote2 className="text-teal-600/80 text-sm" />
+                ) : (
+                  <IoPlayCircle className="text-teal-600/80 text-sm" />
+                )}
+                <span className="text-xs font-medium text-gray-600">
+                  {data.type}
+                </span>
+              </div>
             </div>
-          </div>
 
-          {/* Status Indicators - Without execution time */}
-          <div className="flex items-center gap-2">
-            {id === "1" &&
-              currentTaskStatus?.status === "Yet to be processed" && (
-                <div
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
-                bg-gradient-to-r from-gray-50 to-slate-50/50 text-gray-600
-                ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
-                transition-all duration-200"
-                >
-                  <svg
-                    className="w-3 h-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+            {/* Status Indicators - Without execution time */}
+            <div className="flex items-center gap-2">
+              {id === "1" &&
+                currentTaskStatus?.status === "Yet to be processed" && (
+                  <div
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
+                  bg-gradient-to-r from-gray-50 to-slate-50/50 text-gray-600
+                  ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
+                  transition-all duration-200"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span>Yet to be triggered</span>
-                </div>
-              )}
-            {
-              id !== "1" &&
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>Yet to be triggered</span>
+                  </div>
+                )}
+              {id !== "1" &&
                 (currentTaskStatus?.status === "PENDING" ||
                 latestStatus?.status === "PENDING" ? (
                   <BeatLoader loading={true} size={6} color="#069494" />
@@ -180,13 +218,13 @@ export default function CustomNode({
                   <>
                     <div
                       className={`
-                    inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
-                    ${
-                      result
-                        ? "bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-600 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/30"
-                        : "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600 ring-1 ring-amber-500/20 group-hover:ring-amber-500/30"
-                    }
-                    transition-all duration-200`}
+                      inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
+                      ${
+                        result
+                          ? "bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-600 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/30"
+                          : "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600 ring-1 ring-amber-500/20 group-hover:ring-amber-500/30"
+                      }
+                      transition-all duration-200`}
                     >
                       <svg
                         className="w-3 h-3"
@@ -214,10 +252,11 @@ export default function CustomNode({
                     </div>
                     {result && (
                       <div
+                        onClick={() => setIsResultOpen(true)}
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
-                    bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600
-                    ring-1 ring-amber-500/20 group-hover:ring-amber-500/30
-                    transition-all duration-200"
+                          bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600
+                          ring-1 ring-amber-500/20 group-hover:ring-amber-500/30
+                          transition-all duration-200 cursor-pointer hover:shadow-sm"
                       >
                         <svg
                           className="w-3 h-3"
@@ -236,125 +275,89 @@ export default function CustomNode({
                       </div>
                     )}
                   </>
-                ))
+                ))}
 
-              // : ts ? (
-              //   ts.status !== "SUCCESS" || ts.status === "Yet to be processed" ? (
-              //     <div className="flex items-center gap-2">
-              //       {ts.status === "Yet to be processed" ? (
-              //         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
-              //           Yet to be processed
-              //         </span>
-              //       ) : (
-              //         <BeatLoader loading={true} size={6} color="#069494" />
-              //       )}
-              //     </div>
-              //   ) : null
-              // ) : currentTaskStatus?.status === "Yet to be processed" ? (
-              //   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
-              //     Yet to be processed
-              //   </span>
-              // ) : null
-            }
-
-            {/* Delete Button */}
-            <button
-              className={`
-                p-2.5 rounded-xl transition-all duration-200
-                ${
-                  id === "1" || id === "2"
-                    ? "opacity-50 cursor-not-allowed hover:bg-transparent"
-                    : "hover:bg-red-50/80 group/delete"
-                }
-              `}
-              title={
-                id === "1" || id === "2"
-                  ? "Cannot delete default tasks"
-                  : "Delete task"
-              }
-            >
-              <RiDeleteBin6Line
-                size={16}
+              {/* Delete Button */}
+              <button
                 className={`
-                  text-gray-400 transition-all duration-200
+                  p-2.5 rounded-xl transition-all duration-200
                   ${
-                    id !== "1" &&
-                    id !== "2" &&
-                    "group-hover/delete:text-red-500 group-hover/delete:rotate-12"
+                    id === "1" || id === "2"
+                      ? "opacity-50 cursor-not-allowed hover:bg-transparent"
+                      : "hover:bg-red-50/80 group/delete"
                   }
                 `}
-              />
-            </button>
-          </div>
-        </div>
-
-        {/* Separator with gradient */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-200/60 to-transparent my-4" />
-
-        {/* Content Section */}
-        <div className="px-1">
-          {isPlaceholderLabel(data.label) ? (
-            <span className="text-sm text-gray-400 italic flex items-center gap-2.5 px-2">
-              <MdOutlineStickyNote2 className="text-gray-300" />
-              Select an action
-            </span>
-          ) : (
-            <div
-              className={`
-              flex items-center gap-3
-              bg-gradient-to-br from-gray-50/80 via-white to-gray-50/80
-              ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
-              w-fit py-2.5 px-4 rounded-xl
-              group-hover:shadow-lg group-hover:shadow-teal-500/5
-              transition-all duration-200
-            `}
-            >
-              <div
-                className={`
-                p-2 rounded-lg
-                ${data.type === "Trigger" ? "bg-teal-50/80" : "bg-gray-50/80"}
-                transition-colors duration-200
-              `}
+                title={
+                  id === "1" || id === "2"
+                    ? "Cannot delete default tasks"
+                    : "Delete task"
+                }
               >
-                {getIconForLabel(data.label)}
-              </div>
-              <span className="text-sm font-medium text-gray-700">
-                {data.label}
-              </span>
+                <RiDeleteBin6Line
+                  size={16}
+                  className={`
+                    text-gray-400 transition-all duration-200
+                    ${
+                      id !== "1" &&
+                      id !== "2" &&
+                      "group-hover/delete:text-red-500 group-hover/delete:rotate-12"
+                    }
+                  `}
+                />
+              </button>
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* New Execution Time Section */}
-        {/* <div className="mt-4 px-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          {/* Separator with gradient */}
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-200/60 to-transparent my-4" />
+
+          {/* Content Section */}
+          <div className="px-1">
+            {isPlaceholderLabel(data.label) ? (
+              <span
+                id={`action-placeholder-${id}`}
+                className="text-sm text-gray-400 italic flex items-center gap-2.5 px-2"
+              >
+                <MdOutlineStickyNote2 className="text-gray-300" />
+                Select an action
+              </span>
+            ) : (
               <div
                 className={`
-                inline-flex items-center gap-2 px-3 py-1.5
-                bg-gradient-to-r from-gray-50 via-gray-50 to-gray-100/80
-                rounded-xl text-xs font-medium text-gray-600
+                flex items-center gap-3
+                bg-gradient-to-br from-gray-50/80 via-white to-gray-50/80
                 ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
+                w-fit py-2.5 px-4 rounded-xl
+                group-hover:shadow-lg group-hover:shadow-teal-500/5
                 transition-all duration-200
               `}
               >
-                <FaClock className="w-3 h-3 text-teal-500" />
-                <span className="text-gray-500">Execution time:</span>
-                <span className="font-semibold text-gray-700">1</span>
+                <div
+                  className={`
+                  p-2 rounded-lg
+                  ${data.type === "Trigger" ? "bg-teal-50/80" : "bg-gray-50/80"}
+                  transition-colors duration-200
+                `}
+                >
+                  {getIconForLabel(data.label)}
+                </div>
+                <span className="text-sm font-medium text-gray-700">
+                  {data.label}
+                </span>
               </div>
-            </div>
+            )}
           </div>
-        </div> */}
-      </div>
+        </div>
 
-      {/* Bottom Handle */}
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="!w-3 !h-3 !border !border-teal-500/30 !bg-white !rounded-full
-          hover:!border-teal-500/50
-          transition-colors duration-200"
-      />
-    </div>
+        {/* Bottom Handle */}
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          className="!w-3 !h-3 !border !border-teal-500/30 !bg-white !rounded-full
+            hover:!border-teal-500/50
+            transition-colors duration-200"
+        />
+      </div>
+    </>
   );
 }
