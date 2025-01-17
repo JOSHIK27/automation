@@ -1,20 +1,14 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { Handle, Position } from "@xyflow/react";
-import { Separator } from "@/components/ui/separator";
 import { BeatLoader } from "react-spinners";
 import { BiCaptions, BiSolidImage } from "react-icons/bi";
 import { RiDeleteBin6Line, RiVideoUploadLine } from "react-icons/ri";
 import { IoPlayCircle } from "react-icons/io5";
 import { MdOutlineStickyNote2, MdFace, MdSummarize } from "react-icons/md";
 import { FaVideo, FaLightbulb, FaSearch, FaClock } from "react-icons/fa";
-import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
-import { toast } from "sonner";
 import { useCurrentTaskQuery } from "@/hooks/queries/useCurrentTaskQuery";
-import { useTaskStatusMutation } from "@/hooks/mutations/useTaskStatusMutation";
-import { useEffect, useState } from "react";
 import { useTaskStatusQuery } from "@/hooks/queries/useTaskStatusQuery";
-import { usePathname } from "next/navigation";
 
 export default function CustomNode({
   data,
@@ -31,9 +25,12 @@ export default function CustomNode({
   const workflowId = useSelector(
     (state: RootState) => state.workflowName.workflowId
   );
+  const workflowType = useSelector(
+    (state: RootState) => state.trigger.workflowType
+  );
   const { data: currentTaskStatus } = useTaskStatusQuery(workflowId, id); // returns from task_status collections
-  const { ts } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
-  const result = ts?.result;
+  const { latestStatus } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
+  const result = latestStatus?.result;
   const isPlaceholderLabel = (label: string) => {
     return (
       label === "Select the event that you want to trigger" ||
@@ -151,60 +148,147 @@ export default function CustomNode({
             </div>
           </div>
 
-          {/* Status Indicators */}
-          {result ? (
-            <div
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
-              bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-600
-              ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/30
-              transition-all duration-200"
-            >
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span>Complete</span>
-            </div>
-          ) : ts ? (
-            ts.status !== "SUCCESS" || ts.status === "Yet to be processed" ? (
-              <div className="flex items-center gap-2">
-                {ts.status === "Yet to be processed" ? (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
-                    Yet to be processed
-                  </span>
-                ) : (
+          {/* Status Indicators - Without execution time */}
+          <div className="flex items-center gap-2">
+            {id === "1" &&
+              currentTaskStatus?.status === "Yet to be processed" && (
+                <div
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
+                bg-gradient-to-r from-gray-50 to-slate-50/50 text-gray-600
+                ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
+                transition-all duration-200"
+                >
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>Yet to be triggered</span>
+                </div>
+              )}
+            {
+              id !== "1" &&
+                (currentTaskStatus?.status === "PENDING" ||
+                latestStatus?.status === "PENDING" ? (
                   <BeatLoader loading={true} size={6} color="#069494" />
-                )}
-              </div>
-            ) : (
-              <button
-                onClick={() => {
-                  if (id === "1" || id === "2") {
-                    toast.error("You cannot delete the default tasks");
+                ) : (
+                  <>
+                    <div
+                      className={`
+                    inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
+                    ${
+                      result
+                        ? "bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-600 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/30"
+                        : "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600 ring-1 ring-amber-500/20 group-hover:ring-amber-500/30"
+                    }
+                    transition-all duration-200`}
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        {result ? (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        ) : (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        )}
+                      </svg>
+                      <span>{result ? "Complete" : "Yet to be processed"}</span>
+                    </div>
+                    {result && (
+                      <div
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
+                    bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600
+                    ring-1 ring-amber-500/20 group-hover:ring-amber-500/30
+                    transition-all duration-200"
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                          />
+                        </svg>
+                        <span>Result</span>
+                      </div>
+                    )}
+                  </>
+                ))
+
+              // : ts ? (
+              //   ts.status !== "SUCCESS" || ts.status === "Yet to be processed" ? (
+              //     <div className="flex items-center gap-2">
+              //       {ts.status === "Yet to be processed" ? (
+              //         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
+              //           Yet to be processed
+              //         </span>
+              //       ) : (
+              //         <BeatLoader loading={true} size={6} color="#069494" />
+              //       )}
+              //     </div>
+              //   ) : null
+              // ) : currentTaskStatus?.status === "Yet to be processed" ? (
+              //   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
+              //     Yet to be processed
+              //   </span>
+              // ) : null
+            }
+
+            {/* Delete Button */}
+            <button
+              className={`
+                p-2.5 rounded-xl transition-all duration-200
+                ${
+                  id === "1" || id === "2"
+                    ? "opacity-50 cursor-not-allowed hover:bg-transparent"
+                    : "hover:bg-red-50/80 group/delete"
+                }
+              `}
+              title={
+                id === "1" || id === "2"
+                  ? "Cannot delete default tasks"
+                  : "Delete task"
+              }
+            >
+              <RiDeleteBin6Line
+                size={16}
+                className={`
+                  text-gray-400 transition-all duration-200
+                  ${
+                    id !== "1" &&
+                    id !== "2" &&
+                    "group-hover/delete:text-red-500 group-hover/delete:rotate-12"
                   }
-                }}
-                className="p-2.5 hover:bg-red-50/80 rounded-xl transition-all duration-200 group"
-              >
-                <RiDeleteBin6Line
-                  size={16}
-                  className="text-gray-400 group-hover:text-red-500 group-hover:rotate-12 transition-all"
-                />
-              </button>
-            )
-          ) : currentTaskStatus?.status === "Yet to be processed" ? (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#069494]/10 text-[#069494]">
-              Yet to be processed
-            </span>
-          ) : null}
+                `}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Separator with gradient */}
@@ -243,6 +327,27 @@ export default function CustomNode({
             </div>
           )}
         </div>
+
+        {/* New Execution Time Section */}
+        {/* <div className="mt-4 px-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div
+                className={`
+                inline-flex items-center gap-2 px-3 py-1.5
+                bg-gradient-to-r from-gray-50 via-gray-50 to-gray-100/80
+                rounded-xl text-xs font-medium text-gray-600
+                ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
+                transition-all duration-200
+              `}
+              >
+                <FaClock className="w-3 h-3 text-teal-500" />
+                <span className="text-gray-500">Execution time:</span>
+                <span className="font-semibold text-gray-700">1</span>
+              </div>
+            </div>
+          </div>
+        </div> */}
       </div>
 
       {/* Bottom Handle */}

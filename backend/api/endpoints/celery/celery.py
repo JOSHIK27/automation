@@ -4,6 +4,7 @@ import requests
 import os
 from keybert import KeyBERT
 from backend.celery_config import celery_app
+from datetime import datetime
 
 router = APIRouter()
 
@@ -56,7 +57,7 @@ def generatekeywords(request: Request, textContent: str):
 @router.get("/result/{task_id}")
 async def get_result(task_id: str):
     result = celery_app.AsyncResult(task_id)
-
+    
     if result.state != "SUCCESS":
         return {"status": "PENDING"}
     else:

@@ -35,7 +35,7 @@ async def subscribe_to_channel(request: SubscriptionRequest):
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": "https://f722-92-237-137-142.ngrok-free.app/webhook",
+        "hub.callback": "https://6059-92-237-137-142.ngrok-free.app/webhook",
         "hub.verify": "async",
     }
 

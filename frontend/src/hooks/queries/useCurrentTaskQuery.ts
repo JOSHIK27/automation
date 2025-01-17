@@ -33,5 +33,5 @@ export function useCurrentTaskQuery(currentTaskStatus: any) {
     );
   }
 
-  return { ts: query.data, status: query.status, error: query.error };
+  return { latestStatus: query.data, status: query.status, error: query.error };
 }

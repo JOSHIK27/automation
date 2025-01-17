@@ -46,7 +46,7 @@ export const initialNodes: Node[] = [
   },
   {
     id: "customWithHandle",
-    position: { x: 588, y: 550 },
+    position: { x: 598, y: 550 },
     data: {
       label: "",
       type: "",
