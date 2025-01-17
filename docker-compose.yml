@@ -27,6 +27,7 @@ services:
       context: backend
       dockerfile: Dockerfile
     command: celery -A backend.celery_config worker --loglevel=info
+    restart: always
     depends_on:
       - redis
     environment:
