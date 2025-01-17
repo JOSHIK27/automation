@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import { MdSummarize } from "react-icons/md";
 
-export default function GenerateVideoSummary({
+export default function GenerateSummary({
   isResultOpen,
   setIsResultOpen,
   videoSummary,

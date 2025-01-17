@@ -10,6 +10,10 @@ import { FaVideo, FaLightbulb, FaSearch, FaClock } from "react-icons/fa";
 import { useCurrentTaskQuery } from "@/hooks/queries/useCurrentTaskQuery";
 import { useTaskStatusQuery } from "@/hooks/queries/useTaskStatusQuery";
 import { useState } from "react";
+import GenerateThumbnail from "../resultDialogs/generateThumbnails";
+import GenerateTimeStamps from "../resultDialogs/generateTimeStamps";
+import GenerateSummary from "../resultDialogs/generateVideoSummary";
+import GenerateSEOTitles from "../resultDialogs/generateSEOTitles";
 
 export default function CustomNode({
   data,
@@ -28,7 +32,17 @@ export default function CustomNode({
   );
   const { data: currentTaskStatus } = useTaskStatusQuery(workflowId, id); // returns from task_status collections
   const { latestStatus } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
-  const result = latestStatus?.result || "1";
+  const result: any = latestStatus?.result || "1";
+  const resultType: { [key: string]: boolean } = {
+    "Generate thumbnail": false,
+    "Generate SEO optimized title": false,
+    "Generate SEO optimized keywords": false,
+    "Generate summary": false,
+    "Generate timestamps": false,
+    "Swap face": false,
+  };
+  if (result?.actionType) resultType[result.actionType] = true;
+
   const isPlaceholderLabel = (label: string) => {
     return (
       label === "Select the event that you want to trigger" ||
@@ -178,7 +192,10 @@ export default function CustomNode({
                 ) : (
                   <IoPlayCircle className="text-teal-600/80 text-sm" />
                 )}
-                <span className="text-xs font-medium text-gray-600">
+                <span
+                  id={`action-placeholder-${id}`}
+                  className="text-xs font-medium text-gray-600"
+                >
                   {data.type}
                 </span>
               </div>
@@ -314,10 +331,7 @@ export default function CustomNode({
           {/* Content Section */}
           <div className="px-1">
             {isPlaceholderLabel(data.label) ? (
-              <span
-                id={`action-placeholder-${id}`}
-                className="text-sm text-gray-400 italic flex items-center gap-2.5 px-2"
-              >
+              <span className="text-sm text-gray-400 italic flex items-center gap-2.5 px-2">
                 <MdOutlineStickyNote2 className="text-gray-300" />
                 Select an action
               </span>
@@ -357,6 +371,43 @@ export default function CustomNode({
             hover:!border-teal-500/50
             transition-colors duration-200"
         />
+
+        {/* Result Dialog */}
+        {resultType["Generate thumbnail"] && (
+          <GenerateThumbnail
+            isResultOpen={isResultOpen}
+            setIsResultOpen={setIsResultOpen}
+            thumbnailUrls={thumbnailUrls}
+          />
+        )}
+        {resultType["Generate SEO optimized title"] && (
+          <GenerateSEOTitles
+            isResultOpen={isResultOpen}
+            setIsResultOpen={setIsResultOpen}
+            videoTitles={videoTitles}
+          />
+        )}
+        {/* {resultType["Generate SEO optimized keywords"] && (
+          <GenerateKeywords   
+            isResultOpen={isResultOpen}
+            setIsResultOpen={setIsResultOpen}
+            result={result}
+          />
+        )} */}
+        {resultType["Generate summary"] && (
+          <GenerateSummary
+            isResultOpen={isResultOpen}
+            setIsResultOpen={setIsResultOpen}
+            videoSummary={videoSummary}
+          />
+        )}
+        {resultType["Generate timestamps"] && (
+          <GenerateTimeStamps
+            isResultOpen={isResultOpen}
+            setIsResultOpen={setIsResultOpen}
+            timeStamps={timeStamps}
+          />
+        )}
       </div>
     </>
   );

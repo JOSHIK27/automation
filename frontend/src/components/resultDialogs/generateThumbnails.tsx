@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import { BiSolidImage } from "react-icons/bi";
 
-export default function GenerateThumbnails({
+export default function GenerateThumbnail({
   isResultOpen,
   setIsResultOpen,
   thumbnailUrls,
