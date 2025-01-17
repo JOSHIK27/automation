@@ -14,11 +14,9 @@ const startFetchingSlice = createSlice({
     },
     updateStartFetching: (state, action) => {
       const index = state.findIndex((item) => item.id === action.payload.id);
-      console.log(index);
       if (index !== -1) {
         state[index].startFetching = action.payload.startFetching;
       }
-      console.log(state);
     },
   },
 });

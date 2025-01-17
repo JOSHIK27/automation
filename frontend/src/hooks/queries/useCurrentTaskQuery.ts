@@ -22,9 +22,7 @@ export function useCurrentTaskQuery(currentTaskStatus: any) {
     refetchInterval: (data: any) =>
       data?.state?.data?.status === "SUCCESS" ? false : 2000,
   });
-  console.log(query.data);
   if (query.data?.status === "SUCCESS") {
-    console.log("Updating startFetching");
     dispatch(
       updateStartFetching({
         id: currentTaskStatus?.cardId,

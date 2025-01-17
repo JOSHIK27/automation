@@ -88,13 +88,15 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const [selectValue, setSelectValue] = useState("");
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const startFetching = useSelector((state: RootState) => state.startFetching);
+  console.log(startFetching);
 
   useEffect(() => {
     if (userId) {
       const ws = new WebSocket(`ws://localhost:8000/ws?userId=${userId}`);
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data?.workflow_id === workflowId) {
+        if (data?.workflow_id.trim() === workflowId.trim()) {
           setRenderKey((prev) => prev + 1);
           dispatch(setStartFetching(data.client_state));
         }
@@ -112,8 +114,6 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
   const { workflowName } = useSelector(
     (state: RootState) => state.workflowName
   );
-  const startFetching = useSelector((state: RootState) => state.startFetching);
-  console.log(startFetching);
 
   // Form Handling
   const form = useForm<FormValues>({
@@ -598,8 +598,8 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
         </div>
       </div>
 
-      <div className="fixed top-20 right-4 z-50 flex gap-2">
-        <Dialog>
+      {/* <div className="fixed top-20 right-4 z-50 flex gap-2"> */}
+      {/* <Dialog>
           <DialogTrigger asChild>
             <Button
               type="button"
@@ -727,9 +727,9 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
               </div>
             </form>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
 
-        <button
+      {/* <button
           disabled={triggerWorkflowMutation.isPending}
           onClick={handleTriggerWorkflow}
           className={`group inline-flex items-center justify-center gap-2
@@ -781,8 +781,8 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
               </span>
             </>
           )}
-        </button>
-      </div>
+        </button> */}
+      {/* </div> */}
 
       <Sheet open={showCard} onOpenChange={setShowCard}>
         <SheetContent className="w-[600px] sm:w-[600px] bg-white">

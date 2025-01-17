@@ -26,7 +26,6 @@ def get_user_stats(email: str):
     users_collection = db["users"]
     user_stats = users_collection.find_one({"email": email})
     workflows = list(db["workflows"].find({"user_id": str(ObjectId(user_stats["_id"])) }))
-    print(user_stats, workflows, ObjectId(user_stats["_id"]))
     totalWorkflows = 0
     activeWorkflows = 0
     tasksCompleted = 0

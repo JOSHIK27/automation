@@ -19,8 +19,6 @@ async def webhook_verify(
     hub_topic: str = Query(None, alias="hub.topic")
 ):
     # Return the challenge code to verify the subscription
-
-    print(hub_mode, hub_challenge, hub_topic)
     if hub_challenge:
         return int(hub_challenge)
     return {"message": "No challenge found"}
@@ -35,7 +33,7 @@ async def subscribe_to_channel(request: SubscriptionRequest):
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": "https://6059-92-237-137-142.ngrok-free.app/webhook",
+        "hub.callback": "https://27c7-92-237-137-142.ngrok-free.app/webhook",
         "hub.verify": "async",
     }
 
@@ -152,7 +150,6 @@ async def webhook(request: Request):
                     },
                     upsert=True
                 )
-                print(client_state)
 
                 if user_id in connected_clients:
                     await connected_clients[user_id].send_json({"workflow_id": workflow_id, "client_state": client_state})

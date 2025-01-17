@@ -25,9 +25,6 @@ export default function CustomNode({
   const workflowId = useSelector(
     (state: RootState) => state.workflowName.workflowId
   );
-  const workflowType = useSelector(
-    (state: RootState) => state.trigger.workflowType
-  );
   const { data: currentTaskStatus } = useTaskStatusQuery(workflowId, id); // returns from task_status collections
   const { latestStatus } = useCurrentTaskQuery(currentTaskStatus); // returns from celery polling
   const result = latestStatus?.result;

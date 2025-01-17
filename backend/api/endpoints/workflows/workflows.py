@@ -66,7 +66,7 @@ async def triggerworkflow(request: TriggerWorkflowPayload):
                     "cardId": action["cardId"],
                     "status": "PENDING"
                 })
-        print(actions_data)
+                
         db.preproduction_workflow_information.insert_one({
             "workflow_id": request.workflowId,
             "trigger_data": trigger_data,
@@ -241,7 +241,6 @@ async def update_task_status(request: UpdateTaskStatusPayload):
     pre_workflow = db.preproduction_workflow_information.find_one(
         {"workflow_id": request.workflowId}
     )
-    print(pre_workflow)
     
     if pre_workflow:
         pre_workflow_actions = pre_workflow["actions_data"]

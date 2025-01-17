@@ -11,6 +11,7 @@ import {
   Background,
   BackgroundVariant,
   ConnectionLineType,
+  Controls,
   MarkerType,
   ReactFlow,
   useEdgesState,
@@ -97,9 +98,8 @@ export default function Flow() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
   const startFetching = useSelector((state: RootState) => state.startFetching);
-  console.log(startFetching);
 
-  // websocker
+  // websocket
   useEffect(() => {
     if (userId) {
       const ws = new WebSocket(`ws://localhost:8000/ws?userId=${userId}`);
@@ -553,66 +553,81 @@ export default function Flow() {
   }
 
   return (
-    <div key={renderKey} className="relative" style={{ height: "100dvh" }}>
+    <div
+      key={renderKey}
+      className="relative -top-16"
+      style={{ height: "100dvh" }}
+    >
       <div className="fixed top-20 left-4 z-50">
         <div className="relative group">
           <div
-            className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-teal-600/10 
-            rounded-xl blur-xl transition-all duration-300 group-hover:blur-2xl"
+            className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-teal-500/[0.07] to-teal-600/5 
+            rounded-2xl blur-xl transition-all duration-300 group-hover:blur-2xl"
           />
+
           <div
-            className="relative flex items-center gap-3 px-4 py-2.5
-            bg-white/80 hover:bg-white/90
-            backdrop-blur-md
-            rounded-xl
-            border border-gray-200/30 hover:border-teal-500/30
-            shadow-lg shadow-teal-900/5
-            hover:shadow-xl hover:shadow-teal-900/10
+            className="relative flex items-center gap-3 px-5 py-4
+            bg-gradient-to-b from-white via-white to-gray-50/80
+            backdrop-blur-xl
+            rounded-2xl
+            ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
+            shadow-[0_4px_20px_rgba(0,0,0,0.03)] 
+            group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]
             transition-all duration-300 ease-out
-            group-hover:scale-[1.02]
-            min-w-[200px]"
+            min-w-[240px]"
           >
+            <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-teal-500/10 to-transparent" />
+
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div
-                  className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-teal-600 
-                  rounded-lg blur-sm opacity-0 group-hover:opacity-30 transition-opacity duration-300"
+                  className="absolute -inset-1.5 bg-gradient-to-br from-teal-50 to-emerald-50/50
+                  rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 />
-                <svg
-                  className="relative w-5 h-5 text-teal-600 transition-transform duration-300
-                    group-hover:scale-110 group-hover:rotate-[-8deg]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <div
+                  className="relative p-2 rounded-lg bg-gradient-to-br from-gray-50 to-slate-50/50
+                  ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
+                  transition-all duration-200"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.8}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
+                  <svg
+                    className="w-4 h-4 text-teal-600/80 transition-transform duration-300
+                      group-hover:scale-110 group-hover:rotate-[-8deg]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.8}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-[13px] font-medium text-gray-400">
+
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs font-medium text-gray-400">
                   Workflow Name
                 </span>
                 <span
-                  className="text-sm font-semibold text-gray-700 group-hover:text-teal-700
-                  transition-colors duration-200 truncate max-w-[180px]"
+                  className="text-sm font-semibold text-gray-600 group-hover:text-gray-700
+                  transition-colors duration-200 truncate max-w-[140px]"
                 >
                   {workflowName ? workflowName : "Untitled Workflow"}
                 </span>
               </div>
             </div>
-            <div className="ml-auto pl-3 border-l border-gray-200/50">
+
+            <div className="ml-auto pl-3 border-l border-gray-200/60">
               <div
-                className={`w-2 h-2 rounded-full transition-colors duration-300
-                ${
-                  hasUnsavedChanges
-                    ? "bg-amber-400 animate-pulse"
-                    : "bg-teal-500"
-                }`}
+                className={`w-2 h-2 rounded-full transition-all duration-300
+                  ${
+                    hasUnsavedChanges
+                      ? "bg-amber-400 animate-pulse shadow-[0_0_12px_rgba(251,191,36,0.3)]"
+                      : "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.2)]"
+                  }
+                `}
               />
             </div>
           </div>
@@ -851,6 +866,7 @@ export default function Flow() {
           }}
           gap={20}
         />
+        <Controls />
       </ReactFlow>
 
       <div className="fixed bottom-4 right-4 z-50">
