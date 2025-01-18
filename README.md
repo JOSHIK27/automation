@@ -4,7 +4,9 @@ A modern web application for automating video content workflows using AI capabil
 
 ## Architecture
 
-![image](https://github.com/user-attachments/assets/964df7d7-81d8-4cd2-be5e-c0bab3b09f3c)
+![image](https://github.com/user-attachments/assets/d73f38c8-5eed-4aa8-b78e-98828b66e1d6)
+
+
 
 
 
