@@ -171,10 +171,7 @@ def generate_content_ideas(channel_id: str):
                 "role": "user",
                 "content": f"""
 Analyze the following YouTube video titles and generate 5 new video ideas that are similar in theme or style. 
-The response must be returned as a valid Python list of strings, formatted as a single line with no additional text, code blocks, or formatting.
-
-Example output:
-['Idea 1', 'Idea 2', 'Idea 3', 'Idea 4', 'Idea 5']
+The response must be returned as individual strings, one per line, with no additional text, code blocks, or formatting.
 
 Here are the previous video titles:
 {video_titles}

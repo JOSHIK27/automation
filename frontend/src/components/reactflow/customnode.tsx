@@ -15,6 +15,7 @@ import GenerateTimeStamps from "../resultDialogs/generateTimeStamps";
 import GenerateSummary from "../resultDialogs/generateVideoSummary";
 import GenerateSEOTitles from "../resultDialogs/generateSEOTitles";
 import GenerateIdeas from "../resultDialogs/generateContentIdeas";
+
 export default function CustomNode({
   data,
   id,
@@ -54,7 +55,10 @@ export default function CustomNode({
   const videoSummary = `
     The golden rays of the morning sun streamed through the dense canopy of the forest, casting dappled patterns on the forest floor. A gentle breeze rustled the leaves, carrying with it the earthy aroma of moss and damp soil. Birds chirped melodiously, their songs weaving a natural symphony that blended seamlessly with the distant murmur of a babbling brook. A lone squirrel scurried across the path, pausing briefly to inspect a stray acorn before darting into the underbrush. Nearby, wildflowers in shades of purple, yellow, and white swayed gently, their vibrant colors a stark contrast to the deep green foliage. It was a scene of pure tranquility, unmarred by the chaos of the outside world, where time seemed to slow down, allowing one to soak in the beauty and serenity of nature's embrace. Amidst this idyllic setting, a sense of wonder and calm took hold, as if the forest itself were whispering secrets of a simpler, more harmonious existence.
   `;
-  const contentIdeas = result?.content_ideas;
+  const rawContentIdeas = result?.content_ideas.split("\n");
+  const contentIdeas = rawContentIdeas?.filter(
+    (idea: string) => idea.trim() !== ""
+  );
 
   const videoTitles = [
     "The sky was painted with hues of orange and pink as the sun set beyond the horizon.",
