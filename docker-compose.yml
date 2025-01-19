@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - redis
-      - celery-worker
+      # - celery-worker
     environment:
       - MONGO_URI=${MONGO_URI}
       - IDEOGRAM_API_KEY=${IDEOGRAM_API_KEY}
