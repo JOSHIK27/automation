@@ -22,20 +22,20 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
-  celery-worker:
-    build:
-      context: backend
-      dockerfile: Dockerfile
-    command:
-      [celery, -A, backend.celery_config, worker, --loglevel=info, --pool=solo]
-    restart: always
-    depends_on:
-      - redis
-    environment:
-      - MONGO_URI=${MONGO_URI}
-      - IDEOGRAM_API_KEY=${IDEOGRAM_API_KEY}
-      - PYTHONPATH=/app
-      - CELERY_BROKER_URL=redis://redis:6379
-      - CELERY_RESULT_BACKEND=redis://redis:6379
-    env_file:
-      - backend/.env
+  # celery-worker:
+  #   build:
+  #     context: backend
+  #     dockerfile: Dockerfile
+  #   command:
+  #     [celery, -A, backend.celery_config, worker, --loglevel=info, --pool=solo]
+  #   restart: always
+  #   depends_on:
+  #     - redis
+  #   environment:
+  #     - MONGO_URI=${MONGO_URI}
+  #     - IDEOGRAM_API_KEY=${IDEOGRAM_API_KEY}
+  #     - PYTHONPATH=/app
+  #     - CELERY_BROKER_URL=redis://redis:6379
+  #     - CELERY_RESULT_BACKEND=redis://redis:6379
+  #   env_file:
+  #     - backend/.env
