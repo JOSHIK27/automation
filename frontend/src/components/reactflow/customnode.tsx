@@ -214,7 +214,7 @@ export default function CustomNode({
                   </div>
                 )}
               {id !== "1" &&
-                (currentTaskStatus?.status === "PENDING" ||
+                (currentTaskStatus?.status === "PENDING" &&
                 latestStatus?.status === "PENDING" ? (
                   <BeatLoader loading={true} size={6} color="#069494" />
                 ) : (
