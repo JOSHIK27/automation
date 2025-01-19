@@ -15,6 +15,7 @@ import GenerateTimeStamps from "../resultDialogs/generateTimeStamps";
 import GenerateSummary from "../resultDialogs/generateVideoSummary";
 import GenerateSEOTitles from "../resultDialogs/generateSEOTitles";
 import GenerateIdeas from "../resultDialogs/generateContentIdeas";
+import GenerateKeywords from "../resultDialogs/generateKeywords";
 
 export default function CustomNode({
   data,
@@ -36,7 +37,7 @@ export default function CustomNode({
   const result: any = latestStatus?.result;
   const resultType: { [key: string]: boolean } = {
     "Generate thumbnail": false,
-    "Generate SEO optimized title": false,
+    "Generate SEO optimized titles": false,
     "Generate SEO optimized keywords": false,
     "Generate summary": false,
     "Generate timestamps": false,
@@ -52,37 +53,23 @@ export default function CustomNode({
     );
   };
 
-  const videoSummary = `
-    The golden rays of the morning sun streamed through the dense canopy of the forest, casting dappled patterns on the forest floor. A gentle breeze rustled the leaves, carrying with it the earthy aroma of moss and damp soil. Birds chirped melodiously, their songs weaving a natural symphony that blended seamlessly with the distant murmur of a babbling brook. A lone squirrel scurried across the path, pausing briefly to inspect a stray acorn before darting into the underbrush. Nearby, wildflowers in shades of purple, yellow, and white swayed gently, their vibrant colors a stark contrast to the deep green foliage. It was a scene of pure tranquility, unmarred by the chaos of the outside world, where time seemed to slow down, allowing one to soak in the beauty and serenity of nature's embrace. Amidst this idyllic setting, a sense of wonder and calm took hold, as if the forest itself were whispering secrets of a simpler, more harmonious existence.
-  `;
-  const rawContentIdeas = result?.content_ideas.split("\n");
+  const videoSummary = result?.summary;
+  const rawContentIdeas = result?.content_ideas?.split("\n");
   const contentIdeas = rawContentIdeas?.filter(
     (idea: string) => idea.trim() !== ""
   );
 
-  const videoTitles = [
-    "The sky was painted with hues of orange and pink as the sun set beyond the horizon.",
-    "A gentle rain began to fall, creating a soothing rhythm against the windows.",
-    "The library was silent except for the faint rustle of pages being turned by avid readers.",
-    "Laughter echoed through the park as children chased each other around the playground.",
-    "The aroma of freshly brewed coffee filled the air, inviting everyone to take a moment to relax.",
-  ];
-
+  const videoTitles = result?.titles?.split("\n");
+  const videoKeywords = result?.keywords;
   const thumbnailUrls: string[] = [];
   thumbnailUrls.push(result?.url);
   thumbnailUrls.push(result?.url);
   thumbnailUrls.push(result?.url);
   thumbnailUrls.push(result?.url);
   thumbnailUrls.push(result?.url);
-  console.log(thumbnailUrls);
 
-  const timeStamps = [
-    { "00:00": "Introduction and opening scene." },
-    { "01:15": "Explanation of the main topic." },
-    { "03:45": "Demonstration of the first example." },
-    { "07:30": "Detailed discussion and analysis." },
-    { "12:00": "Conclusion and final thoughts." },
-  ];
+  const timeStamps = result?.timestamps?.split("\n");
+  console.log(videoTitles);
 
   const getIconForLabel = (label: string) => {
     const iconProps = { className: "w-4 h-4 text-gray-600" };
@@ -379,20 +366,20 @@ export default function CustomNode({
             thumbnailUrls={thumbnailUrls}
           />
         )}
-        {resultType["Generate SEO optimized title"] && (
+        {resultType["Generate SEO optimized titles"] && (
           <GenerateSEOTitles
             isResultOpen={isResultOpen}
             setIsResultOpen={setIsResultOpen}
             videoTitles={videoTitles}
           />
         )}
-        {/* {resultType["Generate SEO optimized keywords"] && (
-          <GenerateKeywords   
+        {resultType["Generate SEO optimized keywords"] && (
+          <GenerateKeywords
             isResultOpen={isResultOpen}
             setIsResultOpen={setIsResultOpen}
-            result={result}
+            videoKeywords={videoKeywords}
           />
-        )} */}
+        )}
         {resultType["Generate summary"] && (
           <GenerateSummary
             isResultOpen={isResultOpen}

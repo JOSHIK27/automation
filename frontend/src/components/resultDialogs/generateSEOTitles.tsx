@@ -15,6 +15,7 @@ export default function GenerateSEOTitles({
   setIsResultOpen: (open: boolean) => void;
   videoTitles: string[];
 }) {
+  console.log(videoTitles, "hi");
   return (
     <Dialog open={isResultOpen} onOpenChange={setIsResultOpen}>
       <DialogContent className="max-w-2xl">
@@ -24,7 +25,7 @@ export default function GenerateSEOTitles({
             Video Titles
           </DialogTitle>
         </DialogHeader>
-        <div className="mt-4 space-y-3">
+        <div className="mt-4 space-y-3 max-h-[60vh] overflow-y-auto pr-2">
           {videoTitles.map((title, index) => (
             <div
               key={index}

@@ -12,7 +12,7 @@ from slowapi.errors import RateLimitExceeded # type: ignore
 from slowapi import _rate_limit_exceeded_handler # type: ignore
 from backend.api.endpoints.workflows.workflows import router as workflows_router
 from backend.api.endpoints.websocket.websocket import router as websocket_router
-
+from backend.tasks import generate_seo_keywords
 app = FastAPI()
 
 app.include_router(users_router)
@@ -37,6 +37,10 @@ app.add_middleware(
 )
 
 
+@app.post("/test")
+def sample(text: str):
+    generate_seo_keywords.delay(text) 
+    return {"message": "Task started"}
 
 
 

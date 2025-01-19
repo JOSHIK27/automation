@@ -33,7 +33,7 @@ async def subscribe_to_channel(request: SubscriptionRequest):
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": "https://27c7-92-237-137-142.ngrok-free.app/webhook",
+        "hub.callback": "https://b20e-92-237-137-142.ngrok-free.app/webhook",
         "hub.verify": "async",
     }
 
@@ -108,13 +108,13 @@ async def webhook(request: Request):
                     #         "cardId": action["cardId"],
                     #         "status": "PENDING"
                     #     })
-                    # elif action["actionType"] == "Generate timestamps":
-                    #     task_id = generate_timestamps.delay(action["input"])
-                    #     response.append({
-                    #         "task_id": str(task_id),
-                    #         "cardId": action["cardId"],
-                    #         "status": "PENDING"
-                    #     })
+                    elif action["actionType"] == "Generate timestamps":
+                        task_id = generate_timestamps.delay(video_data["link"])
+                        response.append({
+                            "task_id": str(task_id),
+                            "cardId": action["cardId"],
+                            "status": "PENDING"
+                        })
                     elif action["actionType"] == "Generate SEO optimized title":
                         task_id = generate_seo_title.delay(video_data["link"])
                         response.append({

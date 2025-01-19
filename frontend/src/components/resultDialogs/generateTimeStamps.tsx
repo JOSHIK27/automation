@@ -13,11 +13,14 @@ export default function GenerateTimeStamps({
 }: {
   isResultOpen: boolean;
   setIsResultOpen: (open: boolean) => void;
-  timeStamps: any[];
+  timeStamps: string[];
 }) {
   return (
     <Dialog open={isResultOpen} onOpenChange={setIsResultOpen}>
       <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="sr-only">Video Timestamps</DialogTitle>
+        </DialogHeader>
         <div className="flex items-center justify-between mb-4 pr-4">
           <div className="flex items-center gap-2">
             <FaClock className="w-5 h-5 text-red-500" />
@@ -50,7 +53,7 @@ export default function GenerateTimeStamps({
         </div>
         <div className="space-y-3">
           {timeStamps.map((timestamp, index) => {
-            const [time, description] = Object.entries(timestamp)[0];
+            const [time, description] = timestamp.split(" - ");
             return (
               <div
                 key={index}
@@ -73,7 +76,7 @@ export default function GenerateTimeStamps({
                   </div>
                 </div>
                 <p className="text-gray-600 leading-relaxed text-sm pt-1">
-                  {description as string}
+                  {description}
                 </p>
               </div>
             );
