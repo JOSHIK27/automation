@@ -26,7 +26,8 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
-    command: celery -A backend.celery_config worker --loglevel=info
+    command:
+      [celery, -A, backend.celery_config, worker, --loglevel=info, --pool=solo]
     restart: always
     depends_on:
       - redis
