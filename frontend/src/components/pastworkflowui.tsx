@@ -94,7 +94,7 @@ export default function WorkflowUI({ workflowId }: { workflowId: string }) {
     if (userId) {
       const protocol = process.env.NODE_ENV === "production" ? "wss" : "ws";
       const ws = new WebSocket(
-        `${protocol}://${process.env.API_URL_DUP}/ws?userId=${userId}`
+        `${protocol}://${process.env.NEXT_PUBLIC_API_URL_DUP}/ws?userId=${userId}`
       );
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
