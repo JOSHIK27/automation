@@ -26,7 +26,7 @@ app.include_router(websocket_router)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-origins = ["https://api.creatorstream.org"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,

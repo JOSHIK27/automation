@@ -13,7 +13,7 @@ export function useCurrentTaskQuery(currentTaskStatus: any) {
     queryKey: ["task-status", currentTaskStatus?.task_id],
     queryFn: async () => {
       const response = await fetch(
-        `https://${process.env.API_URL}/result/${currentTaskStatus?.task_id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/result/${currentTaskStatus?.task_id}`,
         {
           headers: {
             Authorization: `Bearer ${sessionToken ?? ""}`,
