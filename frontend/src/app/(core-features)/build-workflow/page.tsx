@@ -102,7 +102,9 @@ export default function Flow() {
   // websocket
   useEffect(() => {
     if (userId) {
-      const ws = new WebSocket(`ws://localhost:8000/ws?userId=${userId}`);
+      const ws = new WebSocket(
+        `ws://${process.env.API_URL}/ws?userId=${userId}`
+      );
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data?.workflow_id === workflowId) {

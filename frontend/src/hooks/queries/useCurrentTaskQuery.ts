@@ -10,7 +10,7 @@ export function useCurrentTaskQuery(currentTaskStatus: any) {
     queryKey: ["task-status", currentTaskStatus?.task_id],
     queryFn: async () => {
       const response = await fetch(
-        `http://localhost:8000/result/${currentTaskStatus?.task_id}`
+        `https://${process.env.API_URL}/result/${currentTaskStatus?.task_id}`
       );
       return response.json();
     },

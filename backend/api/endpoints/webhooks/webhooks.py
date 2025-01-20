@@ -8,7 +8,7 @@ from backend.api.endpoints.websocket.websocket import get_connected_clients
 from bson.objectid import ObjectId
 from backend.tasks import generate_seo_title, generate_seo_keywords, generate_summary, generate_timestamps
 import asyncio
-
+import os
 router = APIRouter()
 db = client["core"]
 
@@ -33,7 +33,7 @@ async def subscribe_to_channel(request: SubscriptionRequest):
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": "https://dd7e-92-237-137-142.ngrok-free.app/webhook",
+        "hub.callback": f"{os.getenv('API_URL')}/webhook",
         "hub.verify": "async",
     }
 
