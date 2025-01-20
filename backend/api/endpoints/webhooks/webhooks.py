@@ -33,7 +33,7 @@ async def subscribe_to_channel(request: SubscriptionRequest):
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": f"https://www.youtube.com/xml/feeds/videos.xml?channel_id={request.channel_id}",
-        "hub.callback": f"{os.getenv('API_URL')}/webhook",
+        "hub.callback": "https://api.creatorstream.org/webhook",
         "hub.verify": "async",
     }
 
