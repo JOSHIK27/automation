@@ -39,19 +39,26 @@ app.add_middleware(
 @app.middleware("http")
 async def authenticate_user(request: Request, call_next):
     try:
+        # Allow OPTIONS requests without authentication
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
+        excluded_paths = ["/", "/docs", "/openapi.json"]
+        if request.url.path in excluded_paths:
+            return await call_next(request)
+
         auth_header = request.headers.get("Authorization")
         if not auth_header:
-            return JSONResponse(status_code=401, content={"message": "Unauthorised"})
-            
+            return JSONResponse(status_code=401, content={"message": "Unauthorized"})
+
         token = auth_header.split(" ")[1]
-        
         decoded = decode_jwe(token, os.getenv("JWE_SECRET"))
         if not decoded:
             return JSONResponse(status_code=401, content={"message": "Invalid token"})
+
         return await call_next(request)
     except Exception as e:
         return JSONResponse(status_code=401, content={"message": str(e)})
-    
 
 
 
