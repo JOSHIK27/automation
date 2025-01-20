@@ -23,7 +23,6 @@ sqlalchemy==2.0.36
 sqlmodel==0.0.22
 typing-extensions==4.12.2
 tzdata==2024.2
-uvicorn==0.27.1
 vine==5.1.0
 wcwidth==0.2.13
 google-api-python-client==2.100.0
@@ -33,3 +32,4 @@ python-jose[cryptography]==3.3.0
 hkdf==0.0.3
 resend==2.5.1
 slowapi==0.1.9
+uvicorn[standard]
