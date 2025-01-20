@@ -25,7 +25,7 @@ app.include_router(websocket_router)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-origins = ["*"] 
+origins = ["https://www.creatorstream.org"]
 
 
 app.add_middleware(
@@ -44,21 +44,21 @@ def sample(text: str):
 
 
 
-# @app.middleware("http")
-# async def authenticate_user(request: Request, call_next):
-#     try:
-#         auth_header = request.headers.get("Authorization")
-#         if not auth_header:
-#             return JSONResponse(status_code=401, content={"message": "Unauthorised"})
+@app.middleware("http")
+async def authenticate_user(request: Request, call_next):
+    try:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            return JSONResponse(status_code=401, content={"message": "Unauthorised"})
             
-#         token = auth_header.split(" ")[1]
+        token = auth_header.split(" ")[1]
         
-#         decoded = decode_jwe(token, os.getenv("JWE_SECRET"))
-#         if not decoded:
-#             return JSONResponse(status_code=401, content={"message": "Invalid token"})
-#         return await call_next(request)
-#     except Exception as e:
-#         return JSONResponse(status_code=401, content={"message": str(e)})
+        decoded = decode_jwe(token, os.getenv("JWE_SECRET"))
+        if not decoded:
+            return JSONResponse(status_code=401, content={"message": "Invalid token"})
+        return await call_next(request)
+    except Exception as e:
+        return JSONResponse(status_code=401, content={"message": str(e)})
     
 
 
