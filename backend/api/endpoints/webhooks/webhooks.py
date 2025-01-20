@@ -7,8 +7,6 @@ from backend.db.db import client
 from backend.api.endpoints.websocket.websocket import get_connected_clients
 from bson.objectid import ObjectId
 from backend.tasks import generate_seo_title, generate_seo_keywords, generate_summary, generate_timestamps
-import asyncio
-import os
 router = APIRouter()
 db = client["core"]
 
