@@ -1,4 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
+import { sessionTokenName } from "@/lib/constants/common";
 
 export function useTaskStatusMutation({
   workflowId,
@@ -7,6 +9,7 @@ export function useTaskStatusMutation({
   workflowId: string;
   cardId: string;
 }) {
+  const sessionToken = Cookies.get(sessionTokenName);
   return useMutation({
     mutationKey: ["update-task-status"],
     mutationFn: async () => {
@@ -16,6 +19,7 @@ export function useTaskStatusMutation({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionToken ?? ""}`,
           },
           body: JSON.stringify({ workflowId, cardId }),
         }
