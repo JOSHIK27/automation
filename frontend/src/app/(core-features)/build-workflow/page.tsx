@@ -103,7 +103,7 @@ export default function Flow() {
   useEffect(() => {
     if (userId) {
       const ws = new WebSocket(
-        `ws://${process.env.API_URL}/ws?userId=${userId}`
+        `ws://${process.env.NEXT_PUBLIC_API_URL}/ws?userId=${userId}`
       );
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
