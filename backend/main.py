@@ -13,6 +13,7 @@ from slowapi import _rate_limit_exceeded_handler # type: ignore
 from backend.api.endpoints.workflows.workflows import router as workflows_router
 from backend.api.endpoints.websocket.websocket import router as websocket_router
 from backend.tasks import generate_seo_keywords
+import os
 app = FastAPI()
 
 app.include_router(users_router)
@@ -27,7 +28,6 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 origins = ["https://www.creatorstream.org"]
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -35,14 +35,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.post("/test")
-def sample(text: str):
-    generate_seo_keywords.delay(text) 
-    return {"message": "Task started"}
-
-
 
 @app.middleware("http")
 async def authenticate_user(request: Request, call_next):
