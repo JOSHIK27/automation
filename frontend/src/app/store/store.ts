@@ -6,6 +6,8 @@ import userReducer from "./slices/user-slice";
 import updateBtnReducer from "./slices/trigger-card-slices/update-btn-slice";
 import workflowNameReducer from "./slices/workflow-slice";
 import startFetchingReducer from "./slices/startfetching-slice";
+import sessionTokenReducer from "./slices/session-token-slice";
+
 export const store = configureStore({
   reducer: {
     trigger: triggerReducer,
@@ -15,6 +17,7 @@ export const store = configureStore({
     updateBtn: updateBtnReducer,
     workflowName: workflowNameReducer,
     startFetching: startFetchingReducer,
+    sessionToken: sessionTokenReducer,
   },
 });
 

@@ -1,12 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { setTasksStatus } from "@/app/store/slices/trigger-card-slices/task-status-slice";
-import { useDispatch } from "react-redux";
-import Cookies from "js-cookie";
-import { sessionTokenName } from "@/lib/constants/common";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 export function useTriggerWorkFlowMutation() {
   const dispatch = useDispatch();
+  const sessionToken = useSelector(
+    (state: RootState) => state.sessionToken.sessionToken
+  );
   return useMutation<
     any,
     Error,
@@ -23,7 +25,6 @@ export function useTriggerWorkFlowMutation() {
   >({
     mutationKey: ["triggerWorkflow"],
     mutationFn: async (data) => {
-      const sessionToken = Cookies.get(sessionTokenName);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/trigger-workflow`,
         {

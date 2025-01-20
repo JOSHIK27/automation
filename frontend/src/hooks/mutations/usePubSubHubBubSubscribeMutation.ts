@@ -1,9 +1,11 @@
-import { sessionTokenName } from "@/lib/constants/common";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 export function usePubSubHubBubSubscribeMutation() {
-  const sessionToken = Cookies.get(sessionTokenName);
+  const sessionToken = useSelector(
+    (state: RootState) => state.sessionToken.sessionToken
+  );
   return useMutation<{ channel_id: string }, Error, { channel_id: string }>({
     mutationKey: ["pubsubhubbub"],
     mutationFn: async (data: { channel_id: string }) => {

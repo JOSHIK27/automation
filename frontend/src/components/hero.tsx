@@ -11,6 +11,8 @@ import { FadeText } from "./ui/fade-text";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAddUserMutation } from "@/hooks/mutations/useAddUserMutation";
+import { setSessionToken } from "@/app/store/slices/session-token-slice";
+import { useDispatch } from "react-redux";
 
 export function AnimatedShinyTextDemo() {
   return (
@@ -29,14 +31,21 @@ export function AnimatedShinyTextDemo() {
   );
 }
 
-export default function Hero({ session }: { session: any }) {
+export default function Hero({
+  session,
+  sessionToken,
+}: {
+  session: any;
+  sessionToken: string;
+}) {
   const router = useRouter();
-
+  const dispatch = useDispatch();
   const addUserMutation = useAddUserMutation(session);
 
   useEffect(() => {
     if (session) {
       addUserMutation.mutate();
+      dispatch(setSessionToken(sessionToken));
     }
   }, [session]);
 

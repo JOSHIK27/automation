@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { updateStartFetching } from "@/app/store/slices/startfetching-slice";
-import Cookies from "js-cookie";
-import { sessionTokenName } from "@/lib/constants/common";
 
 export function useCurrentTaskQuery(currentTaskStatus: any) {
   const startFetching = useSelector((state: RootState) => state.startFetching);
@@ -11,7 +9,9 @@ export function useCurrentTaskQuery(currentTaskStatus: any) {
   const query = useQuery({
     queryKey: ["task-status", currentTaskStatus?.task_id],
     queryFn: async () => {
-      const sessionToken = Cookies.get(sessionTokenName);
+      const sessionToken = useSelector(
+        (state: RootState) => state.sessionToken.sessionToken
+      );
       const response = await fetch(
         `https://${process.env.API_URL}/result/${currentTaskStatus?.task_id}`,
         {

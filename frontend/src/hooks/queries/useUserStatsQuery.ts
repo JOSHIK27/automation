@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { sessionTokenName } from "@/lib/constants/common";
-import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 export function useUserStatsQuery(session: any) {
-  const sessionToken = Cookies.get(sessionTokenName);
+  const sessionToken = useSelector(
+    (state: RootState) => state.sessionToken.sessionToken
+  );
   const {
     data: userStats,
     status: userStatsStatus,

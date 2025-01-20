@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import Cookies from "js-cookie";
-import { sessionTokenName } from "@/lib/constants/common";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 export function useWorkflowDetails(workflowId: string, userId: string) {
   const {
@@ -10,7 +10,9 @@ export function useWorkflowDetails(workflowId: string, userId: string) {
   } = useQuery({
     queryKey: ["workflowHistory", userId, workflowId],
     queryFn: async () => {
-      const sessionToken = Cookies.get(sessionTokenName);
+      const sessionToken = useSelector(
+        (state: RootState) => state.sessionToken.sessionToken
+      );
       const resp = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${userId}?workflowId=${workflowId}`,
         {

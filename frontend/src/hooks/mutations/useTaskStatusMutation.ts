@@ -1,6 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { sessionTokenName } from "@/lib/constants/common";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
 
 export function useTaskStatusMutation({
   workflowId,
@@ -9,7 +11,9 @@ export function useTaskStatusMutation({
   workflowId: string;
   cardId: string;
 }) {
-  const sessionToken = Cookies.get(sessionTokenName);
+  const sessionToken = useSelector(
+    (state: RootState) => state.sessionToken.sessionToken
+  );
   return useMutation({
     mutationKey: ["update-task-status"],
     mutationFn: async () => {
