@@ -8,7 +8,6 @@ export function useAddUserMutation(session: any) {
   const sessionToken = useSelector(
     (state: RootState) => state.sessionToken.sessionToken
   );
-  console.log(sessionToken);
   return useMutation({
     mutationKey: ["user"],
     mutationFn: async () => {

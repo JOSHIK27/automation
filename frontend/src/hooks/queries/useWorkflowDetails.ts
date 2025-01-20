@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 
 export function useWorkflowDetails(workflowId: string, userId: string) {
+  const sessionToken = useSelector(
+    (state: RootState) => state.sessionToken.sessionToken
+  );
   const {
     data: workflowDetails,
     isLoading,
@@ -10,9 +13,6 @@ export function useWorkflowDetails(workflowId: string, userId: string) {
   } = useQuery({
     queryKey: ["workflowHistory", userId, workflowId],
     queryFn: async () => {
-      const sessionToken = useSelector(
-        (state: RootState) => state.sessionToken.sessionToken
-      );
       const resp = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/workflow-history/${userId}?workflowId=${workflowId}`,
         {

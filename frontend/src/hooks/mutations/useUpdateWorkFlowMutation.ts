@@ -5,6 +5,9 @@ import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 export function useUpdateWorkFlowMutation(workflowId: string) {
+  const sessionToken = useSelector(
+    (state: RootState) => state.sessionToken.sessionToken
+  );
   return useMutation<
     any,
     Error,
@@ -16,9 +19,7 @@ export function useUpdateWorkFlowMutation(workflowId: string) {
   >({
     mutationKey: ["updateWorkflow"],
     mutationFn: (data) => {
-      const sessionToken = useSelector(
-        (state: RootState) => state.sessionToken.sessionToken
-      );
+      console.log("sessionToken", sessionToken);
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/update-workflow`, {
         method: "PUT",
         headers: {
