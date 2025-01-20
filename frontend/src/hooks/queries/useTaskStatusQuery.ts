@@ -16,6 +16,7 @@ export function useTaskStatusQuery(workflowId: string, cardId: string) {
         {
           headers: {
             Authorization: `Bearer ${sessionToken ?? ""}`,
+            "Access-Control-Allow-Origin": "*",
           },
         }
       );

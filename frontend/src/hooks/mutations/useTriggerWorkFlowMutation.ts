@@ -32,6 +32,7 @@ export function useTriggerWorkFlowMutation() {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${sessionToken ?? ""}`,
+            "Access-Control-Allow-Origin": "*",
           },
           body: JSON.stringify(data),
         }

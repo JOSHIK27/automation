@@ -24,6 +24,7 @@ export function useUpdateWorkFlowMutation(workflowId: string) {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionToken ?? ""}`,
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({ ...data, workflow_id: workflowId }),
       }).then((res) => res.json());

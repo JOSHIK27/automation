@@ -21,6 +21,7 @@ export function useWorkflowHistoryQuery(userId: string) {
           method: "GET",
           headers: {
             Authorization: `Bearer ${sessionToken ?? ""}`,
+            "Access-Control-Allow-Origin": "*",
           },
         }
       );

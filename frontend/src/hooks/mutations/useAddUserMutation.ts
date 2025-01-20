@@ -18,6 +18,7 @@ export function useAddUserMutation(session: any) {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionToken ?? ""}`,
+          "Access-Control-Allow-Origin": "*",
         },
       });
       return response.json();

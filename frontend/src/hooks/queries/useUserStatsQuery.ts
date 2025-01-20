@@ -18,6 +18,7 @@ export function useUserStatsQuery(session: any) {
         {
           headers: {
             Authorization: `Bearer ${sessionToken ?? ""}`,
+            "Access-Control-Allow-Origin": "*",
           },
         }
       );

@@ -18,6 +18,7 @@ export function useWorkflowDetails(workflowId: string, userId: string) {
         {
           headers: {
             Authorization: `Bearer ${sessionToken ?? ""}`,
+            "Access-Control-Allow-Origin": "*",
           },
         }
       );

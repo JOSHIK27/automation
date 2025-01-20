@@ -17,6 +17,7 @@ export function useCurrentTaskQuery(currentTaskStatus: any) {
         {
           headers: {
             Authorization: `Bearer ${sessionToken ?? ""}`,
+            "Access-Control-Allow-Origin": "*",
           },
         }
       );
