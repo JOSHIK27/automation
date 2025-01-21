@@ -57,22 +57,25 @@ def generatekeywords(request: Request, textContent: str):
 @router.get("/result/{task_id}")
 async def get_result(task_id: str):
     result = celery_app.AsyncResult(task_id)
+    print(result)
     actionType = ""
-    if "url" in result.result:
-        actionType = "Generate thumbnail"
-    elif "content_ideas" in result.result:
-        actionType = "Analyse my channel videos and generate ideas"
-    elif "transcript" in result.result:
-        actionType = "Generate transcript"
-    elif "summary" in result.result:
-        actionType = "Generate summary"
-    elif "timestamps" in result.result:
-        actionType = "Generate timestamps"
-    elif "keywords" in result.result:
-        actionType = "Generate SEO optimized keywords"
-    elif "titles" in result.result:
-        actionType = "Generate SEO optimized titles"
-
+    if result.result:
+        if "url" in result.result:
+            actionType = "Generate thumbnail"
+        elif "content_ideas" in result.result:
+            actionType = "Analyse my channel videos and generate ideas"
+        elif "transcript" in result.result:
+            actionType = "Generate transcript"
+        elif "summary" in result.result:
+            actionType = "Generate summary"
+        elif "timestamps" in result.result:
+            actionType = "Generate timestamps"
+        elif "keywords" in result.result:
+            actionType = "Generate SEO optimized keywords"
+        elif "titles" in result.result:
+            actionType = "Generate SEO optimized titles"
+    else:
+        return {"status": "EXPIRED", "actionType": actionType}
 
     if result.state != "SUCCESS":
         return {"status": "PENDING", "actionType": actionType}

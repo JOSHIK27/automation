@@ -29,7 +29,10 @@ export function useCurrentTaskQuery(currentTaskStatus: any) {
         startFetching.find((item) => item.id === currentTaskStatus?.cardId)
           ?.startFetching),
     refetchInterval: (data: any) =>
-      data?.state?.data?.status === "SUCCESS" ? false : 2000,
+      data?.state?.data?.status === "SUCCESS" ||
+      data?.state?.data?.status === "EXPIRED"
+        ? false
+        : 2000,
   });
   if (query.data?.status === "SUCCESS") {
     dispatch(

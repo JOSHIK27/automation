@@ -226,6 +226,8 @@ export default function CustomNode({
                       ${
                         result
                           ? "bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-600 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/30"
+                          : latestStatus?.status === "EXPIRED"
+                          ? "bg-gradient-to-r from-red-50 to-rose-50 text-red-600 ring-1 ring-red-500/20 group-hover:ring-red-500/30"
                           : "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600 ring-1 ring-amber-500/20 group-hover:ring-amber-500/30"
                       }
                       transition-all duration-200`}
@@ -243,6 +245,13 @@ export default function CustomNode({
                             strokeWidth={2}
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
+                        ) : latestStatus?.status === "EXPIRED" ? (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         ) : (
                           <path
                             strokeLinecap="round"
@@ -252,7 +261,13 @@ export default function CustomNode({
                           />
                         )}
                       </svg>
-                      <span>{result ? "Complete" : "Yet to be processed"}</span>
+                      <span>
+                        {result
+                          ? "Complete"
+                          : latestStatus?.status === "EXPIRED"
+                          ? "Expired"
+                          : "Yet to be processed"}
+                      </span>
                     </div>
                     {result && (
                       <div
