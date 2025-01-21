@@ -57,7 +57,6 @@ def generatekeywords(request: Request, textContent: str):
 @router.get("/result/{task_id}")
 async def get_result(task_id: str):
     result = celery_app.AsyncResult(task_id)
-    print(result)
     actionType = ""
     if result.result:
         if "url" in result.result:
@@ -74,8 +73,6 @@ async def get_result(task_id: str):
             actionType = "Generate SEO optimized keywords"
         elif "titles" in result.result:
             actionType = "Generate SEO optimized titles"
-    else:
-        return {"status": "EXPIRED", "actionType": actionType}
 
     if result.state != "SUCCESS":
         return {"status": "PENDING", "actionType": actionType}

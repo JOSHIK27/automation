@@ -58,6 +58,7 @@ async def webhook(request: Request):
     
     # Extract video information from the entry
     entry = root.find('atom:entry', ns)
+    print(entry)
     if entry:
         video_data = {
             'video_id': entry.find('yt:videoId', ns).text,
