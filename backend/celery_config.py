@@ -68,7 +68,7 @@ celery_app.conf.result_backend = REDIS_URL
 
 # Add these configurations
 celery_app.conf.update(
-    result_expires=2592000,  # Results expire in 1 hour
+    result_expires=86400,  # Results expire in 24 hour
     accept_content=['json'],
     task_serializer='json',
     result_serializer='json',
