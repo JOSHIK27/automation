@@ -7,14 +7,14 @@ export function HeroVideoDialogDemoTopInBottomOut() {
       <HeroVideoDialog
         className="dark:hidden block"
         animationStyle="from-center"
-        videoSrc="https://www.youtube.com/embed/P95eytSbC7Y"
+        videoSrc="https://www.youtube.com/embed/fqXGtHMkIUk?si=tYa0TZHOeILCIRtm"
         thumbnailSrc={thumbnail.src}
         thumbnailAlt="Hero Video"
       />
       <HeroVideoDialog
         className="hidden dark:block"
         animationStyle="from-center"
-        videoSrc="https://www.youtube.com/embed/P95eytSbC7Y"
+        videoSrc="https://www.youtube.com/embed/fqXGtHMkIUk?si=tYa0TZHOeILCIRtm"
         thumbnailSrc={thumbnail.src}
         thumbnailAlt="Hero Video"
       />
