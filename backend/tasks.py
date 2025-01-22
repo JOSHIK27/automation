@@ -113,7 +113,6 @@ def swap_face(target_image_url: str, source_image_url: str):
 @celery_app.task
 def generate_summary(video_url: str):
     transcript_data = generate_transcript(video_url)
-    print(transcript_data)
     openai_client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
     video_summary = openai_client.chat.completions.create(
         model="gpt-4o-mini",
@@ -177,7 +176,7 @@ def generate_content_ideas(channel_id: str):
             {
                 "role": "user",
                 "content": f"""
-                Analyze the following YouTube video titles and generate 5 new video ideas that are similar in theme or style. 
+                Analyze the following YouTube video titles and generate 10 new video ideas that are similar in theme or style. 
                 The response must be returned as individual strings, one per line, with no additional text, code blocks, or formatting.
 
                 Here are the previous video titles:
@@ -186,7 +185,6 @@ def generate_content_ideas(channel_id: str):
             }
         ],
     )
-    print(completion.choices[0].message.content)
 
     return {
         "content_ideas": completion.choices[0].message.content

@@ -69,7 +69,6 @@ export default function CustomNode({
   thumbnailUrls.push(result?.url);
 
   const timeStamps = result?.timestamps?.split("\n");
-  console.log(videoTitles);
 
   const getIconForLabel = (label: string) => {
     const iconProps = { className: "w-4 h-4 text-gray-600" };

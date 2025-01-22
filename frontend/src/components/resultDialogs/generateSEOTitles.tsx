@@ -15,7 +15,6 @@ export default function GenerateSEOTitles({
   setIsResultOpen: (open: boolean) => void;
   videoTitles: string[];
 }) {
-  console.log(videoTitles, "hi");
   return (
     <Dialog open={isResultOpen} onOpenChange={setIsResultOpen}>
       <DialogContent className="max-w-2xl">

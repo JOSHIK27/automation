@@ -19,7 +19,6 @@ export function useUpdateWorkFlowMutation(workflowId: string) {
   >({
     mutationKey: ["updateWorkflow"],
     mutationFn: (data) => {
-      console.log("sessionToken", sessionToken);
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/update-workflow`, {
         method: "PUT",
         headers: {
