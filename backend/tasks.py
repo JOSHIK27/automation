@@ -203,7 +203,7 @@ def generate_timestamps(video_url: str):
         messages=[{
             "role": "user", 
             "content": f"""
-                Using the following video transcript, extract all timestamps paired with concise and descriptive titles (5-10 words). Each line should include:
+                Using the following video transcript, extract all possible timestamps paired with concise and descriptive titles (5-10 words). Each line should include:
 
                 A timestamp in the mm:ss format
                 A concise title summarizing a key moment

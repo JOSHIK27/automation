@@ -12,7 +12,7 @@ import {
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useRouter, usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -171,11 +171,13 @@ export function Nav() {
             >
               Pricing
             </div>
-            <Link href="/docs">
-              <div className="block px-4 py-3 text-white bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-600 hover:to-teal-500 rounded-xl text-center font-medium transition-all duration-300 shadow-md">
-                Sign In
-              </div>
-            </Link>
+
+            <div
+              onClick={() => (session.data?.user ? signOut() : signIn())}
+              className="block px-4 py-3 text-white bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-600 hover:to-teal-500 rounded-xl text-center font-medium transition-all duration-300 shadow-md"
+            >
+              {session.data?.user ? "Sign Out" : "Sign In"}
+            </div>
           </div>
         </div>
       </div>

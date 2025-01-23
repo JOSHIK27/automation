@@ -562,10 +562,10 @@ export default function Flow() {
   return (
     <div
       key={renderKey}
-      className="relative -top-16"
+      className="relative -top-16 w-full"
       style={{ height: "100dvh" }}
     >
-      <div className="fixed top-20 left-4 z-50">
+      <div className="fixed top-20 left-4 z-50 max-w-[calc(100vw-2rem)]">
         <div className="relative group">
           <div
             className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-teal-500/[0.07] to-teal-600/5 
@@ -573,15 +573,14 @@ export default function Flow() {
           />
 
           <div
-            className="relative flex items-center gap-3 px-5 py-4
+            className="relative flex items-center gap-3 px-4 py-3 sm:px-5 sm:py-4
             bg-gradient-to-b from-white via-white to-gray-50/80
-            backdrop-blur-xl
-            rounded-2xl
+            backdrop-blur-xl rounded-xl
             ring-1 ring-gray-950/5 group-hover:ring-teal-500/20
-            shadow-[0_4px_20px_rgba(0,0,0,0.03)] 
+            shadow-[0_4px_20px_rgba(0,0,0,0.03)]
             group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]
             transition-all duration-300 ease-out
-            min-w-[240px]"
+            min-w-0 sm:min-w-[240px]"
           >
             <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-teal-500/10 to-transparent" />
 
@@ -641,12 +640,12 @@ export default function Flow() {
         </div>
       </div>
 
-      <div className="fixed top-20 right-4 z-50 flex gap-2">
+      <div className="fixed top-20 right-4 z-50 flex flex-col sm:flex-row gap-2">
         <Dialog>
           <DialogTrigger asChild>
             <Button
               type="button"
-              className="group inline-flex items-center justify-center px-4 py-2.5
+              className="group inline-flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2.5
                 bg-white/90 hover:bg-white text-gray-700 rounded-xl
                 shadow-lg hover:shadow-xl backdrop-blur-sm
                 font-medium text-sm
@@ -654,7 +653,7 @@ export default function Flow() {
                 transition-all duration-300
                 hover:scale-[1.02] active:scale-[0.98]
                 hover:border-teal-100
-                h-[42px]"
+                h-[42px] w-full sm:w-auto"
             >
               <svg
                 className="w-4 h-4 mr-2 text-teal-600 transition-transform duration-200 
@@ -675,7 +674,7 @@ export default function Flow() {
               </span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-[#F7F5F1]/90 backdrop-blur-sm border border-gray-200/50">
+          <DialogContent className="bg-[#F7F5F1]/90 backdrop-blur-sm border border-gray-200/50 w-[95vw] max-w-[600px] sm:w-[600px]">
             <DialogHeader>
               <DialogTitle className="text-gray-700">Save Workflow</DialogTitle>
               <DialogDescription className="text-gray-500">
@@ -793,10 +792,11 @@ export default function Flow() {
             border border-teal-400/20
             transition-all duration-300
             hover:scale-[1.02] active:scale-[0.98]
+            w-full sm:w-auto
             ${
               triggerWorkflowMutation.isPending
-                ? "cursor-not-allowed px-6 py-3"
-                : "px-5 py-2.5"
+                ? "cursor-not-allowed px-4 py-2 sm:px-6 sm:py-3"
+                : "px-3 py-2 sm:px-5 sm:py-2.5"
             }`}
         >
           {triggerWorkflowMutation.isPending ? (
@@ -836,7 +836,7 @@ export default function Flow() {
       </div>
 
       <Sheet open={showCard} onOpenChange={setShowCard}>
-        <SheetContent className="w-[600px] sm:w-[600px] bg-white">
+        <SheetContent className="w-[95vw] sm:w-[600px] bg-white overflow-y-auto">
           <SheetHeader>
             <SheetTitle>Configure Workflow Action</SheetTitle>
           </SheetHeader>
@@ -876,13 +876,14 @@ export default function Flow() {
         <Controls />
       </ReactFlow>
 
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-4 right-4 z-50 max-w-[calc(100vw-2rem)]">
         <div
-          className={`group inline-flex items-center gap-2 px-4 py-2 
+          className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2
           bg-white/90 hover:bg-white rounded-xl
           shadow-lg hover:shadow-xl backdrop-blur-sm
           border transition-all duration-300
-          ${hasUnsavedChanges ? "border-amber-200/50" : "border-gray-200/50"}`}
+          overflow-hidden text-ellipsis whitespace-nowrap
+          ${hasUnsavedChanges ? 'border-amber-200/50' : 'border-gray-200/50'}"
         >
           <div className="flex items-center gap-2">
             <div
