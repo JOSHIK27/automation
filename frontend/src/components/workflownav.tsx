@@ -27,7 +27,7 @@ export default function WorkflowNav() {
   const session = useSession();
 
   return (
-    <NavigationMenu className="sticky top-0 flex justify-between items-center w-auto max-w-screen-2xl mx-4 mt-2 rounded-xl shadow-md px-4 py-2">
+    <NavigationMenu className="sticky bg-white top-0 flex justify-between items-center w-auto max-w-screen-2xl mx-4 mt-2 rounded-xl shadow-md px-4 py-2">
       <NavigationMenuList className="flex-1">
         <NavigationMenuItem>
           <Link href="/" className="group">
@@ -46,29 +46,6 @@ export default function WorkflowNav() {
       </NavigationMenuList>
 
       <NavigationMenuList className="flex items-center space-x-4">
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            onClick={() => {
-              const pricingSection = document.getElementById("pricing");
-              pricingSection?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className={`${navigationMenuTriggerStyle()} cursor-pointer text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-gray-50/80 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-gray-800 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300`}
-          >
-            Pricing
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            onClick={() => {
-              const faqsSection = document.getElementById("faqs");
-              faqsSection?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className={`${navigationMenuTriggerStyle()} cursor-pointer text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 flex items-center gap-2 px-5 py-2.5 rounded-xl hover:bg-gray-50/80 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-gray-800 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300`}
-          >
-            FAQs
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
         <NavigationMenuItem>
           <NavigationMenuLink
             onClick={() => router.push("/workflow-history")}
